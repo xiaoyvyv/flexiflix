@@ -1,0 +1,26 @@
+{
+  "name": "extension-hanime",
+  "version": "1.0.0",
+  "description": "flexiflix extension for hanime1.com",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "devExtensionHanime": "npx ts-node src/index.ts",
+    "package": "npx tsc",
+    "package-single": "npx ncc build src/index.ts -o dist"
+  },
+  "keywords": [],
+  "author": "xiaoyvyv",
+  "license": "ISC",
+  "dependencies": {
+    "@xiaoyvyv/flexiflex-extension-common": "1.0.1",
+    "axios": "^1.6.8",
+    "cheerio": "^1.0.0-rc.12"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "@vercel/ncc": "^0.38.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}

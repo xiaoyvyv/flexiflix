@@ -1,0 +1,27 @@
+{
+  "name": "@xiaoyvyv/flexiflex-extension",
+  "version": "1.0.0-c",
+  "description": "flexiflex-extension setup",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "setup-dev": "npx ts-node src/index.ts -d=../../extension-samples -i=../../extension-samples/install.json",
+    "setup-package": "npx tsc",
+    "setup-package-single": "npx ncc build src/index.ts -o dist-full",
+    "setup-package-single-android-assets": "npx ncc build src/index.ts -o ../../lib-extension/src/main/assets/node"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "@xiaoyvyv/flexiflex-extension-common": "1.0.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.12.12",
+    "@vercel/ncc": "^0.38.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}

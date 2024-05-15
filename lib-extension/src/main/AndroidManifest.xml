@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <provider
+            android:name=".ExtensionProvider"
+            android:authorities="${applicationId}.ExtensionProvider"
+            android:exported="false" />
+        <service
+            android:name="com.xiaoyv.flexiflix.extension.javascript.NodeService"
+            android:exported="false"
+            android:process=":nodejs" />
+    </application>
+</manifest>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tab_home">首页</string>
+    <string name="tab_source">数据源</string>
+    <string name="tab_profile">我的</string>
+
+    <string name="common_action_retry">重试</string>
+
+    <string name="error_something_goes_wrong">出了点问题，请稍后再试</string>
+    <string name="error_title">出错了</string>
+
+    <string name="empty_title">空空如也</string>
+    <string name="empty_subtitle">这里没有任何内容呢</string>
+</resources>

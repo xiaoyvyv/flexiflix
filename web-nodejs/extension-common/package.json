@@ -1,0 +1,23 @@
+{
+  "name": "@xiaoyvyv/flexiflex-extension-common",
+  "version": "1.0.1",
+  "description": "flexiflex-extension common",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "devCommon": "npx ts-node src/index.ts",
+    "package": "npx tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.12.12",
+    "@vercel/ncc": "^0.38.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}
