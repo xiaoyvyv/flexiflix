@@ -32,16 +32,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
-      - name: Install dependencies
-        run: |
-          cd web-doc
-          npm ci
+
       - name: Build with VitePress
         run: |
           cd web-doc
+          npm install
           npm run docs:build
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
