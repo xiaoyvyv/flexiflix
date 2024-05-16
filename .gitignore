@@ -13,9 +13,9 @@
 .externalNativeBuild
 .cxx
 local.properties
-/web-nodejs/extension-samples/extension-hanime/dist/
-/web-nodejs/extension-samples/extension-hanime/dist-full/
-/web-nodejs/extension-samples/extension-hanime/node_modules/
+/web-nodejs/extension-samples/extension-acfun/dist/
+/web-nodejs/extension-samples/extension-acfun/dist-full/
+/web-nodejs/extension-samples/extension-acfun/node_modules/
 /web-nodejs/setup/dist/
 /web-nodejs/setup/dist-full/
 /web-nodejs/setup/node_modules/
