@@ -31,12 +31,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # 如果未启用 lastUpdated，则不需要
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
+          fetch-depth: 0
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Install dependencies
