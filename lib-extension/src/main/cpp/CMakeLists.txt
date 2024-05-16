@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22.1)
 
-project("libnode-extension.so")
+project("libjs.so")
 
 include_directories(libnode/include/node)
 

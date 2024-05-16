@@ -1,10 +1,7 @@
 package com.xiaoyv.comic.flexiflix.model
 
 import android.graphics.drawable.Drawable
-import android.os.Parcelable
-import com.xiaoyv.flexiflix.extension.java.MediaSourceExtension
-import com.xiaoyv.flexiflix.extension.java.model.MediaSourceInfo
-import kotlinx.parcelize.Parcelize
+import com.xiaoyv.flexiflix.extension.MediaSourceExtension
 
 /**
  * [InstalledMediaSource]

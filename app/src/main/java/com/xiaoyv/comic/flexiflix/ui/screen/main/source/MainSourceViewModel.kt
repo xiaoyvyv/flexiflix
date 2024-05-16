@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.xiaoyv.comic.flexiflix.data.extension.ExtensionRepository
 import com.xiaoyv.comic.flexiflix.model.InstalledMediaSource
-import com.xiaoyv.flexiflix.common.utils.debugLog
 import com.xiaoyv.flexiflix.common.utils.mutableStateFlowOf
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

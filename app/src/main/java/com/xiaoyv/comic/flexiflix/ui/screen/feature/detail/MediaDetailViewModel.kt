@@ -7,8 +7,8 @@ import androidx.paging.LoadState
 import com.xiaoyv.comic.flexiflix.data.media.MediaRepository
 import com.xiaoyv.flexiflix.common.model.StateContent
 import com.xiaoyv.flexiflix.common.utils.mutableStateFlowOf
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaPlaylist
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaPlaylistUrl
+import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylist
+import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

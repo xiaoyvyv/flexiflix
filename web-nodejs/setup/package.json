@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "setup-dev": "npx ts-node src/index.ts -d=../../extension-samples -i=../../extension-samples/install.json",
+    "setup-dev": "npx ts-node src/index.ts -d=../../extension-repository",
     "setup-package": "npx tsc",
     "setup-package-single": "npx ncc build src/index.ts -o dist-full",
     "setup-package-single-android-assets": "npx ncc build src/index.ts -o ../../lib-extension/src/main/assets/node"

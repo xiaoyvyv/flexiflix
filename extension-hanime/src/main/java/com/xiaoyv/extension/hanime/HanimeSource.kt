@@ -2,25 +2,25 @@
 
 package com.xiaoyv.extension.hanime
 
-import com.xiaoyv.flexiflix.extension.java.annotation.MediaSource
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaDetail
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaDetailSeries
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaDetailTab
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaSection
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaSectionItem
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaPlaylist
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaPlaylistUrl
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaTag
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaUser
-import com.xiaoyv.flexiflix.extension.java.source.HttpParseSource
-import com.xiaoyv.flexiflix.extension.java.utils.UNKNOWN_LONG
-import com.xiaoyv.flexiflix.extension.java.utils.UNKNOWN_STRING
-import com.xiaoyv.flexiflix.extension.java.utils.childText
-import com.xiaoyv.flexiflix.extension.java.utils.hrefParam
-import com.xiaoyv.flexiflix.extension.java.utils.metaContentByProperty
-import com.xiaoyv.flexiflix.extension.java.utils.parseNumber
-import com.xiaoyv.flexiflix.extension.java.utils.regex
-import com.xiaoyv.flexiflix.extension.java.utils.runCatchingPrint
+import com.xiaoyv.flexiflix.extension.impl.java.annotation.MediaSource
+import com.xiaoyv.flexiflix.extension.model.FlexMediaDetail
+import com.xiaoyv.flexiflix.extension.model.FlexMediaDetailSeries
+import com.xiaoyv.flexiflix.extension.model.FlexMediaDetailTab
+import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
+import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
+import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylist
+import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
+import com.xiaoyv.flexiflix.extension.model.FlexMediaTag
+import com.xiaoyv.flexiflix.extension.model.FlexMediaUser
+import com.xiaoyv.flexiflix.extension.source.HttpParseSource
+import com.xiaoyv.flexiflix.extension.utils.UNKNOWN_LONG
+import com.xiaoyv.flexiflix.extension.utils.UNKNOWN_STRING
+import com.xiaoyv.flexiflix.extension.utils.childText
+import com.xiaoyv.flexiflix.extension.utils.hrefParam
+import com.xiaoyv.flexiflix.extension.utils.metaContentByProperty
+import com.xiaoyv.flexiflix.extension.utils.parseNumber
+import com.xiaoyv.flexiflix.extension.utils.regex
+import com.xiaoyv.flexiflix.extension.utils.runCatchingPrint
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.jsoup.nodes.Element
 
@@ -30,7 +30,7 @@ import org.jsoup.nodes.Element
  * @author why
  * @since 5/8/24
  */
-@MediaSource(
+@com.xiaoyv.flexiflix.extension.impl.java.annotation.MediaSource(
     id = "hanime.com",
     name = "Hanime",
     author = "xiaoyv",

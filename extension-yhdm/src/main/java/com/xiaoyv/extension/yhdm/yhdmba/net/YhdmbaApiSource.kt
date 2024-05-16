@@ -4,21 +4,21 @@ package com.xiaoyv.extension.yhdm.yhdmba.net
 
 import android.util.Base64
 import android.webkit.URLUtil
-import com.xiaoyv.flexiflix.extension.java.annotation.MediaSource
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaDetail
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaDetailSeries
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaDetailTab
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaSection
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaSectionItem
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaPlaylist
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaPlaylistUrl
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaUser
-import com.xiaoyv.flexiflix.extension.java.source.HttpParseSource
-import com.xiaoyv.flexiflix.extension.java.utils.UNKNOWN_LONG
-import com.xiaoyv.flexiflix.extension.java.utils.UNKNOWN_STRING
-import com.xiaoyv.flexiflix.extension.java.utils.gson
-import com.xiaoyv.flexiflix.extension.java.utils.parseNumberStr
-import com.xiaoyv.flexiflix.extension.java.utils.runCatchingPrint
+import com.xiaoyv.flexiflix.extension.impl.java.annotation.MediaSource
+import com.xiaoyv.flexiflix.extension.model.FlexMediaDetail
+import com.xiaoyv.flexiflix.extension.model.FlexMediaDetailSeries
+import com.xiaoyv.flexiflix.extension.model.FlexMediaDetailTab
+import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
+import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
+import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylist
+import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
+import com.xiaoyv.flexiflix.extension.model.FlexMediaUser
+import com.xiaoyv.flexiflix.extension.source.HttpParseSource
+import com.xiaoyv.flexiflix.extension.utils.UNKNOWN_LONG
+import com.xiaoyv.flexiflix.extension.utils.UNKNOWN_STRING
+import com.xiaoyv.flexiflix.extension.utils.gson
+import com.xiaoyv.flexiflix.extension.utils.parseNumberStr
+import com.xiaoyv.flexiflix.extension.utils.runCatchingPrint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.net.URLDecoder
@@ -30,7 +30,7 @@ import java.net.URLDecoder
  * @author why
  * @since 5/11/24
  */
-@MediaSource(
+@com.xiaoyv.flexiflix.extension.impl.java.annotation.MediaSource(
     id = "yhdmba.net",
     name = "樱花动漫源 - yhdmba.net",
     author = "xiaoyv",

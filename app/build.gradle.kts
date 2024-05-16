@@ -3,9 +3,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.googleKsp)
+    alias(libs.plugins.androidHilt)
     id("kotlin-parcelize")
-    id("com.google.devtools.ksp")
 }
 
 android {

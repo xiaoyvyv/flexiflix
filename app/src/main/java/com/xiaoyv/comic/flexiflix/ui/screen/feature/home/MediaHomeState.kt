@@ -1,7 +1,7 @@
 package com.xiaoyv.comic.flexiflix.ui.screen.feature.home
 
 import androidx.paging.LoadState
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaSection
+import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
 
 /**
  * [MediaHomeState]

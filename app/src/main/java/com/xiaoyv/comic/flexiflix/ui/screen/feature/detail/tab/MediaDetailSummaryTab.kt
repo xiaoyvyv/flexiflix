@@ -1,6 +1,5 @@
 package com.xiaoyv.comic.flexiflix.ui.screen.feature.detail.tab
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -39,17 +38,16 @@ import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.GlideImage
 import com.xiaoyv.comic.flexiflix.ui.component.ContainerCard
-import com.xiaoyv.comic.flexiflix.ui.component.ElevatedCardWrap
 import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaDetail
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaDetailTab
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaPlaylist
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaPlaylistUrl
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaSectionItem
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaTag
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaUser
-import com.xiaoyv.flexiflix.extension.java.utils.UNKNOWN_LONG
-import com.xiaoyv.flexiflix.extension.java.utils.UNKNOWN_STRING
+import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
+import com.xiaoyv.flexiflix.extension.model.FlexMediaTag
+import com.xiaoyv.flexiflix.extension.model.FlexMediaUser
+import com.xiaoyv.flexiflix.extension.model.FlexMediaDetail
+import com.xiaoyv.flexiflix.extension.model.FlexMediaDetailTab
+import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylist
+import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
+import com.xiaoyv.flexiflix.extension.utils.UNKNOWN_LONG
+import com.xiaoyv.flexiflix.extension.utils.UNKNOWN_STRING
 
 /**
  * [MediaDetailSummaryTab]

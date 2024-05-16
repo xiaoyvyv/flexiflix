@@ -3,8 +3,8 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.androidPython)
     id("kotlin-parcelize")
-    id("com.chaquo.python")
 }
 
 android {
@@ -97,6 +97,7 @@ dependencies {
 
     implementation(libs.smali.dexlib2)
     implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.lifecycle.process)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

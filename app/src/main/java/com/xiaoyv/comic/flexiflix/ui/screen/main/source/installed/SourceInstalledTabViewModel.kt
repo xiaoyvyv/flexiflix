@@ -5,10 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.LoadState
 import com.xiaoyv.comic.flexiflix.data.extension.ExtensionRepository
 import com.xiaoyv.flexiflix.common.model.StateContent
-import com.xiaoyv.flexiflix.common.model.payload
-import com.xiaoyv.flexiflix.common.utils.debugLog
 import com.xiaoyv.flexiflix.common.utils.mutableStateFlowOf
-import com.xiaoyv.flexiflix.extension.java.utils.toJson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

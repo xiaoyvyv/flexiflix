@@ -5,12 +5,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -29,7 +27,6 @@ import com.xiaoyv.comic.flexiflix.ui.component.LazyList
 import com.xiaoyv.comic.flexiflix.ui.component.PageStateScreen
 import com.xiaoyv.flexiflix.common.model.hasData
 import com.xiaoyv.flexiflix.common.model.payload
-import com.xiaoyv.flexiflix.common.utils.debugLog
 
 /**
  * [SourceInstalledTabRoute]

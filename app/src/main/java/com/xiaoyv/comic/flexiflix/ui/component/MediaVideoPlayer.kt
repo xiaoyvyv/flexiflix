@@ -35,7 +35,6 @@ import androidx.media3.common.text.CueGroup
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.datasource.DefaultDataSource
-import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
@@ -53,9 +52,8 @@ import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.xiaoyv.comic.flexiflix.R
 import com.xiaoyv.comic.flexiflix.application
 import com.xiaoyv.flexiflix.common.utils.debugLog
-import com.xiaoyv.flexiflix.extension.java.MediaSourceFactory
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaPlaylist
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaPlaylistUrl
+import com.xiaoyv.flexiflix.extension.MediaSourceFactory
+import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
 
 internal val sampleCache by lazy {
     SimpleCache(

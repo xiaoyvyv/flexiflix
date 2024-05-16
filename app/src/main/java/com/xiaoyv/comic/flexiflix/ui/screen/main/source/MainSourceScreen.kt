@@ -13,9 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,7 +30,6 @@ import com.xiaoyv.comic.flexiflix.ui.component.TabPager
 import com.xiaoyv.comic.flexiflix.ui.screen.main.source.installed.SourceInstalledTabRoute
 import com.xiaoyv.comic.flexiflix.ui.screen.main.source.online.SourceOnlineTabRoute
 import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
-import com.xiaoyv.flexiflix.common.utils.debugLog
 
 /**
  * [MainSourceScreen]

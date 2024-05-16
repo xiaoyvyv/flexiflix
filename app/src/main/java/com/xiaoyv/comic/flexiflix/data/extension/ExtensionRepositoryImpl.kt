@@ -7,19 +7,17 @@ import com.xiaoyv.flexiflix.common.utils.debugLog
 import com.xiaoyv.flexiflix.common.utils.displayName
 import com.xiaoyv.flexiflix.common.utils.formatTime
 import com.xiaoyv.flexiflix.common.utils.inputStream
-import com.xiaoyv.flexiflix.extension.java.MediaSourceExtension
-import com.xiaoyv.flexiflix.extension.java.MediaSourceFactory
-import com.xiaoyv.flexiflix.extension.java.source.Source
-import com.xiaoyv.flexiflix.extension.java.utils.runCatchingPrint
-import com.xiaoyv.flexiflix.extension.java.utils.toJson
+import com.xiaoyv.flexiflix.extension.MediaSourceExtension
+import com.xiaoyv.flexiflix.extension.MediaSourceFactory
+import com.xiaoyv.flexiflix.extension.source.Source
+import com.xiaoyv.flexiflix.extension.utils.runCatchingPrint
+import com.xiaoyv.flexiflix.extension.utils.toJson
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
-import java.util.Collections
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.CopyOnWriteArrayList
 import javax.inject.Inject
 
 /**
@@ -103,7 +101,7 @@ class ExtensionRepositoryImpl @Inject constructor(
                 file.setReadOnly()
 
                 // 加载插件
-                MediaSourceFactory.loadExtension(file.absolutePath, true)
+                MediaSourceFactory.loadJvmExtension(file.absolutePath, true)
             }
         }
     }

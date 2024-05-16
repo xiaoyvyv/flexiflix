@@ -2,8 +2,8 @@ package com.xiaoyv.comic.flexiflix.data.extension
 
 import android.net.Uri
 import com.xiaoyv.comic.flexiflix.model.InstalledMediaSource
-import com.xiaoyv.flexiflix.extension.java.MediaSourceExtension
-import com.xiaoyv.flexiflix.extension.java.source.Source
+import com.xiaoyv.flexiflix.extension.MediaSourceExtension
+import com.xiaoyv.flexiflix.extension.source.Source
 import java.io.File
 
 /**

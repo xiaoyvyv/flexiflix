@@ -1,0 +1,20 @@
+{
+  "name": "flexiflix-docs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "keywords": [
+    "docs"
+  ],
+  "author": "xiaoyvyv",
+  "license": "ISC",
+  "devDependencies": {
+    "vitepress": "^1.1.4",
+    "typescript": "^5.4.5"
+  }
+}

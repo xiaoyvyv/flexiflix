@@ -6,7 +6,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.xiaoyv.comic.flexiflix.ui.screen.feature.detail.ROUTE_MEDIA_MEDIA
 import com.xiaoyv.comic.flexiflix.ui.screen.feature.detail.navigateMediaDetail
 import com.xiaoyv.flexiflix.common.utils.navigateSafe
 

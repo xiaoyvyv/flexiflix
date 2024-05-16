@@ -5,16 +5,15 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "devExtensionHanime": "npx ts-node src/index.ts",
-    "package": "npx tsc",
-    "package-single": "npx ncc build src/index.ts -o dist"
+    "hanime-dev": "npx ts-node src/index.ts",
+    "hanime-package": "npx tsc",
+    "hanime-package-single": "npx ncc build src/index.ts -o ../../extension-repository/extension-hanime"
   },
   "keywords": [],
   "author": "xiaoyvyv",
   "license": "ISC",
   "dependencies": {
     "@xiaoyvyv/flexiflex-extension-common": "1.0.1",
-    "axios": "^1.6.8",
     "cheerio": "^1.0.0-rc.12"
   },
   "devDependencies": {

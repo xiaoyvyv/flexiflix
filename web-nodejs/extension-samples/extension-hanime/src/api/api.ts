@@ -1,15 +1,12 @@
-global.__dirname = "/Users/why/AndroidStudioProjects/FlexiFlix/lib-extension/src/main/assets/nodejs-project/extension-samples/extension-hanime/dist";
-
 import {load} from "cheerio";
-
-import axios from "axios";
 import utils from "../utils/utils";
 import {FlexMediaSection} from "@xiaoyvyv/flexiflex-extension-common";
 
 
 export const fetchHomeSections = async (): Promise<FlexMediaSection[]> => {
-    const res = await axios.get('https://www.iyhdmm.com/');
-    const $ = load(res.data || '');
+    const res = await fetch('https://www.iyhdmm.com').then((res) => res.text());
+
+    const $ = load(res || '');
     const sections: FlexMediaSection[] = [];
 
     $(".firs.l > .dtit").get().forEach(item => {
@@ -22,6 +19,5 @@ export const fetchHomeSections = async (): Promise<FlexMediaSection[]> => {
 
         sections.push(section);
     });
-
     return sections;
 }

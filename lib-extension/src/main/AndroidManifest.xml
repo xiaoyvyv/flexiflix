@@ -6,9 +6,5 @@
             android:name=".ExtensionProvider"
             android:authorities="${applicationId}.ExtensionProvider"
             android:exported="false" />
-        <service
-            android:name="com.xiaoyv.flexiflix.extension.javascript.NodeService"
-            android:exported="false"
-            android:process=":nodejs" />
     </application>
 </manifest>

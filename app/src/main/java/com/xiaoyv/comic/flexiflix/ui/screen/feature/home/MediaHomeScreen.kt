@@ -46,8 +46,8 @@ import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
 import com.xiaoyv.comic.flexiflix.ui.component.StringLabelPage
 import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
 import com.xiaoyv.flexiflix.common.utils.isStoped
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaSection
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaSectionItem
+import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
+import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
 
 /**
  * [MediaHomeScreen]

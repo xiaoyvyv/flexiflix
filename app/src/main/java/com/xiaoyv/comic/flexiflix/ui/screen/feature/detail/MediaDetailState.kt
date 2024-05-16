@@ -2,8 +2,7 @@ package com.xiaoyv.comic.flexiflix.ui.screen.feature.detail
 
 import androidx.paging.LoadState
 import com.xiaoyv.flexiflix.common.model.StateContent
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaDetail
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaSection
+import com.xiaoyv.flexiflix.extension.model.FlexMediaDetail
 
 /**
  * [MediaDetailState]

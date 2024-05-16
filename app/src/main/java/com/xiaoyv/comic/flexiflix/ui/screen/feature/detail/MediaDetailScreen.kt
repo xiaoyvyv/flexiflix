@@ -45,15 +45,14 @@ import com.xiaoyv.comic.flexiflix.ui.component.TabPager
 import com.xiaoyv.comic.flexiflix.ui.screen.feature.detail.tab.MediaDetailSummaryTab
 import com.xiaoyv.flexiflix.common.model.hasData
 import com.xiaoyv.flexiflix.common.model.payload
-import com.xiaoyv.flexiflix.common.utils.debugLog
 import com.xiaoyv.flexiflix.common.utils.isLandscape
 import com.xiaoyv.flexiflix.common.utils.isStoped
 import com.xiaoyv.flexiflix.common.utils.screenInfo
 import com.xiaoyv.flexiflix.common.utils.setScreenOrientation
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaDetail
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaPlaylist
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaPlaylistUrl
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaSectionItem
+import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
+import com.xiaoyv.flexiflix.extension.model.FlexMediaDetail
+import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylist
+import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
 
 /**
  * [MediaDetailScreen]

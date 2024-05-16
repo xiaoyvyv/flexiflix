@@ -24,3 +24,5 @@ local.properties
 /web-nodejs/extension-common/node_modules/
 /lib-extension/src/main/cpp/libnode/bin/
 /keystore/
+/web-doc/node_modules/
+/web-doc/docs/.vitepress/cache/

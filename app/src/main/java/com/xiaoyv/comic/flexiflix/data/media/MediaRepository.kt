@@ -1,9 +1,9 @@
 package com.xiaoyv.comic.flexiflix.data.media
 
 import androidx.paging.PagingSource
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaDetail
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaPlaylistUrl
-import com.xiaoyv.flexiflix.extension.java.model.FlexMediaSection
+import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
+import com.xiaoyv.flexiflix.extension.model.FlexMediaDetail
+import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
 
 /**
  * [MediaRepository]

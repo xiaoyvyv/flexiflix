@@ -1,6 +1,6 @@
-from bs4 import BeautifulSoup
 import requests
-import os
+from bs4 import BeautifulSoup
+
 
 def main():
     url = "https://www.baidu.com"  # 替换为你要解析的网站 URL
