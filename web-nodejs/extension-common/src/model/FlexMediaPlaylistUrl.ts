@@ -7,8 +7,8 @@
 export interface FlexMediaPlaylistUrl {
     id: string
     title: string
-    mediaUrl: string
-    cover: string
-    type: string
-    size: string
+    mediaUrl: string | undefined
+    cover: string | undefined
+    type: string | undefined
+    size: string | undefined
 }

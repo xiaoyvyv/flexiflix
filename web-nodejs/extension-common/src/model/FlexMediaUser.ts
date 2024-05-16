@@ -8,5 +8,5 @@ export interface FlexMediaUser {
     id: string
     name: string
     avatar: string
-    role: string
+    role: string | undefined
 }

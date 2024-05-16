@@ -1,8 +1,10 @@
 @file:OptIn(UnstableApi::class)
 
-package com.xiaoyv.comic.flexiflix.ui.component
+package com.xiaoyv.comic.flexiflix.ui.component.player
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -16,10 +18,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.lifecycle.LifecycleOwner
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.DeviceInfo
 import androidx.media3.common.MediaItem
@@ -62,6 +66,7 @@ internal val sampleCache by lazy {
         StandaloneDatabaseProvider(application)
     )
 }
+
 
 /**
  * [MediaVideoPlayer]
@@ -275,7 +280,7 @@ fun MediaVideoPlayer(
     }
 
     LaunchedEffect(playlistUrl) {
-        if (playlistUrl != null && playlistUrl.mediaUrl.isNotBlank()) {
+        if (playlistUrl != null && playlistUrl.mediaUrl.orEmpty().isNotBlank()) {
             exoPlayer.setMediaItem(
                 MediaItem.Builder()
                     .setUri(playlistUrl.mediaUrl)
@@ -295,6 +300,8 @@ fun MediaVideoPlayer(
         }
     }
 
+    val lifecycleOwner = LocalLifecycleOwner.current
+
     Box(modifier = modifier) {
         AndroidView(
             modifier = Modifier
@@ -303,6 +310,7 @@ fun MediaVideoPlayer(
             factory = {
                 createPlayerView(
                     context = it,
+                    lifecycleOwner = lifecycleOwner,
                     exoPlayer = exoPlayer,
                     poster = poster,
                     onFullscreenButtonClick = onFullscreenButtonClick,
@@ -310,7 +318,6 @@ fun MediaVideoPlayer(
                 )
             },
             onRelease = {
-//                Cache.release()
                 exoPlayer.release()
 
                 debugLog { "Release Media Player" }
@@ -323,65 +330,85 @@ fun MediaVideoPlayer(
 /**
  * 插件播放器
  */
+@SuppressLint("InflateParams")
 fun createPlayerView(
     context: Context,
+    lifecycleOwner: LifecycleOwner,
     exoPlayer: ExoPlayer,
     poster: Any,
     onFullscreenButtonClick: (Context, Boolean) -> Unit = { _, _ -> },
     onControllerVisibilityChanged: (Int) -> Unit = {},
-): PlayerView {
-    return PlayerView(context).apply {
-        this.setShowNextButton(false)
-        this.setShowPreviousButton(false)
-        this.setShowBuffering(PlayerView.SHOW_BUFFERING_ALWAYS)
-        this.setShowSubtitleButton(true)
-        this.player = exoPlayer
-        this.layoutParams = FrameLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
-        this.setControllerVisibilityListener(ControllerVisibilityListener { visibility ->
-            onControllerVisibilityChanged(visibility)
-        })
-        this.setFullscreenButtonClickListener {
-            onFullscreenButtonClick(context, it)
-        }
+): View {
+    val playerView = LayoutInflater.from(context).inflate(R.layout.video_player, null) as PlayerView
 
-        // 注入封面
-        this.overlayFrameLayout?.apply {
-            val imageView = AppCompatImageView(context)
-            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-            addView(
-                imageView, FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.MATCH_PARENT,
-                    FrameLayout.LayoutParams.MATCH_PARENT
-                )
-            )
+    // 上一个和下一个按钮
+    playerView.setShowNextButton(false)
+    playerView.setShowPreviousButton(false)
 
-            val drawableCrossFadeFactory = DrawableCrossFadeFactory.Builder(300)
-                .setCrossFadeEnabled(true)
-                .build()
+    // 缓冲提示和字幕按钮、暂停不显示控制器
+    playerView.setShowBuffering(PlayerView.SHOW_BUFFERING_ALWAYS)
+    playerView.setShowSubtitleButton(true)
+    playerView.setKeepContentOnPlayerReset(false)
 
-            Glide.with(this)
-                .load(poster)
-                .apply(RequestOptions().placeholder(R.color.black))
-                .transition(DrawableTransitionOptions.with(drawableCrossFadeFactory))
-                .into(imageView)
+    //快进15s 和 快退5s
+    playerView.setShowFastForwardButton(false)
+    playerView.setShowRewindButton(false)
 
-            exoPlayer.addListener(object : Player.Listener {
-                override fun onPlayWhenReadyChanged(
-                    playWhenReady: Boolean,
-                    reason: Int
-                ) {
-                    if (imageView.isVisible) {
-                        imageView.isGone = playWhenReady
-                    }
-                }
-            })
-        }
-
-        // 清理 exo_controls_background 半透明背景
-        this.findViewById<View>(androidx.media3.ui.R.id.exo_controls_background)
-            .setBackgroundColor(android.graphics.Color.parseColor("#33000000"))
+    playerView.player = exoPlayer
+    playerView.layoutParams = FrameLayout.LayoutParams(
+        ViewGroup.LayoutParams.MATCH_PARENT,
+        ViewGroup.LayoutParams.MATCH_PARENT
+    )
+    playerView.setControllerVisibilityListener(ControllerVisibilityListener { visibility ->
+        onControllerVisibilityChanged(visibility)
+    })
+    playerView.setFullscreenButtonClickListener {
+        onFullscreenButtonClick(context, it)
     }
+
+    // 注入封面
+    playerView.overlayFrameLayout?.apply {
+        val imageView = AppCompatImageView(context)
+        imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+        addView(
+            imageView, FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+            )
+        )
+
+        val drawableCrossFadeFactory = DrawableCrossFadeFactory.Builder(300)
+            .setCrossFadeEnabled(true)
+            .build()
+
+        Glide.with(this)
+            .load(poster)
+            .apply(RequestOptions().placeholder(R.color.black))
+            .transition(DrawableTransitionOptions.with(drawableCrossFadeFactory))
+            .into(imageView)
+
+        exoPlayer.addListener(object : Player.Listener {
+            override fun onPlayWhenReadyChanged(
+                playWhenReady: Boolean,
+                reason: Int
+            ) {
+                if (imageView.isVisible) {
+                    imageView.isGone = playWhenReady
+                }
+            }
+        })
+
+        val overlayView = MediaVideoGestureView(context)
+        overlayView.playerView = playerView
+        overlayView.lifecycleOwner = lifecycleOwner
+        addView(
+            overlayView, FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+            )
+        )
+    }
+
+    return playerView
 }
+

@@ -20,11 +20,6 @@ interface ExtensionRepository {
     suspend fun installExtension(extensionUri: Uri): Result<InstalledMediaSource>
 
     /**
-     * 加载一个插件文件，可能有多个源
-     */
-    suspend fun loadExtensionFile(file: File): Result<List<MediaSourceExtension>>
-
-    /**
      * 获取安装的全部插件
      */
     suspend fun getInstalledExtensions(): Result<List<InstalledMediaSource>>

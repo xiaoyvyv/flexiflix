@@ -4,7 +4,7 @@ import {FlexMediaDetailTab} from "./model/FlexMediaDetailTab";
 import {FlexMediaPlaylist} from "./model/FlexMediaPlaylist";
 import {FlexMediaPlaylistUrl} from "./model/FlexMediaPlaylistUrl";
 import {FlexMediaSection} from "./model/FlexMediaSection";
-import {FlexMediaSectionItem} from "./model/FlexMediaSectionItem";
+import {FlexMediaSectionItem, ImageLayout, OverlayText} from "./model/FlexMediaSectionItem";
 import {FlexMediaTag} from "./model/FlexMediaTag";
 import {FlexMediaUser} from "./model/FlexMediaUser";
 import {MediaSourceExtension} from "./model/MediaSourceExtension";
@@ -24,4 +24,6 @@ export {
     MediaSourceExtension,
     MediaSourceInfo,
     Source,
+    ImageLayout,
+    OverlayText
 };

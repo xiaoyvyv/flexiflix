@@ -9,12 +9,12 @@ import {FlexMediaUser} from "./FlexMediaUser";
 export interface FlexMediaSectionItem {
     id: string
     title: string
-    description: string
     cover: string
-    user: FlexMediaUser
-    extras: Map<string, string>
-    overlay: OverlayText
-    layout: ImageLayout
+    description: string | undefined
+    user: FlexMediaUser | undefined
+    extras: Map<string, string> | undefined
+    overlay: OverlayText | undefined
+    layout: ImageLayout | undefined
 }
 
 export interface ImageLayout {
@@ -23,8 +23,8 @@ export interface ImageLayout {
 }
 
 export interface OverlayText {
-    topStart: string
-    topEnd: string
-    bottomStart: string
-    bottomEnd: string
+    topStart: string | undefined
+    topEnd: string | undefined
+    bottomStart: string | undefined
+    bottomEnd: string | undefined
 }

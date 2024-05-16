@@ -25,5 +25,15 @@ export default defineConfig({
         socialLinks: [
             {icon: 'github', link: 'https://github.com/vuejs/vitepress'}
         ]
+    },
+    locales: {
+        root: {
+            label: '简体中文',
+            lang: 'zh'
+        },
+        en: {
+            label: 'English',
+            lang: 'en'
+        }
     }
 })

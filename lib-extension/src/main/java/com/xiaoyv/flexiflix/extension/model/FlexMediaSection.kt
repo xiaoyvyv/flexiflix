@@ -15,7 +15,7 @@ data class FlexMediaSection(
     @SerializedName("id") var id: String,
     @SerializedName("title") var title: String,
     @SerializedName("items") var items: List<FlexMediaSectionItem>,
-    @SerializedName("extras") var extras: HashMap<String, String> = hashMapOf()
+    @SerializedName("extras") var extras: HashMap<String, String>? = hashMapOf()
 ) : Parcelable
 
 

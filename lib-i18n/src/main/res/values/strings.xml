@@ -11,4 +11,6 @@
 
     <string name="empty_title">空空如也</string>
     <string name="empty_subtitle">这里没有任何内容呢</string>
+
+    <string name="player_fast">倍数播放中</string>
 </resources>

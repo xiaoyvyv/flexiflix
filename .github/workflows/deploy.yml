@@ -1,10 +1,8 @@
-# 构建 VitePress 站点并将其部署到 GitHub Pages 的示例工作流程
-#
+# 构建 VitePress 站点并将其部署到 GitHub Pages
 name: Deploy VitePress site to Pages
 
 on:
-  # 在针对 `main` 分支的推送上运行。如果你
-  # 使用 `master` 分支作为默认分支，请将其更改为 `master`
+  # 在针对 `main` 分支的推送上运行。
   push:
     branches: [ main ]
 
@@ -27,6 +25,7 @@ jobs:
   # 构建工作
   build:
     runs-on: ubuntu-latest
+    name: Build
     steps:
       - name: Checkout
         uses: actions/checkout@v4

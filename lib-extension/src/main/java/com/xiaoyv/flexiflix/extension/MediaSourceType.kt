@@ -33,5 +33,15 @@ annotation class MediaSourceType {
          * Python 插件
          */
         const val TYPE_PYTHON = 3
+
+        @JvmStatic
+        fun fromPath(filePath: String): Int {
+            return when (filePath.substringAfterLast(".").lowercase()) {
+                "apk" -> TYPE_JVM
+                "js" -> TYPE_NODEJS
+                "py" -> TYPE_PYTHON
+                else -> TYPE_UNKNOWN
+            }
+        }
     }
 }

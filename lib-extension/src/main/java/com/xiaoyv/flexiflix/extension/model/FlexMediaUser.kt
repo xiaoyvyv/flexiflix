@@ -15,5 +15,5 @@ data class FlexMediaUser(
     var id: String = UNKNOWN_STRING,
     var name: String = UNKNOWN_STRING,
     var avatar: String = UNKNOWN_STRING,
-    var role: String = UNKNOWN_STRING
+    var role: String? = UNKNOWN_STRING
 ) : Parcelable

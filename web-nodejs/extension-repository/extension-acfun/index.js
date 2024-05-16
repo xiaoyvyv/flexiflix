@@ -11091,18 +11091,71 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.fetchHomeSections = void 0;
 const cheerio_1 = __nccwpck_require__(4612);
 const utils_1 = __importDefault(__nccwpck_require__(239));
+const requestInit = {
+    headers: {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0',
+        'Referer': 'https://www.acfun.cn'
+    }
+};
 const fetchHomeSections = () => __awaiter(void 0, void 0, void 0, function* () {
-    const res = yield fetch('https://www.iyhdmm.com').then((res) => res.text());
-    const $ = (0, cheerio_1.load)(res || '');
+    const html = yield fetch('https://www.acfun.cn/v/list155/index.htm', requestInit)
+        .then((res) => res.text() || "");
+    const $ = (0, cheerio_1.load)(html);
     const sections = [];
-    $(".firs.l > .dtit").get().forEach(item => {
-        const section = {
-            id: decodeURI($(item).find("a").attr('href') || ''),
-            items: [],
-            title: $(item).find("h2").text().trim(),
+    $(".channel-slider").toArray().forEach(element => {
+        const sliderWrapItems = $(element)
+            .find(".slider-wrap ul.slider-con > li")
+            .map((_, li) => {
+            const item = {
+                id: utils_1.default.subLast($(li).find("a").attr("href"), '/'),
+                title: $(li).find("span").text().trim(),
+                cover: $(li).find("img").attr("src") || '',
+                description: $(li).find("span").text().trim(),
+                extras: utils_1.default.emptyExtras(),
+                layout: undefined, overlay: undefined, user: undefined,
+            };
+            return item;
+        })
+            .toArray();
+        const sliderWrap = {
+            id: '',
+            title: '热门番剧',
+            items: sliderWrapItems,
             extras: utils_1.default.emptyExtras(),
         };
-        sections.push(section);
+        const sliderRightItems = $(element)
+            .find(".slider-right ul > li")
+            .map((_, li) => {
+            const item = {
+                id: utils_1.default.subLast($(li).find("a").attr("href"), '/'),
+                title: $(li).find("img").attr("alt") || '',
+                cover: $(li).find("img").attr("src") || '',
+                description: $(li).find("img").attr("alt") || '',
+                overlay: {
+                    bottomEnd: $(li).find("i.icon-view-player")
+                        .text()
+                        .replace("", "")
+                        .trim(),
+                    topStart: $(li).find("i.icon-danmu")
+                        .text()
+                        .replace("", "")
+                        .trim(),
+                },
+                extras: undefined,
+                user: undefined,
+                layout: undefined
+            };
+            return item;
+        })
+            .toArray();
+        const sliderRight = {
+            id: '',
+            title: '热门番剧',
+            items: sliderRightItems,
+            extras: utils_1.default.emptyExtras(),
+        };
+        sections.push(sliderWrap);
+        sections.push(sliderRight);
     });
     return sections;
 });
@@ -11126,20 +11179,20 @@ const source_1 = __nccwpck_require__(1049);
  *
  * 建议格式：语言类型-数据源的地址，用短横线连接
  */
-const extensionId = "js-hanime-com";
+const extensionId = "js-acfun-cn";
 /**
  * 插件信息
  */
 const extensionInfo = {
     id: extensionId,
-    name: "Hanime - JS 数据源扩展",
-    description: "Hanime - JS 数据源扩展",
+    name: "Acfun.CN - JS 数据源扩展",
+    description: "Acfun.CN - JS 数据源扩展",
     author: "xiaoyvyv",
     nsfw: false,
     versionCode: 1,
     versionName: "1.0.0"
 };
-const main = new flexiflex_extension_common_1.MediaSourceExtension(extensionId, extensionInfo, new source_1.HanimeSource());
+const main = new flexiflex_extension_common_1.MediaSourceExtension(extensionId, extensionInfo, new source_1.AcfunSource());
 // 必须导出 MediaSourceExtension;
 // 注意，这里导出必须直接 module.exports = xxx; xxx 为 MediaSourceExtension 结构的对象;
 module.exports = main;
@@ -11195,12 +11248,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.HanimeSource = void 0;
+exports.AcfunSource = void 0;
 const api = __importStar(__nccwpck_require__(8579));
 /**
  * 实现数据源接口的逻辑
  */
-class HanimeSource {
+class AcfunSource {
     fetchHomeSections() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield api.fetchHomeSections();
@@ -11232,7 +11285,7 @@ class HanimeSource {
         });
     }
 }
-exports.HanimeSource = HanimeSource;
+exports.AcfunSource = AcfunSource;
 
 
 /***/ }),
@@ -11246,7 +11299,14 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports["default"] = {
     emptyExtras: () => {
         return new Map();
-    }
+    },
+    subLast: (str, symbol) => {
+        const text = str || "";
+        if (text.lastIndexOf(symbol) < 0) {
+            return "";
+        }
+        return text.substring(text.lastIndexOf(symbol) + symbol.length, text.length);
+    },
 };
 
 

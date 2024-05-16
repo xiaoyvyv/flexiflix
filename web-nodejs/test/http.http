@@ -1,0 +1,17 @@
+GET /bangumi/aa6002917 HTTP/2
+Host: www.acfun.cn
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.6,zh-HK;q=0.4,en;q=0.2
+Accept-Encoding: gzip, deflate, br
+Referer: https://www.acfun.cn/bangumilist
+Connection: keep-alive
+Cookie: csrfToken=2okqPN-lR4C3MSQHxsM1wxFe; _did=web_7460684612C6465D; cur_req_id=8722572961B65CC9_self_67bd3bfd576c74b8c1846c1ff67c1ccc; cur_group_id=8722572961B65CC9_self_67bd3bfd576c74b8c1846c1ff67c1ccc_0; webp_supported=%7B%22lossy%22%3Atrue%2C%22lossless%22%3Atrue%2C%22alpha%22%3Atrue%2C%22animation%22%3Atrue%7D; Hm_lvt_2af69bc2b378fb58ae04ed2a04257ed1=1715876284; Hm_lpvt_2af69bc2b378fb58ae04ed2a04257ed1=1715876395; lsv_js_player_v2_main=e4d400; safety_id=AAIQbVVZQi97jhyycRPhzaW7; _did=web_7460684612C6465D; uuid=7ec10c127fd08ce54b0ff88a31c24906
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: same-origin
+Sec-Fetch-User: ?1
+Pragma: no-cache
+Cache-Control: no-cache
+TE: trailers

@@ -50,7 +50,7 @@ class JSExtensionService private constructor() {
      * js 插件安装目录
      */
     private val moduleDir by lazy {
-        File(nodeRootDir.absolutePath, "extension").apply {
+        File(context.filesDir, "/extension/javascript").apply {
             if (!exists()) mkdirs()
         }
     }

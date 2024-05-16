@@ -34,10 +34,12 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xiaoyv.comic.flexiflix.ui.component.AppBar
-import com.xiaoyv.comic.flexiflix.ui.component.MediaVideoPlayer
+import com.xiaoyv.comic.flexiflix.ui.component.player.MediaVideoPlayer
 import com.xiaoyv.comic.flexiflix.ui.component.PageStateScreen
 import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
 import com.xiaoyv.comic.flexiflix.ui.component.StringLabelPage
@@ -45,6 +47,7 @@ import com.xiaoyv.comic.flexiflix.ui.component.TabPager
 import com.xiaoyv.comic.flexiflix.ui.screen.feature.detail.tab.MediaDetailSummaryTab
 import com.xiaoyv.flexiflix.common.model.hasData
 import com.xiaoyv.flexiflix.common.model.payload
+import com.xiaoyv.flexiflix.common.utils.findActivity
 import com.xiaoyv.flexiflix.common.utils.isLandscape
 import com.xiaoyv.flexiflix.common.utils.isStoped
 import com.xiaoyv.flexiflix.common.utils.screenInfo
@@ -75,7 +78,9 @@ fun MediaDetailRoute(
     val currentPlaylist by viewModel.currentPlaylist.collectAsStateWithLifecycle()
 
     BackHandler(enabled = context.isLandscape) {
-        context.setScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+        view
+            .findViewById<View>(androidx.media3.ui.R.id.exo_minimal_fullscreen)
+            .performClick()
     }
 
     MediaDetailScreen(
@@ -118,8 +123,9 @@ fun MediaDetailScreen(
     val configuration = LocalConfiguration.current
     val density = LocalDensity.current
 
-    // 记录播放器高度和全屏状态记录，默认宽高比 16/9f
-    val playerDefaultHeight = remember { Dp((context.screenInfo.first / (16 / 9f)) / density.density) }
+    // 监听屏幕方向，记录播放器高度和全屏状态记录，默认宽高比 16/9f
+    val playerDefaultHeight =
+        remember { Dp((context.screenInfo.first / (4 / 3f)) / density.density) }
     var playerCurrentHeight by remember { mutableStateOf(playerDefaultHeight) }
     var playerFullScreenState by remember { mutableStateOf(false) }
     LaunchedEffect(configuration.orientation) {
@@ -127,7 +133,20 @@ fun MediaDetailScreen(
         playerFullScreenState = isLandscape
         playerCurrentHeight = if (isLandscape) {
             Dp(context.resources.displayMetrics.heightPixels.toFloat())
-        } else playerDefaultHeight
+        } else {
+            playerDefaultHeight
+        }
+
+        // 全屏隐藏系统栏
+        context.findActivity()?.let {
+            if (isLandscape) {
+                WindowCompat.getInsetsController(it.window, it.window.decorView)
+                    .hide(WindowInsetsCompat.Type.systemBars())
+            } else {
+                WindowCompat.getInsetsController(it.window, it.window.decorView)
+                    .show(WindowInsetsCompat.Type.systemBars())
+            }
+        }
     }
 
     // 播放器面板显示和隐藏
@@ -196,9 +215,10 @@ fun MediaDetailScreen(
 
                 // 默认播放选中第一个播放列表的第一个数据
                 LaunchedEffect(Unit) {
-                    if (mediaDetail.playlist.isNotEmpty()) {
-                        if (mediaDetail.playlist.first().items.isNotEmpty()) {
-                            onChangePlayItem(mediaDetail.playlist.first(), 0)
+                    if (mediaDetail.playlist.orEmpty().isNotEmpty()) {
+                        val playlist = mediaDetail.playlist.orEmpty().first()
+                        if (playlist.items.isNotEmpty()) {
+                            onChangePlayItem(playlist, 0)
                         }
                     }
                 }
@@ -265,7 +285,7 @@ fun MediaDetailTabPage(
     val updatedPlayItemState by rememberUpdatedState(newValue = currentPlayItem)
 
     val pageTabs = remember {
-        val pages = mediaDetail.relativeTabs.map {
+        val pages = mediaDetail.relativeTabs.orEmpty().map {
             StringLabelPage(
                 label = it.title,
                 content = {

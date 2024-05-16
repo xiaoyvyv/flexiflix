@@ -14,13 +14,18 @@ import kotlinx.parcelize.Parcelize
 data class FlexMediaSectionItem(
     @SerializedName("id") var id: String,
     @SerializedName("title") var title: String,
-    @SerializedName("description") var description: String,
     @SerializedName("cover") var cover: String,
+    @SerializedName("description") var description: String?,
     @SerializedName("user") var user: FlexMediaUser? = null,
-    @SerializedName("extras") var extras: HashMap<String, String> = hashMapOf(),
-    @SerializedName("overlay") var overlay: OverlayText = OverlayText(),
-    @SerializedName("layout") var layout: ImageLayout = ImageLayout(),
+    @SerializedName("extras") var extras: HashMap<String, String>? = hashMapOf(),
+    @SerializedName("overlay") var overlay: OverlayText? = null,
+    @SerializedName("layout") var layout: ImageLayout? = null,
 ) : Parcelable {
+    val requireOverlay
+        get() = overlay ?: OverlayText()
+
+    val requireLayout
+        get() = layout ?: ImageLayout()
 
     @Parcelize
     data class ImageLayout(
@@ -30,9 +35,9 @@ data class FlexMediaSectionItem(
 
     @Parcelize
     data class OverlayText(
-        var topStart: String = "",
-        var topEnd: String = "",
-        var bottomStart: String = "",
-        var bottomEnd: String = "",
+        var topStart: String? = "",
+        var topEnd: String? = "",
+        var bottomStart: String? = "",
+        var bottomEnd: String? = "",
     ) : Parcelable
 }

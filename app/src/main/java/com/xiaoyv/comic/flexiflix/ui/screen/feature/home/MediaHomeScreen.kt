@@ -212,7 +212,7 @@ fun MediaHomeTopBanner(
                             end.linkTo(parent.end, 16.dp)
                             width = Dimension.fillToConstraints
                         },
-                        text = item.description,
+                        text = item.description.orEmpty(),
                         style = MaterialTheme.typography.titleSmall,
                         maxLines = 3,
                         overflow = TextOverflow.Ellipsis,
@@ -264,14 +264,14 @@ fun MediaHomeSections(
                 items(item.items) { media ->
                     Column(
                         modifier = Modifier
-                            .width(media.layout.widthDp.dp)
+                            .width(media.requireLayout.widthDp.dp)
                             .padding(horizontal = 8.dp)
                     ) {
                         Box(Modifier.fillMaxWidth()) {
                             ElevatedImage(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .aspectRatio(media.layout.aspectRatio),
+                                    .aspectRatio(media.requireLayout.aspectRatio),
                                 overlayBrush = Brush.verticalGradient(
                                     remember {
                                         listOf(
@@ -285,7 +285,7 @@ fun MediaHomeSections(
                                 onClick = { onSectionMediaClick(media) },
                             )
 
-                            if (media.overlay.topStart.isNotBlank()) Text(
+                            if (media.requireOverlay.topStart.orEmpty().isNotBlank()) Text(
                                 modifier = Modifier
                                     .padding(vertical = 6.dp, horizontal = 6.dp)
                                     .background(
@@ -294,14 +294,14 @@ fun MediaHomeSections(
                                     )
                                     .padding(4.dp)
                                     .align(Alignment.TopStart),
-                                text = media.overlay.topStart,
+                                text = media.requireOverlay.topStart.orEmpty(),
                                 style = MaterialTheme.typography.bodySmall,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 color = MaterialTheme.colorScheme.onPrimary
                             )
 
-                            if (media.overlay.topEnd.isNotBlank()) Text(
+                            if (media.requireOverlay.topEnd.orEmpty().isNotBlank()) Text(
                                 modifier = Modifier
                                     .padding(vertical = 6.dp, horizontal = 6.dp)
                                     .background(
@@ -310,7 +310,7 @@ fun MediaHomeSections(
                                     )
                                     .padding(4.dp)
                                     .align(Alignment.TopEnd),
-                                text = media.overlay.topEnd,
+                                text = media.requireOverlay.topEnd.orEmpty(),
                                 style = MaterialTheme.typography.bodySmall,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
@@ -321,7 +321,7 @@ fun MediaHomeSections(
                                 modifier = Modifier
                                     .padding(vertical = 6.dp, horizontal = 6.dp)
                                     .align(Alignment.BottomStart),
-                                text = media.overlay.bottomStart,
+                                text = media.requireOverlay.bottomStart.orEmpty(),
                                 style = MaterialTheme.typography.bodySmall,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
@@ -332,7 +332,7 @@ fun MediaHomeSections(
                                 modifier = Modifier
                                     .padding(vertical = 6.dp, horizontal = 6.dp)
                                     .align(Alignment.BottomEnd),
-                                text = media.overlay.bottomEnd,
+                                text = media.requireOverlay.bottomEnd.orEmpty(),
                                 style = MaterialTheme.typography.bodySmall,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,

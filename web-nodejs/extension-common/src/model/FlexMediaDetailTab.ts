@@ -8,5 +8,5 @@ export interface FlexMediaDetailTab {
     id: string
     mediaId: string
     title: string
-    extras: Map<string, string>
+    extras: Map<string, string> | undefined
 }

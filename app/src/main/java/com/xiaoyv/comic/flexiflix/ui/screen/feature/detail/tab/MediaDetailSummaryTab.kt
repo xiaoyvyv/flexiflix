@@ -86,9 +86,9 @@ fun MediaDetailSummaryTab(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (mediaDetail.playCount.isNotBlank()) {
+            if (mediaDetail.playCount.orEmpty().isNotBlank()) {
                 Text(
-                    text = mediaDetail.playCount,
+                    text = mediaDetail.playCount.orEmpty(),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
@@ -99,7 +99,7 @@ fun MediaDetailSummaryTab(
             }
 
             Text(
-                text = mediaDetail.createAt,
+                text = mediaDetail.createAt.orEmpty(),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
@@ -131,7 +131,7 @@ fun MediaDetailSummaryTab(
         Spacer(modifier = Modifier.height(16.dp))
 
         LazyRow(modifier = Modifier.fillMaxWidth()) {
-            items(mediaDetail.playlist) {
+            items(mediaDetail.playlist.orEmpty()) {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -321,7 +321,7 @@ fun MediaDetailSummarySeries(
         )
     }
 
-    val series = mediaDetail.series.maxBy { it.items.size }
+    val series = mediaDetail.series.orEmpty().maxBy { it.items.size }
 
     Column(modifier = modifier) {
         Text(
@@ -351,7 +351,7 @@ fun MediaDetailSummarySeries(
                             GlideImage(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .aspectRatio(media.layout.aspectRatio)
+                                    .aspectRatio(media.requireLayout.aspectRatio)
                                     .drawWithContent {
                                         drawContent()
                                         drawRect(
@@ -372,7 +372,7 @@ fun MediaDetailSummarySeries(
                                 modifier = Modifier
                                     .padding(bottom = 6.dp, start = 6.dp)
                                     .align(Alignment.BottomStart),
-                                text = media.overlay.bottomStart,
+                                text = media.requireOverlay.bottomStart.orEmpty(),
                                 style = MaterialTheme.typography.bodySmall,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
@@ -383,7 +383,7 @@ fun MediaDetailSummarySeries(
                                 modifier = Modifier
                                     .padding(bottom = 6.dp, end = 6.dp)
                                     .align(Alignment.BottomEnd),
-                                text = media.overlay.bottomEnd,
+                                text = media.requireOverlay.bottomEnd.orEmpty(),
                                 style = MaterialTheme.typography.bodySmall,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,

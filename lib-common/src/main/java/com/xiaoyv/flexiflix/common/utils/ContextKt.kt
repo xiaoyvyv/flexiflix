@@ -5,11 +5,9 @@ package com.xiaoyv.flexiflix.common.utils
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
-import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.Point
-import android.os.Build
-import android.util.DisplayMetrics
+import android.os.Vibrator
 import android.view.WindowManager
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -76,3 +74,11 @@ val Context.screenInfo: Pair<Int, Int>
 
 val Context.screenAspectRatio: Float
     get() = screenInfo.first / screenInfo.second.toFloat()
+
+/**
+ * 震动
+ */
+fun Context.vibrate(mills: Long) {
+    val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    vibrator.vibrate(mills)
+}

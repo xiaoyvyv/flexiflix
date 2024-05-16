@@ -1,12 +1,12 @@
 {
   "name": "@xiaoyvyv/flexiflex-extension-common",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "flexiflex-extension common",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "devCommon": "npx ts-node src/index.ts",
-    "package": "npx tsc"
+    "common-dev": "npx ts-node src/index.ts",
+    "common-package": "npx tsc"
   },
   "keywords": [],
   "author": "",

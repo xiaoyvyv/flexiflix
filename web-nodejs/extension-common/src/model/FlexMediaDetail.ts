@@ -16,15 +16,15 @@ export interface FlexMediaDetail {
     description: string
     cover: string
     url: string
-    type: string
-    playCount: string
-    createAt: string
-    duration: number
-    size: string
-    publisher: FlexMediaUser
-    playlist: FlexMediaPlaylist[]
-    series: FlexMediaDetailSeries[]
-    tags: FlexMediaTag[]
-    relativeTabs: FlexMediaDetailTab[]
-    extras: Map<string, string>
+    type: string | undefined
+    playCount: string | undefined
+    createAt: string | undefined
+    duration: number | undefined
+    size: string | undefined
+    publisher: FlexMediaUser | undefined
+    playlist: FlexMediaPlaylist[] | undefined
+    series: FlexMediaDetailSeries[] | undefined
+    tags: FlexMediaTag[] | undefined
+    relativeTabs: FlexMediaDetailTab[] | undefined
+    extras: Map<string, string> | undefined
 }

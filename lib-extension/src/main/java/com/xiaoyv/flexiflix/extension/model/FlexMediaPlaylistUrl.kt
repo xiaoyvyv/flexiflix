@@ -14,15 +14,15 @@ import kotlinx.parcelize.Parcelize
 data class FlexMediaPlaylistUrl(
     var id: String,
     var title: String,
-    var mediaUrl: String,
-    var cover: String = UNKNOWN_STRING,
-    var type: String = UNKNOWN_STRING,
-    var size: String = UNKNOWN_STRING
+    var mediaUrl: String?,
+    var cover: String? = UNKNOWN_STRING,
+    var type: String? = UNKNOWN_STRING,
+    var size: String? = UNKNOWN_STRING
 ) : Parcelable {
 
     /**
      * 如果 URL 为空，则需要通过Source的 ID 去查询URL
      */
     val needLoadRawUrlById: Boolean
-        get() = mediaUrl.isBlank()
+        get() = mediaUrl.isNullOrBlank()
 }

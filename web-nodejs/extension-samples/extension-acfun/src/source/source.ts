@@ -11,7 +11,7 @@ import * as api from '../api/api';
 /**
  * 实现数据源接口的逻辑
  */
-export class HanimeSource implements Source {
+export class AcfunSource implements Source {
 
     async fetchHomeSections(): Promise<FlexMediaSection[]> {
         return await api.fetchHomeSections();

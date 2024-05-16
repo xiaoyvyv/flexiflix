@@ -10,7 +10,7 @@ export interface FlexMediaSection {
     id: string
     title: string
     items: FlexMediaSectionItem[]
-    extras: Map<string, string>
+    extras: Map<string, string> | undefined
 }
 
 

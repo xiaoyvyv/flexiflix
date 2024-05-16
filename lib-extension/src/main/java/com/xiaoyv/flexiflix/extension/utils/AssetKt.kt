@@ -34,7 +34,7 @@ fun Context.copyAssetsFolder(assetFolder: String, destinationFolder: String) {
 fun Context.copyAssetFile(assetPath: String, destinationPath: String) {
     val assetManager = assets
     val inputStream = assetManager.open(assetPath)
-    val outputStream = FileOutputStream(File(destinationPath))
+    val outputStream = FileOutputStream(File(destinationPath).apply { setWritable(true) })
     inputStream.use { input ->
         outputStream.use { output ->
             input.copyTo(output)

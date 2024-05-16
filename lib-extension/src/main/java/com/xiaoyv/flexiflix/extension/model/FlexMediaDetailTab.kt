@@ -14,5 +14,5 @@ data class FlexMediaDetailTab(
     var id: String,
     var mediaId: String,
     var title: String,
-    var extras: HashMap<String, String> = hashMapOf()
+    var extras: HashMap<String, String>? = hashMapOf()
 ) : Parcelable

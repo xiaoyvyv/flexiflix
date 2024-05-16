@@ -1,19 +1,19 @@
 {
   "name": "extension-hanime",
   "version": "1.0.0",
-  "description": "flexiflix extension for hanime1.com",
+  "description": "flexiflix extension for https://www.acfun.cn",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "hanime-dev": "npx ts-node src/index.ts",
-    "hanime-package": "npx tsc",
-    "hanime-package-single": "npx ncc build src/index.ts -o ../../extension-repository/extension-hanime"
+    "acfun-dev": "npx ts-node src/index.ts",
+    "acfun-package": "npx tsc",
+    "acfun-package-single": "npx ncc build src/index.ts -o ../../extension-repository/extension-acfun"
   },
   "keywords": [],
   "author": "xiaoyvyv",
   "license": "ISC",
   "dependencies": {
-    "@xiaoyvyv/flexiflex-extension-common": "1.0.1",
+    "@xiaoyvyv/flexiflex-extension-common": "1.0.3",
     "cheerio": "^1.0.0-rc.12"
   },
   "devDependencies": {

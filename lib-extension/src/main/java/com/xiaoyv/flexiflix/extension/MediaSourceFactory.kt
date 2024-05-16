@@ -205,7 +205,7 @@ object MediaSourceFactory {
                 }
             }
 
-            // 加载源的 DNS
+            // 针对 HttpSource 加载源的 DNS
             extensions
                 .mapNotNull { if (it.source is HttpSource) it.source else null }
                 .forEach {

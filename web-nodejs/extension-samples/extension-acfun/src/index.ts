@@ -1,5 +1,5 @@
 import {MediaSourceExtension, MediaSourceInfo} from "@xiaoyvyv/flexiflex-extension-common";
-import {HanimeSource} from "./source/source";
+import {AcfunSource} from "./source/source";
 
 /**
  * 自定义一个插件 ID，必须全局唯一
@@ -8,22 +8,22 @@ import {HanimeSource} from "./source/source";
  *
  * 建议格式：语言类型-数据源的地址，用短横线连接
  */
-const extensionId = "js-hanime-com"
+const extensionId = "js-acfun-cn"
 
 /**
  * 插件信息
  */
 const extensionInfo: MediaSourceInfo = {
     id: extensionId,
-    name: "Hanime - JS 数据源扩展",
-    description: "Hanime - JS 数据源扩展",
+    name: "Acfun.CN - JS 数据源扩展",
+    description: "Acfun.CN - JS 数据源扩展",
     author: "xiaoyvyv",
     nsfw: false,
     versionCode: 1,
     versionName: "1.0.0"
 };
 
-const main = new MediaSourceExtension(extensionId, extensionInfo, new HanimeSource());
+const main = new MediaSourceExtension(extensionId, extensionInfo, new AcfunSource());
 
 // 必须导出 MediaSourceExtension;
 // 注意，这里导出必须直接 module.exports = xxx; xxx 为 MediaSourceExtension 结构的对象;
