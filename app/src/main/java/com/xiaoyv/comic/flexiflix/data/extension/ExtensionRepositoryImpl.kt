@@ -117,7 +117,15 @@ class ExtensionRepositoryImpl @Inject constructor(
     override suspend fun installExtension(extensionUri: Uri): Result<InstalledMediaSource> {
         return withContext(Dispatchers.IO) {
             runCatchingPrint {
-                val installed = File(extensionJvmInstallDir, extensionUri.displayName(context))
+                val mediaSourceType = MediaSourceType.fromPath(extensionUri.realFilePath(context))
+                val installDir = when (mediaSourceType) {
+                    MediaSourceType.TYPE_JVM -> extensionJvmInstallDir
+                    MediaSourceType.TYPE_NODEJS -> extensionJavaScriptInstallDir
+                    MediaSourceType.TYPE_PYTHON -> extensionPythonInstallDir
+                    else -> error("Not support!")
+                }
+
+                val installed = File(installDir, extensionUri.displayName(context))
                 if (installed.exists()) {
                     installed.setWritable(true)
                     installed.delete()
@@ -131,7 +139,7 @@ class ExtensionRepositoryImpl @Inject constructor(
                 // 判断是否合法
                 val mediaSource = installed.toInstalledMediaSource(
                     context = context,
-                    type = MediaSourceType.fromPath(extensionUri.realFilePath(context))
+                    type = mediaSourceType
                 )
 
                 if (mediaSource == null || mediaSource.sources.isEmpty()) {
