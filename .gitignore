@@ -26,3 +26,4 @@ local.properties
 /keystore/
 /web-doc/node_modules/
 /web-doc/docs/.vitepress/cache/
+/web-doc/docs/.vitepress/dist/
