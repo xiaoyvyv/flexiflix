@@ -5,6 +5,8 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
 import android.provider.OpenableColumns
+import android.webkit.MimeTypeMap
+import androidx.media3.common.MimeTypes
 import java.io.InputStream
 
 /**
@@ -36,13 +38,16 @@ fun Uri.inputStream(context: Context): InputStream {
     return requireNotNull(context.contentResolver.openInputStream(this))
 }
 
-fun Uri.realFilePath(context: Context): String {
-    val projection = arrayOf(MediaStore.Images.Media.DATA)
-    return context.contentResolver.query(this, projection, null, null, null).use {
-        it?.let {
-            val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-            it.moveToFirst()
-            it.getString(columnIndex)
-        }.orEmpty()
-    }
+/**
+ * 获取文件类型
+ */
+fun Uri.fileType(context: Context): String {
+    return context.contentResolver.getType(this).orEmpty()
+        .let {
+            if (it.isNotBlank()) MimeTypeMap.getSingleton().getExtensionFromMimeType(it)
+                .orEmpty() else it
+        }
+        .ifBlank {
+            path.orEmpty().substringAfterLast(".")
+        }
 }

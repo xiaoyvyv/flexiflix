@@ -3,17 +3,14 @@ package com.xiaoyv.comic.flexiflix.data.extension
 import android.content.Context
 import android.net.Uri
 import com.xiaoyv.comic.flexiflix.model.InstalledMediaSource
-import com.xiaoyv.flexiflix.common.utils.debugLog
 import com.xiaoyv.flexiflix.common.utils.displayName
+import com.xiaoyv.flexiflix.common.utils.fileType
 import com.xiaoyv.flexiflix.common.utils.formatTime
 import com.xiaoyv.flexiflix.common.utils.inputStream
-import com.xiaoyv.flexiflix.common.utils.realFilePath
-import com.xiaoyv.flexiflix.extension.MediaSourceExtension
 import com.xiaoyv.flexiflix.extension.MediaSourceFactory
 import com.xiaoyv.flexiflix.extension.MediaSourceType
 import com.xiaoyv.flexiflix.extension.source.Source
 import com.xiaoyv.flexiflix.extension.utils.runCatchingPrint
-import com.xiaoyv.flexiflix.extension.utils.toJson
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -117,7 +114,7 @@ class ExtensionRepositoryImpl @Inject constructor(
     override suspend fun installExtension(extensionUri: Uri): Result<InstalledMediaSource> {
         return withContext(Dispatchers.IO) {
             runCatchingPrint {
-                val mediaSourceType = MediaSourceType.fromPath(extensionUri.realFilePath(context))
+                val mediaSourceType = MediaSourceType.fromPath(extensionUri.fileType(context))
                 val installDir = when (mediaSourceType) {
                     MediaSourceType.TYPE_JVM -> extensionJvmInstallDir
                     MediaSourceType.TYPE_NODEJS -> extensionJavaScriptInstallDir
