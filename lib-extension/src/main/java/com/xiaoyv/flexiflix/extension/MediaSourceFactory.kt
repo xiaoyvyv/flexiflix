@@ -10,6 +10,7 @@ import com.xiaoyv.flexiflix.extension.impl.java.network.converter.WebHtmlConvert
 import com.xiaoyv.flexiflix.extension.impl.java.network.cookie.PersistentCookieJar
 import com.xiaoyv.flexiflix.extension.impl.java.network.dns.NetworkManager
 import com.xiaoyv.flexiflix.extension.impl.java.network.interceptor.AdBlockInterceptor
+import com.xiaoyv.flexiflix.extension.impl.java.network.interceptor.Base64ImageInterceptor
 import com.xiaoyv.flexiflix.extension.impl.java.network.interceptor.CommonInterceptor
 import com.xiaoyv.flexiflix.extension.source.HttpSource
 import com.xiaoyv.flexiflix.extension.source.Source
@@ -77,6 +78,7 @@ object MediaSourceFactory {
 //            .dns(NetworkDns())
             .addInterceptor(CommonInterceptor())
             .addNetworkInterceptor(AdBlockInterceptor())
+            .addInterceptor(Base64ImageInterceptor())
             .build()
     }
 

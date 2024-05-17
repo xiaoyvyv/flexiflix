@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 pluginManagement {
     repositories {
         google {
@@ -24,5 +26,7 @@ include(":app")
 include(":lib-common")
 include(":lib-extension")
 include(":lib-i18n")
+include(":lib-danmaku")
 include(":extension-hanime")
 include(":extension-yhdm")
+

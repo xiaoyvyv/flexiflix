@@ -17,3 +17,12 @@
     private void stopScrubbing(boolean);
     private void update();
 }
+
+# 快手弹幕库使用的 gdx
+-dontwarn com.badlogic.gdx.backends.android.AndroidFragmentApplication
+-dontwarn com.badlogic.gdx.utils.GdxBuild
+-dontwarn com.badlogic.gdx.jnigen.BuildTarget*
+-dontwarn com.badlogic.gdx.graphics.g2d.freetype.FreetypeBuild
+
+# Required if using Gdx-Controllers extension
+-keep class com.badlogic.gdx.controllers.android.AndroidControllers

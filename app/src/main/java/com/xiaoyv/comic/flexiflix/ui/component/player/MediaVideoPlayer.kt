@@ -4,6 +4,7 @@ package com.xiaoyv.comic.flexiflix.ui.component.player
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,6 +54,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
+import com.kuaishou.akdanmaku.DanmakuConfig
+import com.kuaishou.akdanmaku.data.DanmakuItemData
+import com.kuaishou.akdanmaku.render.SimpleRenderer
+import com.kuaishou.akdanmaku.ui.DanmakuPlayer
+import com.kuaishou.akdanmaku.ui.DanmakuView
 import com.xiaoyv.comic.flexiflix.R
 import com.xiaoyv.comic.flexiflix.application
 import com.xiaoyv.flexiflix.common.utils.debugLog
@@ -117,6 +123,7 @@ fun MediaVideoPlayer(
 
     debugLog { "MediaPlayer Compose!" }
 
+    // Exo Player
     val exoPlayer = remember {
         val httpDataSourceFactory = OkHttpDataSource.Factory(MediaSourceFactory.okhttp)
             .setUserAgent("Jetpack-Media3")
@@ -140,6 +147,8 @@ fun MediaVideoPlayer(
                 )
             }
 
+
+        // 构建媒体播放器
         ExoPlayer.Builder(context)
             .setTrackSelector(trackSelector)
             .setMediaSourceFactory(mediaSourceFactory)
@@ -279,6 +288,11 @@ fun MediaVideoPlayer(
             }
     }
 
+    // Danmaku Player
+    val danmakuPlayer = remember {
+        DanmakuPlayer(SimpleRenderer())
+    }
+
     LaunchedEffect(playlistUrl) {
         if (playlistUrl != null && playlistUrl.mediaUrl.orEmpty().isNotBlank()) {
             exoPlayer.setMediaItem(
@@ -296,6 +310,8 @@ fun MediaVideoPlayer(
             exoPlayer.prepare()
             exoPlayer.playWhenReady = false
 
+            danmakuPlayer.release()
+
             debugLog { "SetMediaItem: ${playlistUrl.mediaUrl}" }
         }
     }
@@ -312,6 +328,7 @@ fun MediaVideoPlayer(
                     context = it,
                     lifecycleOwner = lifecycleOwner,
                     exoPlayer = exoPlayer,
+                    danmakuPlayer = danmakuPlayer,
                     poster = poster,
                     onFullscreenButtonClick = onFullscreenButtonClick,
                     onControllerVisibilityChanged = onControllerVisibilityChanged
@@ -319,6 +336,7 @@ fun MediaVideoPlayer(
             },
             onRelease = {
                 exoPlayer.release()
+                danmakuPlayer.release()
 
                 debugLog { "Release Media Player" }
             }
@@ -335,6 +353,7 @@ fun createPlayerView(
     context: Context,
     lifecycleOwner: LifecycleOwner,
     exoPlayer: ExoPlayer,
+    danmakuPlayer: DanmakuPlayer,
     poster: Any,
     onFullscreenButtonClick: (Context, Boolean) -> Unit = { _, _ -> },
     onControllerVisibilityChanged: (Int) -> Unit = {},
@@ -366,8 +385,9 @@ fun createPlayerView(
         onFullscreenButtonClick(context, it)
     }
 
-    // 注入封面
+    // 注入叠加层视图
     playerView.overlayFrameLayout?.apply {
+        // 封面层
         val imageView = AppCompatImageView(context)
         imageView.scaleType = ImageView.ScaleType.CENTER_CROP
         addView(
@@ -381,6 +401,7 @@ fun createPlayerView(
             .setCrossFadeEnabled(true)
             .build()
 
+        // 封面加载和监听隐藏
         Glide.with(this)
             .load(poster)
             .apply(RequestOptions().placeholder(R.color.black))
@@ -398,6 +419,7 @@ fun createPlayerView(
             }
         })
 
+        // 手势交互层
         val overlayView = MediaVideoGestureView(context)
         overlayView.playerView = playerView
         overlayView.lifecycleOwner = lifecycleOwner
@@ -407,6 +429,37 @@ fun createPlayerView(
                 FrameLayout.LayoutParams.MATCH_PARENT
             )
         )
+
+        // 弹幕层
+        val danmakuView = DanmakuView(context)
+        addView(
+            danmakuView, FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+            )
+        )
+
+        danmakuPlayer.bindView(danmakuView)
+
+        val config = danmakuPlayer.getConfig() ?: DanmakuConfig()
+        danmakuPlayer.start(config)
+
+        val items = arrayListOf<DanmakuItemData>()
+        repeat(1000) {
+            items.add(
+                DanmakuItemData(
+                    danmakuId = it.toLong(),
+                    position = it * 1000L,
+                    content = it.toString(),
+                    mode = DanmakuItemData.DANMAKU_MODE_ROLLING,
+                    textSize = 14,
+                    textColor = Color.WHITE,
+                )
+            )
+        }
+        danmakuPlayer.updateData(items)
+//        danmakuPlayer.send()
+//        danmakuPlayer.release()
     }
 
     return playerView

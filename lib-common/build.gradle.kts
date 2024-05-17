@@ -43,6 +43,7 @@ android {
 dependencies {
     api(project(":lib-extension"))
     api(project(":lib-i18n"))
+    api(project(":lib-danmaku"))
 
     api(libs.androidx.core.ktx)
     api(libs.androidx.lifecycle.runtime.ktx)

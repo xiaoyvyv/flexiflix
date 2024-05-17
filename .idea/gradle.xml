@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/extension-hanime" />
             <option value="$PROJECT_DIR$/extension-yhdm" />
             <option value="$PROJECT_DIR$/lib-common" />
+            <option value="$PROJECT_DIR$/lib-danmaku" />
             <option value="$PROJECT_DIR$/lib-extension" />
             <option value="$PROJECT_DIR$/lib-i18n" />
           </set>
@@ -20,6 +21,5 @@
         <option name="resolveExternalAnnotations" value="false" />
       </GradleProjectSettings>
     </option>
-    <option name="offlineMode" value="true" />
   </component>
 </project>

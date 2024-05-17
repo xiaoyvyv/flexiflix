@@ -1,12 +1,9 @@
 package com.xiaoyv.flexiflix.common.utils
 
 import android.content.Context
-import android.database.Cursor
 import android.net.Uri
-import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.webkit.MimeTypeMap
-import androidx.media3.common.MimeTypes
 import java.io.InputStream
 
 /**
@@ -34,12 +31,15 @@ fun Uri.displayName(context: Context): String {
     return fileName.orEmpty().ifBlank { System.currentTimeMillis().toString() }
 }
 
+/**
+ * 获取 InputStream
+ */
 fun Uri.inputStream(context: Context): InputStream {
     return requireNotNull(context.contentResolver.openInputStream(this))
 }
 
 /**
- * 获取文件类型
+ * 获取文件类型扩展名 apk | js | py ..
  */
 fun Uri.fileType(context: Context): String {
     return context.contentResolver.getType(this).orEmpty()
