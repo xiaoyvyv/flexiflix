@@ -61,7 +61,7 @@ interface Source {
     /**
      * 此方法应用于，点击视频下方其它章节时，根据其章节ID查询真实的播放链接（如果媒体详情的播放列表已经包含视频链接，则不会调用此方法查询）
      *
-     * 根据 [FlexMediaPlaylistUrl.id] 获取视频直链，只有 [FlexMediaPlaylistUrl.mediaUrl] 是空的情况才会查询
+     * 根据 [FlexMediaPlaylistUrl.id] 获取视频直链，只有 [FlexMediaPlaylistUrl.mediaUrls] 是空的情况才会查询
      */
     suspend fun fetchMediaRawUrl(playlistUrl: FlexMediaPlaylistUrl): Result<FlexMediaPlaylistUrl> {
         return runCatchingPrint { playlistUrl }

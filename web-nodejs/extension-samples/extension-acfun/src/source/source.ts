@@ -26,7 +26,7 @@ export class AcfunSource implements Source {
     }
 
     async fetchMediaRawUrl(playlistUrl: FlexMediaPlaylistUrl): Promise<FlexMediaPlaylistUrl> {
-        throw new Error("Not yet implemented");
+        return await api.fetchMediaRawUrl(playlistUrl);
     }
 
     async fetchSectionMediaPages(sectionId: string, sectionExtras: Map<string, string>, page: number): Promise<FlexMediaSectionItem[]> {

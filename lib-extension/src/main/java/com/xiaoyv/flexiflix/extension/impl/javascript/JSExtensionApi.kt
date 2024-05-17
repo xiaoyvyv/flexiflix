@@ -2,6 +2,7 @@ package com.xiaoyv.flexiflix.extension.impl.javascript
 
 import com.xiaoyv.flexiflix.extension.model.FlexMediaDetail
 import com.xiaoyv.flexiflix.extension.model.FlexMediaDetailTab
+import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
 import com.xiaoyv.flexiflix.extension.model.FlexMediaUser
@@ -62,4 +63,10 @@ interface JSExtensionApi {
         @FieldMap extras: Map<String, String>,
         @Body relativeTab: FlexMediaDetailTab,
     ): List<FlexMediaSection>
+
+    @POST("/api/media/url/{hash}")
+    suspend fun fetchMediaRawUrl(
+        @Path("hash") hash: String,
+        @Body playlistUrl: FlexMediaPlaylistUrl
+    ): FlexMediaPlaylistUrl
 }

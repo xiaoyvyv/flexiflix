@@ -4,7 +4,6 @@ package com.xiaoyv.extension.yhdm.iyinghua.io
 
 import com.xiaoyv.flexiflix.extension.impl.java.annotation.MediaSource
 import com.xiaoyv.flexiflix.extension.model.FlexMediaDetail
-import com.xiaoyv.flexiflix.extension.model.FlexMediaDetailSeries
 import com.xiaoyv.flexiflix.extension.model.FlexMediaDetailTab
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
@@ -170,7 +169,6 @@ class IyingHuaSource : HttpParseSource() {
                                 .substringAfterLast("/")
                                 .substringBeforeLast("."),
                             title = media.select("a").text(),
-                            mediaUrl = UNKNOWN_STRING
                         )
                     }
                 )
@@ -206,7 +204,15 @@ class IyingHuaSource : HttpParseSource() {
                 .substringBefore("$")
                 .trim()
 
-            playlistUrl.copy(title = epTitle, mediaUrl = videoUrl)
+            playlistUrl.copy(
+                title = epTitle,
+                mediaUrls = listOf(
+                    FlexMediaPlaylistUrl.SourceUrl(
+                        rawUrl = videoUrl,
+                        name = "默认"
+                    )
+                )
+            )
         }
     }
 

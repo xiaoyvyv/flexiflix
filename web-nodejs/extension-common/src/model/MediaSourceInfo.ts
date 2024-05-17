@@ -6,7 +6,9 @@
  */
 export interface MediaSourceInfo {
     /**
-     * 数据源唯一ID
+     * 插件数据源ID，需要全局唯一，建议搞得抽象一点
+     *
+     * 仅支持数字、字母、下划线、短横线组合。
      */
     id: string
 

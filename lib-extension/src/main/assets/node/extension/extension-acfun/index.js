@@ -22,7 +22,7 @@ Object.defineProperty(exports, "MediaSourceExtension", ({ enumerable: true, get:
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.MediaSourceExtension = void 0;
 /**
- * [MediaSourceExtension]
+ * 构建一个插件的对象结构
  *
  * @author why
  * @since 5/8/24
@@ -11075,6 +11075,7 @@ exports.parse = parse;
 
 "use strict";
 
+// noinspection SpellCheckingInspection
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -11088,7 +11089,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.fetchMediaDetail = exports.fetchHomeSections = void 0;
+exports.fetchMediaRawUrl = exports.fetchMediaDetail = exports.fetchHomeSections = void 0;
 const cheerio_1 = __nccwpck_require__(4612);
 const utils_1 = __importDefault(__nccwpck_require__(239));
 const requestInit = {
@@ -11096,6 +11097,35 @@ const requestInit = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0',
         'Referer': 'https://www.acfun.cn'
     }
+};
+/**
+ * 根据 bangumiData 获取媒体播放真实数据 FlexMediaPlaylistUrlRaw[]
+ *
+ * @param bangumiData
+ */
+const bangumiDataMediaUrls = (bangumiData) => {
+    var _a;
+    const currentVideoInfo = bangumiData['currentVideoInfo'] || {};
+    let currentVideoUrls = [];
+    try {
+        const ksPlayJson = JSON.parse(currentVideoInfo['ksPlayJsonHevc'] || currentVideoInfo['ksPlayJson']);
+        const adaptationSet = ((_a = ksPlayJson['adaptationSet']) === null || _a === void 0 ? void 0 : _a[0]) || {};
+        const representation = adaptationSet['representation'] || [];
+        currentVideoUrls = representation.map(item => {
+            var _a;
+            const data = {
+                name: item['qualityLabel'] || '',
+                rawUrl: item['url'] || ((_a = item['backupUrl']) === null || _a === void 0 ? void 0 : _a[0]) || '',
+                type: item['qualityType'] || '',
+                size: '',
+            };
+            return data;
+        });
+    }
+    catch (e) {
+        console.log(e);
+    }
+    return currentVideoUrls;
 };
 /**
  * 拉取首页数据
@@ -11176,68 +11206,106 @@ exports.fetchHomeSections = fetchHomeSections;
  */
 function fetchMediaDetail(id, extras) {
     return __awaiter(this, void 0, void 0, function* () {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
         const html = yield fetch(`https://www.acfun.cn/bangumi/${id}`, requestInit)
             .then((res) => res.text() || "");
         const $ = (0, cheerio_1.load)(html);
-        const scripts = $("script");
-        // 解析媒体数据
-        const bangumiData = ((_b = (_a = scripts
+        const scripts = $("script")
             .filter((_, el) => $(el).text().indexOf("window.bangumiData") > 0)
-            .map((_, el) => $(el).text())
-            .toArray()[0]) === null || _a === void 0 ? void 0 : _a.match(/bangumiData[\s\S]+?};/)) === null || _b === void 0 ? void 0 : _b[0]) || '';
-        const bangumiDataEntity = eval(('const ' + bangumiData + ';bangumiData'));
-        const currentVideoInfo = bangumiDataEntity['currentVideoInfo'] || {};
-        const currentVideoId = bangumiDataEntity['videoId'] || '';
-        let currentVideoUrl = "";
-        try {
-            const ksPlayJson = JSON.parse(currentVideoInfo['ksPlayJson']);
-            const ksPlayJsonUrl = (_f = (_e = (_d = (_c = ksPlayJson['adaptationSet']) === null || _c === void 0 ? void 0 : _c[0]) === null || _d === void 0 ? void 0 : _d['representation']) === null || _e === void 0 ? void 0 : _e[0]) === null || _f === void 0 ? void 0 : _f['url'];
-            const ksPlayJsonHevc = JSON.parse(currentVideoInfo['ksPlayJsonHevc']);
-            const ksPlayJsonHevcUrl = (_k = (_j = (_h = (_g = ksPlayJsonHevc['adaptationSet']) === null || _g === void 0 ? void 0 : _g[0]) === null || _h === void 0 ? void 0 : _h['representation']) === null || _j === void 0 ? void 0 : _j[0]) === null || _k === void 0 ? void 0 : _k['url'];
-            currentVideoUrl = ksPlayJsonHevcUrl || ksPlayJsonUrl || '';
-        }
-        catch (e) {
-            console.log(e);
-        }
-        // 解析播放列表
-        const bangumiList = ((_m = (_l = scripts
-            .filter((_, el) => $(el).text().indexOf("window.bangumiList") > 0)
-            .map((_, el) => $(el).text())
-            .toArray()[0]) === null || _l === void 0 ? void 0 : _l.match(/bangumiList[\s\S]+?};/)) === null || _m === void 0 ? void 0 : _m[0]) || '';
-        const bangumiListEntity = eval(('const ' + bangumiList + ';bangumiList'));
+            .toArray()[0];
+        const script = $(scripts).text();
+        const init = "var window = { addEventListener: (a,b) => {}};";
+        const out = ";window;";
+        const obj = eval((init + script + out));
+        const bangumiData = obj['bangumiData'] || {};
+        const bangumiList = obj['bangumiList'] || {};
+        // 解析媒体数据
+        const currentVideoId = bangumiData['videoId'] || '';
+        const currentVideoInfo = bangumiData['currentVideoInfo'] || {};
+        const duration = currentVideoInfo['durationMillis'] || 0;
+        const currentVideoUrls = bangumiDataMediaUrls(bangumiData);
         const playlists = [];
         const playlist = {
             title: '播放列表',
-            items: (bangumiListEntity['items'] || []).map(subItem => {
+            items: (bangumiList['items'] || []).map(subItem => {
                 var _a;
+                const bangumiId = subItem['bangumiId'] || '';
+                const itemId = subItem['itemId'] || '';
                 const videoId = subItem['videoId'] || '';
+                const title = subItem['title'] || '';
+                const episodeName = subItem['episodeName'] || '';
                 const url = {
-                    id: videoId,
-                    title: subItem['episodeName'] + ' - ' + subItem['title'],
+                    id: 'aa' + bangumiId + '_36188_' + itemId,
+                    title: title === '' ? episodeName : episodeName + '-' + title,
                     cover: ((_a = subItem['imgInfo']) === null || _a === void 0 ? void 0 : _a['thumbnailImageCdnUrl']) || '',
-                    mediaUrl: videoId === currentVideoId ? currentVideoUrl : '',
-                    size: undefined,
-                    type: undefined
+                    mediaUrls: videoId === currentVideoId ? currentVideoUrls : undefined,
                 };
                 return url;
             }),
         };
         playlists.push(playlist);
+        const relatedBangumi = bangumiData['relatedBangumis'] || [];
+        const related = {
+            count: relatedBangumi.length,
+            mediaId: id,
+            title: "相关系列",
+            items: relatedBangumi.map(item => {
+                const data = {
+                    id: 'aa' + item['id'],
+                    title: item['name'] || '',
+                    cover: bangumiData['bangumiCoverImageH'] || '',
+                    description: undefined,
+                    user: undefined,
+                    extras: undefined,
+                    overlay: undefined,
+                    layout: undefined
+                };
+                return data;
+            }),
+        };
+        const recommendBangumi = bangumiData['recommendBangumis'] || [];
+        const recommend = {
+            count: recommendBangumi.length,
+            mediaId: id,
+            title: "番剧推荐",
+            items: recommendBangumi.map(item => {
+                const data = {
+                    id: 'aa' + item['id'],
+                    title: item['title'] || '',
+                    cover: item['coverImageH'] || '',
+                    description: undefined,
+                    user: undefined,
+                    extras: undefined,
+                    overlay: {
+                        topStart: undefined,
+                        topEnd: undefined,
+                        bottomStart: item['lastUpdateItemName'],
+                        bottomEnd: item['stowCountShow']
+                    },
+                    layout: undefined
+                };
+                return data;
+            }),
+        };
+        // 系列和推荐
+        const series = [];
+        if (related.items.length > 0)
+            series.push(related);
+        if (recommend.items.length > 0)
+            series.push(recommend);
         return {
             id: id,
-            title: bangumiDataEntity['showTitle'] || '',
-            description: bangumiDataEntity['bangumiIntro'] || '',
-            cover: bangumiDataEntity['bangumiCoverImageH'] || '',
-            url: bangumiDataEntity['shareUrl'] || '',
-            type: bangumiDataEntity['episodeName'] || '',
-            playCount: bangumiDataEntity['playCountShow'] || '',
-            createAt: bangumiDataEntity['updateTime'] || '',
-            duration: currentVideoInfo['durationMillis'] || 0,
+            title: bangumiData['showTitle'] || '',
+            description: bangumiData['bangumiIntro'] || '',
+            cover: bangumiData['bangumiCoverImageH'] || '',
+            url: bangumiData['shareUrl'] || '',
+            type: bangumiData['episodeName'] || '',
+            playCount: bangumiData['playCountShow'] || '',
+            createAt: bangumiData['updateTime'] || '',
+            duration: duration,
             playlist: playlists,
             size: undefined,
             publisher: undefined,
-            series: undefined,
+            series: series,
             tags: undefined,
             relativeTabs: undefined,
             extras: utils_1.default.emptyExtras()
@@ -11245,22 +11313,49 @@ function fetchMediaDetail(id, extras) {
     });
 }
 exports.fetchMediaDetail = fetchMediaDetail;
+/**
+ * 根据媒体播放的 FlexMediaPlaylistUrl 获取真实的播放地址，只有 FlexMediaPlaylistUrl.mediaUrl 为空时才会调用查询
+ *
+ * @param playlistUrl
+ */
+function fetchMediaRawUrl(playlistUrl) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a;
+        // aa6002917_36188_1740687
+        const id = playlistUrl.id;
+        // aa6006226_36188_1971845
+        // https://www.acfun.cn/bangumi/aa6006226_36188_1971845?quickViewId=videoInfo_new&ajaxpipe=1&t=a
+        const bangumiData = yield fetch(`https://www.acfun.cn/bangumi/${id}?quickViewId=videoInfo_new&ajaxpipe=1&t=${Date.now()}`)
+            .then(res => res.text())
+            .then(html => html.replace("/*<!-- fetch-stream -->*/", ""))
+            .then(json => {
+            const html = JSON.parse(json)['html'] || '';
+            const $ = (0, cheerio_1.load)(html);
+            const init = "var window = {};";
+            const js = init + $(".videoInfo").text();
+            const out = ";window.bangumiData;";
+            return eval((init + js + out));
+        });
+        if (((_a = bangumiData['bangumiPaymentType']) === null || _a === void 0 ? void 0 : _a['value']) === 2) {
+            throw Error("该条目源非免费资源！");
+        }
+        playlistUrl.mediaUrls = bangumiDataMediaUrls(bangumiData);
+        return playlistUrl;
+    });
+}
+exports.fetchMediaRawUrl = fetchMediaRawUrl;
 
 
 /***/ }),
 
 /***/ 6144:
-/***/ (function(module, exports, __nccwpck_require__) {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const flexiflex_extension_common_1 = __nccwpck_require__(6368);
 const source_1 = __nccwpck_require__(1049);
-const utils_1 = __importDefault(__nccwpck_require__(239));
 /**
  * 自定义一个插件 ID，必须全局唯一
  *
@@ -11274,7 +11369,7 @@ const extensionId = "js-acfun-cn";
  */
 const extensionInfo = {
     id: extensionId,
-    name: "Acfun.CN - JS 数据源扩展",
+    name: "Acfun.CN 数据源",
     description: "Acfun.CN - JS 数据源扩展",
     author: "xiaoyvyv",
     nsfw: false,
@@ -11290,10 +11385,8 @@ module.exports = main;
 // 打包发布时，请确保顶级只有一些初始化模块的逻辑，没有直接执行耗时操作。
 if (require.main === require.cache[eval('__filename')]) {
     console.log("Dev: start main");
-    const port = process.env.PORT || 3000;
-    const environment = process.env.NODE_ENV || 'development';
     main.source
-        .fetchMediaDetail("aa5023295", utils_1.default.emptyExtras())
+        .fetchMediaRawUrl({ id: "aa6140273_36188_2077598" })
         .then((res) => {
         console.log(JSON.stringify(res, null, 4));
     });
@@ -11363,7 +11456,7 @@ class AcfunSource {
     }
     fetchMediaRawUrl(playlistUrl) {
         return __awaiter(this, void 0, void 0, function* () {
-            throw new Error("Not yet implemented");
+            return yield api.fetchMediaRawUrl(playlistUrl);
         });
     }
     fetchSectionMediaPages(sectionId, sectionExtras, page) {

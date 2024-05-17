@@ -1,8 +1,8 @@
 package com.xiaoyv.flexiflix.extension.impl.javascript
 
-import android.util.Log
 import com.xiaoyv.flexiflix.extension.model.FlexMediaDetail
 import com.xiaoyv.flexiflix.extension.model.FlexMediaDetailTab
+import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
 import com.xiaoyv.flexiflix.extension.model.FlexMediaUser
@@ -108,6 +108,16 @@ class JSExtensionSource(private val jsPath: String) : Source {
                 relativeTab = relativeTab,
                 id = id,
                 extras = extras
+            )
+        }
+    }
+
+    override suspend fun fetchMediaRawUrl(playlistUrl: FlexMediaPlaylistUrl): Result<FlexMediaPlaylistUrl> {
+        return runCatchingPrint {
+            makeSureServiceRunning()
+            JSExtensionService.instacne.jsApi.fetchMediaRawUrl(
+                hash = hash,
+                playlistUrl = playlistUrl,
             )
         }
     }

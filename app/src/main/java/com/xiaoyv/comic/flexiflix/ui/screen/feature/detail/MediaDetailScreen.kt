@@ -124,8 +124,9 @@ fun MediaDetailScreen(
     val density = LocalDensity.current
 
     // 监听屏幕方向，记录播放器高度和全屏状态记录，默认宽高比 16/9f
-    val playerDefaultHeight =
-        remember { Dp((context.screenInfo.first / (4 / 3f)) / density.density) }
+    val playerDefaultHeight = remember {
+        Dp((context.screenInfo.first / (8 / 5f)) / density.density)
+    }
     var playerCurrentHeight by remember { mutableStateOf(playerDefaultHeight) }
     var playerFullScreenState by remember { mutableStateOf(false) }
     LaunchedEffect(configuration.orientation) {
@@ -184,7 +185,7 @@ fun MediaDetailScreen(
                     if (currentPlayUrl != null) {
                         title = buildString {
                             append(currentPlayUrl.title.ifBlank { "媒体详情" })
-                            append(String.format("（%s)", currentPlaylist?.title))
+                            append(String.format("（%s）", currentPlaylist?.title))
                         }
                     }
                 }

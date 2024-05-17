@@ -1,15 +1,22 @@
 package com.xiaoyv.comic.flexiflix.ui.screen.feature.detail
 
+import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.LoadState
 import com.xiaoyv.comic.flexiflix.data.media.MediaRepository
 import com.xiaoyv.flexiflix.common.model.StateContent
+import com.xiaoyv.flexiflix.common.utils.debugLog
+import com.xiaoyv.flexiflix.common.utils.errMsg
 import com.xiaoyv.flexiflix.common.utils.mutableStateFlowOf
+import com.xiaoyv.flexiflix.common.utils.showSystemUi
+import com.xiaoyv.flexiflix.common.utils.toast
 import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylist
 import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
+import com.xiaoyv.flexiflix.extension.utils.toJson
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,6 +33,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class MediaDetailViewModel @Inject constructor(
+    @ApplicationContext val context: Context,
     savedStateHandle: SavedStateHandle,
     private val mediaRepository: MediaRepository
 ) : ViewModel() {
@@ -83,6 +91,12 @@ class MediaDetailViewModel @Inject constructor(
                 mediaRepository.getMediaRawUrl(args.sourceId, playUrl)
             } else {
                 Result.success(playUrl)
+            }
+
+            // 出错了
+            val error = urlResult.exceptionOrNull()
+            if (error != null) {
+                context.toast(error.errMsg)
             }
 
             _currentPlayUrl.update { urlResult.getOrNull() }

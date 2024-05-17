@@ -43,5 +43,15 @@ annotation class MediaSourceType {
                 else -> TYPE_UNKNOWN
             }
         }
+
+        @JvmStatic
+        fun toText(@MediaSourceType type: Int): String {
+            return when (type) {
+                TYPE_JVM -> "jvm"
+                TYPE_NODEJS -> "js"
+                TYPE_PYTHON -> "python"
+                else -> return "未知"
+            }
+        }
     }
 }

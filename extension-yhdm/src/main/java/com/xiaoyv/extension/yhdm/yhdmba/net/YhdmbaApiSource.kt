@@ -6,12 +6,11 @@ import android.util.Base64
 import android.webkit.URLUtil
 import com.xiaoyv.flexiflix.extension.impl.java.annotation.MediaSource
 import com.xiaoyv.flexiflix.extension.model.FlexMediaDetail
-import com.xiaoyv.flexiflix.extension.model.FlexMediaDetailSeries
 import com.xiaoyv.flexiflix.extension.model.FlexMediaDetailTab
-import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
-import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
 import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylist
 import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
+import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
+import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
 import com.xiaoyv.flexiflix.extension.model.FlexMediaUser
 import com.xiaoyv.flexiflix.extension.source.HttpParseSource
 import com.xiaoyv.flexiflix.extension.utils.UNKNOWN_LONG
@@ -132,7 +131,6 @@ class YhdmbaApiSource : HttpParseSource() {
                                 .substringAfterLast("/")
                                 .substringBeforeLast("."),
                             title = media.text(),
-                            mediaUrl = UNKNOWN_STRING,
                         )
                     }
                 )
@@ -181,7 +179,14 @@ class YhdmbaApiSource : HttpParseSource() {
 
             debugLog { "解码 URL = $descyptUrl" }
 
-            playlistUrl.copy(mediaUrl = descyptUrl)
+            playlistUrl.copy(
+                mediaUrls = listOf(
+                    FlexMediaPlaylistUrl.SourceUrl(
+                        name = "默认",
+                        rawUrl = descyptUrl,
+                    )
+                )
+            )
         }
     }
 

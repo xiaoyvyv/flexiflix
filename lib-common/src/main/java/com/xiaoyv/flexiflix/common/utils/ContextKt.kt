@@ -9,6 +9,7 @@ import android.content.res.Configuration
 import android.graphics.Point
 import android.os.Vibrator
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -81,4 +82,8 @@ val Context.screenAspectRatio: Float
 fun Context.vibrate(mills: Long) {
     val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
     vibrator.vibrate(mills)
+}
+
+fun Context.toast(message: String) {
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }

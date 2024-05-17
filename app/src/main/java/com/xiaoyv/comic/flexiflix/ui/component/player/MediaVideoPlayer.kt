@@ -16,7 +16,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -24,7 +27,11 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.lifecycle.compose.LifecycleResumeEffect
+import androidx.lifecycle.compose.LifecycleResumePauseEffectScope
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.DeviceInfo
 import androidx.media3.common.MediaItem
@@ -119,9 +126,8 @@ fun MediaVideoPlayer(
     onCues: (CueGroup) -> Unit = {},
     onTimelineChanged: (Timeline, reason: Int) -> Unit = { _, _ -> }
 ) {
+    val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
-
-    debugLog { "MediaPlayer Compose!" }
 
     // Exo Player
     val exoPlayer = remember {
@@ -293,28 +299,34 @@ fun MediaVideoPlayer(
         DanmakuPlayer(SimpleRenderer())
     }
 
+    // 第一次设置数据源不自动播放
+    var firstSetData by remember { mutableStateOf(true) }
+
     LaunchedEffect(playlistUrl) {
-        if (playlistUrl != null && playlistUrl.mediaUrl.orEmpty().isNotBlank()) {
+        val mediaUrls = playlistUrl?.mediaUrls
+        if (!mediaUrls.isNullOrEmpty()) {
             exoPlayer.setMediaItem(
                 MediaItem.Builder()
-                    .setUri(playlistUrl.mediaUrl)
+                    .setUri(mediaUrls.first().rawUrl)
                     .setMediaId(playlistUrl.title)
                     .setTag(playlistUrl)
-                    .setMediaMetadata(
-                        MediaMetadata.Builder()
-                            .setDisplayTitle(playlistUrl.title + "[${playlistUrl.size}]")
-                            .build()
-                    )
                     .build()
             )
             exoPlayer.prepare()
-            exoPlayer.playWhenReady = false
+            exoPlayer.playWhenReady = !firstSetData
 
-            debugLog { "SetMediaItem: ${playlistUrl.mediaUrl}" }
+            firstSetData = false
         }
     }
 
-    val lifecycleOwner = LocalLifecycleOwner.current
+    LifecycleEventEffect(event = Lifecycle.Event.ON_STOP) {
+        if (exoPlayer.isPlaying) {
+            exoPlayer.pause()
+            danmakuPlayer.pause()
+        }
+
+        firstSetData = true
+    }
 
     Box(modifier = modifier) {
         AndroidView(

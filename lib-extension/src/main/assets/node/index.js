@@ -21497,6 +21497,18 @@ const startServer = (port = 3000) => {
             res.json({ error: e === null || e === void 0 ? void 0 : e.toString(), code: 400 });
         }
     }));
+    // 媒体播放列表的条目的真实播放媒体源链接
+    app.post('/api/media/url/:hash', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const extension = getMediaExtension(req.params.hash);
+            const url = req.body;
+            res.json(yield extension.source.fetchMediaRawUrl(url));
+        }
+        catch (e) {
+            res.status(400);
+            res.json({ error: e === null || e === void 0 ? void 0 : e.toString(), code: 400 });
+        }
+    }));
     // 启动服务器
     const server = app.listen(port, () => {
         console.log(`NodeJs 扩展服务已启动 http://localhost:${port}`);

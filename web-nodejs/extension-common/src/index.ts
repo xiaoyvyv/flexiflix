@@ -2,7 +2,7 @@ import {FlexMediaDetail} from "./model/FlexMediaDetail";
 import {FlexMediaDetailSeries} from "./model/FlexMediaDetailSeries";
 import {FlexMediaDetailTab} from "./model/FlexMediaDetailTab";
 import {FlexMediaPlaylist} from "./model/FlexMediaPlaylist";
-import {FlexMediaPlaylistUrl} from "./model/FlexMediaPlaylistUrl";
+import {FlexMediaPlaylistUrl, FlexMediaPlaylistUrlRaw} from "./model/FlexMediaPlaylistUrl";
 import {FlexMediaSection} from "./model/FlexMediaSection";
 import {FlexMediaSectionItem, ImageLayout, OverlayText} from "./model/FlexMediaSectionItem";
 import {FlexMediaTag} from "./model/FlexMediaTag";
@@ -17,6 +17,7 @@ export {
     FlexMediaDetailTab,
     FlexMediaPlaylist,
     FlexMediaPlaylistUrl,
+    FlexMediaPlaylistUrlRaw,
     FlexMediaSection,
     FlexMediaSectionItem,
     FlexMediaTag,

@@ -1,11 +1,9 @@
 package com.xiaoyv.comic.flexiflix.ui.screen.feature.detail.tab
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -38,11 +36,13 @@ import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.GlideImage
 import com.xiaoyv.comic.flexiflix.ui.component.ContainerCard
+import com.xiaoyv.comic.flexiflix.ui.screen.feature.home.MediaHomeSectionItemRow
 import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
 import com.xiaoyv.flexiflix.extension.model.FlexMediaTag
 import com.xiaoyv.flexiflix.extension.model.FlexMediaUser
 import com.xiaoyv.flexiflix.extension.model.FlexMediaDetail
+import com.xiaoyv.flexiflix.extension.model.FlexMediaDetailSeries
 import com.xiaoyv.flexiflix.extension.model.FlexMediaDetailTab
 import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylist
 import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
@@ -80,7 +80,7 @@ fun MediaDetailSummaryTab(
             overflow = TextOverflow.Ellipsis
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -117,7 +117,7 @@ fun MediaDetailSummaryTab(
             fontWeight = FontWeight.SemiBold,
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         Text(
             modifier = Modifier.fillMaxWidth(),
@@ -130,6 +130,7 @@ fun MediaDetailSummaryTab(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // 播放列表
         LazyRow(modifier = Modifier.fillMaxWidth()) {
             items(mediaDetail.playlist.orEmpty()) {
                 Text(
@@ -147,262 +148,115 @@ fun MediaDetailSummaryTab(
 
         // 当前播放列表具体的章节话数等
         if (currentPlayList != null && currentPlayList.items.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(8.dp))
-            FlowRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        shape = CardDefaults.shape,
-                        color = CardDefaults.cardColors().containerColor
+            Spacer(modifier = Modifier.height(12.dp))
+            LazyRow(modifier = Modifier.fillMaxWidth()) {
+                items(currentPlayList.items.size) { index ->
+                    MediaDetailMediaItem(
+                        url = currentPlayList.items[index],
+                        index = index,
+                        currentPlayList = currentPlayList,
+                        currentPlayItem = currentPlayItem,
+                        onChangePlayItem = onChangePlayItem
                     )
-                    .padding(horizontal = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy((-12).dp)
-            ) {
-                currentPlayList.items.forEachIndexed { index, url ->
-                    // 选中
-                    if (currentPlayItem?.id == url.id) {
-                        Card(
-                            colors = CardDefaults.elevatedCardColors().copy(
-                                containerColor = MaterialTheme.colorScheme.primary
-                            ),
-                            onClick = { onChangePlayItem(currentPlayList, index) }) {
-                            Text(
-                                modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
-                                text = url.title,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onPrimary
-                            )
-                        }
-                    }
-                    // 未选中
-                    else {
-                        OutlinedCard(onClick = { onChangePlayItem(currentPlayList, index) }) {
-                            Text(
-                                modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
-                                text = url.title,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
                 }
             }
         }
 
+        // 系列作品（推荐等）
+        if (!mediaDetail.series.isNullOrEmpty()) {
+            MediaDetailSummarySeries(
+                mediaDetail = mediaDetail,
+                onSectionMediaClick = onSectionMediaClick
+            )
+        }
 
-        /*
-                ConstraintLayout(modifier = Modifier
-                    .fillMaxWidth()
-                    .constrainAs(info) {
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        top.linkTo(playCount.bottom, 8.dp)
-                        width = Dimension.fillToConstraints
-                    }
-                ) {
-                    val (avatar, author, type, description) = createRefs()
+        Spacer(modifier = Modifier.height(40.dp))
+    }
+}
 
-                    ElevatedImage(
-                        modifier = Modifier
-                            .size(44.dp)
-                            .constrainAs(avatar) {
-                                top.linkTo(parent.top, 12.dp)
-                                start.linkTo(parent.start, 12.dp)
-                            },
-                        model = mediaDetail.publisher.avatar,
-                    )
+/**
+ * 系列作品
+ */
+@Composable
+fun MediaDetailSummarySeries(
+    mediaDetail: FlexMediaDetail,
+    onSectionMediaClick: (FlexMediaSectionItem) -> Unit
+) {
+    mediaDetail.series?.forEach { series ->
+        Spacer(modifier = Modifier.height(16.dp))
 
-                    Text(
-                        modifier = Modifier.constrainAs(author) {
-                            top.linkTo(avatar.top)
-                            start.linkTo(avatar.end, 8.dp)
-                            end.linkTo(parent.end, 12.dp)
-                            width = Dimension.fillToConstraints
-                        },
-                        text = mediaDetail.publisher.name,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = series.title,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.SemiBold,
+        )
 
-                    Text(
-                        modifier = Modifier.constrainAs(type) {
-                            start.linkTo(avatar.end, 8.dp)
-                            end.linkTo(parent.end, 12.dp)
-                            bottom.linkTo(avatar.bottom)
-                            width = Dimension.fillToConstraints
-                        },
-                        text = mediaDetail.type,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+        Spacer(modifier = Modifier.height(12.dp))
 
-                }*/
-
-        // https://top.1080pzy.co/202311/30/xR6MwizRs73/video/index.m3u8
-        // 播放系列
-        /*        if (mediaDetail.series.isNotEmpty()) {
-                    ContainerCard(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .constrainAs(series) {
-                                start.linkTo(parent.start, 16.dp)
-                                end.linkTo(parent.end, 16.dp)
-                                top.linkTo(description.bottom, 16.dp)
-                                width = Dimension.fillToConstraints
-                            },
-                        onClick = {},
-                    ) {
-                        MediaDetailSummarySeries(
-                            modifier = Modifier.fillMaxWidth(),
-                            mediaDetail = mediaDetail,
-                            onSectionMediaClick = onSectionMediaClick
-                        )
-                    }
-                }*/
-
-        /* ContainerCard(
-             modifier = Modifier.constrainAs(tags) {
-                 start.linkTo(parent.start, 16.dp)
-                 end.linkTo(parent.end, 16.dp)
-                 top.linkTo(series.bottom, 16.dp)
-                 bottom.linkTo(parent.bottom, 40.dp)
-                 width = Dimension.fillToConstraints
-             },
-             onClick = {}
-         ) {
-             Column {
-                 Text(
-                     modifier = Modifier.padding(start = 12.dp, top = 12.dp, bottom = 8.dp),
-                     text = "TAGs",
-                     style = MaterialTheme.typography.titleLarge,
-                     color = MaterialTheme.colorScheme.onSurface,
-                     fontWeight = FontWeight.SemiBold
-                 )
-
-                 FlowRow(
-                     modifier = Modifier
-                         .fillMaxWidth()
-                         .padding(start = 12.dp, bottom = 8.dp),
-                     horizontalArrangement = Arrangement.Start
-                 ) {
-                     mediaDetail.tags.forEach {
-                         ElevatedSuggestionChip(
-                             modifier = Modifier.padding(end = 12.dp),
-                             onClick = {
-
-                             },
-                             label = {
-                                 Text(text = it.name)
-                             }
-                         )
-                     }
-                 }
-             }
-         }*/
+        MediaHomeSectionItemRow(
+            modifier = Modifier.fillMaxSize(),
+            itemModifier = Modifier.padding(end = 16.dp),
+            items = series.items,
+            onSectionMediaClick = onSectionMediaClick
+        )
     }
 }
 
 @Composable
-fun MediaDetailSummarySeries(
-    modifier: Modifier,
-    mediaDetail: FlexMediaDetail,
-    onSectionMediaClick: (FlexMediaSectionItem) -> Unit
+fun MediaDetailMediaItem(
+    url: FlexMediaPlaylistUrl,
+    index: Int,
+    currentPlayList: FlexMediaPlaylist,
+    currentPlayItem: FlexMediaPlaylistUrl?,
+    onChangePlayItem: (FlexMediaPlaylist, Int) -> Unit = { _, _ -> },
 ) {
-    val gradientColors = remember {
-        listOf(
-            Color.Black.copy(alpha = 0f),
-            Color.Black.copy(alpha = 0.1f),
-            Color.Black.copy(alpha = 0.9f),
-        )
+    val text = remember {
+        val spit = url.title.split("-")
+        spit.getOrNull(0).orEmpty().trim() to spit.getOrNull(1).orEmpty().trim()
     }
 
-    val series = mediaDetail.series.orEmpty().maxBy { it.items.size }
+    // 选中
+    val selected = currentPlayItem?.id == url.id
 
-    Column(modifier = modifier) {
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 12.dp, top = 12.dp, bottom = 8.dp),
-            text = "系列 ${series.count} 条",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.SemiBold,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
-
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 6.dp, end = 6.dp, top = 6.dp, bottom = 12.dp)
+    Card(
+        modifier = Modifier
+            .width(120.dp)
+            .aspectRatio(4 / 2f)
+            .padding(end = 12.dp),
+        shape = if (selected) CardDefaults.outlinedShape else CardDefaults.shape,
+        colors = if (selected) {
+            CardDefaults.outlinedCardColors()
+                .copy(containerColor = MaterialTheme.colorScheme.primary)
+        } else {
+            CardDefaults.cardColors()
+        },
+        onClick = { onChangePlayItem(currentPlayList, index) }
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center
         ) {
-            items(series.items) { media ->
-                Column(
-                    modifier = Modifier
-                        .width(185.dp)
-                        .padding(horizontal = 6.dp)
-                ) {
-                    ContainerCard(onClick = { onSectionMediaClick(media) }) {
-                        Box(Modifier.fillMaxWidth()) {
-                            GlideImage(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .aspectRatio(media.requireLayout.aspectRatio)
-                                    .drawWithContent {
-                                        drawContent()
-                                        drawRect(
-                                            brush = Brush.verticalGradient(
-                                                colors = gradientColors,
-                                                startY = 0f,
-                                                endY = size.height
-                                            )
-                                        )
-                                    },
-                                model = media.cover,
-                                contentDescription = null,
-                                transition = CrossFade,
-                                contentScale = ContentScale.Crop
-                            )
+            Text(
+                modifier = Modifier.padding(horizontal = 12.dp),
+                text = text.first,
+                style = MaterialTheme.typography.bodySmall,
+                color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
 
-                            Text(
-                                modifier = Modifier
-                                    .padding(bottom = 6.dp, start = 6.dp)
-                                    .align(Alignment.BottomStart),
-                                text = media.requireOverlay.bottomStart.orEmpty(),
-                                style = MaterialTheme.typography.bodySmall,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                color = Color.White
-                            )
-
-                            Text(
-                                modifier = Modifier
-                                    .padding(bottom = 6.dp, end = 6.dp)
-                                    .align(Alignment.BottomEnd),
-                                text = media.requireOverlay.bottomEnd.orEmpty(),
-                                style = MaterialTheme.typography.bodySmall,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                color = Color.White
-                            )
-                        }
-                    }
-
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 12.dp),
-                        text = media.title,
-                        style = MaterialTheme.typography.bodyMedium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                }
+            if (text.second.isNotBlank()) {
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    modifier = Modifier.padding(horizontal = 12.dp),
+                    text = text.second,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
     }
@@ -420,9 +274,9 @@ fun PreviewMediaDetailScreen() {
                     repeat(20) {
                         add(
                             FlexMediaPlaylistUrl(
-                                id = "",
-                                mediaUrl = "",
-                                title = "第 $it 集"
+                                id = it.toString(),
+                                mediaUrls = emptyList(),
+                                title = "第 $it 集-标题"
                             )
                         )
                     }
@@ -434,11 +288,32 @@ fun PreviewMediaDetailScreen() {
             ),
         )
     }
+
+    val series = mutableListOf<FlexMediaDetailSeries>().apply {
+        repeat(2) {
+            add(
+                FlexMediaDetailSeries(
+                    title = "测试",
+                    mediaId = "",
+                    count = 3,
+                    items = listOf(
+                        FlexMediaSectionItem(
+                            id = "",
+                            cover = "https://tx-free-imgs2.acfun.cn/kimg/bs2/zt-image-host/ChYwOGQzZWY5ZjAzMTBkYWU0OGM4ZTAxEJvM1y8.webp",
+                            title = "标题",
+                            description = ""
+                        )
+                    )
+                )
+            )
+        }
+    }
+
     AppTheme {
         MediaDetailSummaryTab(
             onSectionMediaClick = {},
-            currentPlayList = playlist.firstOrNull(),
-            currentPlayItem = null,
+            currentPlayList = playlist.first(),
+            currentPlayItem = playlist.first().items.first(),
             mediaDetail = FlexMediaDetail(
                 id = "1",
                 title = "回复术士",
@@ -473,7 +348,7 @@ fun PreviewMediaDetailScreen() {
                     FlexMediaTag(id = "", name = "XXX"),
                     FlexMediaTag(id = "", name = "XXX"),
                 ),
-                series = emptyList(),
+                series = series,
                 relativeTabs = listOf(
                     FlexMediaDetailTab(
                         id = "r",

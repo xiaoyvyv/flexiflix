@@ -1,6 +1,7 @@
 package com.xiaoyv.comic.flexiflix.model
 
 import com.xiaoyv.flexiflix.extension.MediaSourceExtension
+import com.xiaoyv.flexiflix.extension.MediaSourceType
 
 /**
  * [InstalledMediaSource]
@@ -13,5 +14,7 @@ data class InstalledMediaSource(
     val sources: List<MediaSourceExtension>,
     val extensionName: String,
     val extensionPath: String,
-    val extensionIcon: Any? = null
+    val extensionIcon: Any? = null,
+    @MediaSourceType
+    val type: Int = MediaSourceType.TYPE_UNKNOWN
 )

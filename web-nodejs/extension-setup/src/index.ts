@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 import express from 'express';
-import {MediaSourceExtension} from "@xiaoyvyv/flexiflex-extension-common";
+import {FlexMediaPlaylistUrl, MediaSourceExtension} from "@xiaoyvyv/flexiflex-extension-common";
 import crypto from "crypto";
 import e from "express";
 
@@ -111,7 +111,7 @@ const startServer = (port = 3000) => {
         try {
             const extension = getMediaExtension(req.params.hash);
             res.json(await extension.source.fetchHomeSections());
-        } catch (e) {
+        } catch ( e) {
             res.status(400);
             res.json({error: e?.toString(), code: 400});
         }
@@ -127,6 +127,18 @@ const startServer = (port = 3000) => {
             const extrasMap = new Map(Object.entries(extras).map(([key, value]) => [key, String(value)]));
 
             res.json(await extension.source.fetchMediaDetail(id, extrasMap));
+        } catch (e) {
+            res.status(400);
+            res.json({error: e?.toString(), code: 400});
+        }
+    });
+
+    // 媒体播放列表的条目的真实播放媒体源链接
+    app.post('/api/media/url/:hash', async (req, res) => {
+        try {
+            const extension = getMediaExtension(req.params.hash);
+            const url = req.body as FlexMediaPlaylistUrl;
+            res.json(await extension.source.fetchMediaRawUrl(url));
         } catch (e) {
             res.status(400);
             res.json({error: e?.toString(), code: 400});

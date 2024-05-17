@@ -1,6 +1,7 @@
-import {MediaSourceExtension, MediaSourceInfo} from "@xiaoyvyv/flexiflex-extension-common";
+import {FlexMediaPlaylistUrl, MediaSourceExtension, MediaSourceInfo} from "@xiaoyvyv/flexiflex-extension-common";
 import {AcfunSource} from "./source/source";
 import utils from "./utils/utils";
+import {load} from "cheerio";
 
 /**
  * 自定义一个插件 ID，必须全局唯一
@@ -16,7 +17,7 @@ const extensionId = "js-acfun-cn"
  */
 const extensionInfo: MediaSourceInfo = {
     id: extensionId,
-    name: "Acfun.CN - JS 数据源扩展",
+    name: "Acfun.CN 数据源",
     description: "Acfun.CN - JS 数据源扩展",
     author: "xiaoyvyv",
     nsfw: false,
@@ -35,13 +36,11 @@ module.exports = main;
 // 打包发布时，请确保顶级只有一些初始化模块的逻辑，没有直接执行耗时操作。
 if (require.main === module) {
     console.log("Dev: start main");
-    const port = process.env.PORT || 3000;
-    const environment = process.env.NODE_ENV || 'development';
-
 
     main.source
-        .fetchMediaDetail("aa5023295", utils.emptyExtras())
+        .fetchMediaRawUrl({id:"aa6140273_36188_2077598"} as FlexMediaPlaylistUrl)
         .then((res) => {
             console.log(JSON.stringify(res, null, 4));
         });
+
 }

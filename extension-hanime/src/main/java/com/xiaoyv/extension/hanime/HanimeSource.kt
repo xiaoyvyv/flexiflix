@@ -184,20 +184,24 @@ class HanimeSource : HttpParseSource() {
                     avatar = userWrapper?.select("#video-user-avatar")?.attr("src").orEmpty(),
                     role = UNKNOWN_STRING
                 ),
-                playlist = player.select("source").map { source ->
+                playlist = listOf(
                     FlexMediaPlaylist(
-                        title = source.attr("size"),
-                        items = listOf(
+                        items = player.select("source").mapIndexed { index, source ->
                             FlexMediaPlaylistUrl(
-                                id = source.attr("size"),
+                                id = index.toString(),
                                 title = source.attr("size"),
-                                type = source.attr("type"),
-                                mediaUrl = source.attr("src"),
-                                size = source.attr("size"),
+                                mediaUrls = listOf(
+                                    FlexMediaPlaylistUrl.SourceUrl(
+                                        name = source.attr("size"),
+                                        type = source.attr("type"),
+                                        rawUrl = source.attr("src"),
+                                        size = source.attr("size"),
+                                    )
+                                ),
                             )
-                        )
+                        }
                     )
-                },
+                ),
                 series = listOf(
                     FlexMediaDetailSeries(
                         mediaId = id,

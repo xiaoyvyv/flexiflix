@@ -189,6 +189,7 @@ class ExtensionRepositoryImpl @Inject constructor(
                     ?: nameWithoutExtension
 
                 return InstalledMediaSource(
+                    type = MediaSourceType.TYPE_JVM,
                     extensionName = extensionName,
                     extensionPath = absolutePath,
                     extensionIcon = drawable,
@@ -206,6 +207,7 @@ class ExtensionRepositoryImpl @Inject constructor(
                 if (extensions.isEmpty()) return null
 
                 return InstalledMediaSource(
+                    type = MediaSourceType.TYPE_NODEJS,
                     extensionName = extensions.first().info.name,
                     extensionPath = absolutePath,
                     extensionIcon = extensions.first().info.icon,

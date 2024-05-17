@@ -45,7 +45,6 @@ import com.xiaoyv.comic.flexiflix.ui.component.PageStateScreen
 import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
 import com.xiaoyv.comic.flexiflix.ui.component.StringLabelPage
 import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
-import com.xiaoyv.flexiflix.common.utils.debugLog
 import com.xiaoyv.flexiflix.common.utils.isStoped
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
@@ -239,121 +238,140 @@ fun MediaHomeSections(
     onSectionClick: (FlexMediaSection) -> Unit,
     onSectionMediaClick: (FlexMediaSectionItem) -> Unit
 ) {
-
     for (i in 1 until pagingItems.size) {
-        val item = pagingItems[i]
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 16.dp)
-                    .clickable {
-                        onSectionClick(item)
-                    },
-                text = item.title,
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+        MediaHomeSectionItem(
+            item = pagingItems[i],
+            onSectionClick = onSectionClick,
+            onSectionMediaClick = onSectionMediaClick
+        )
+    }
+}
 
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
-            ) {
-                items(item.items) { media ->
+@Composable
+fun MediaHomeSectionItem(
+    item: FlexMediaSection,
+    onSectionClick: (FlexMediaSection) -> Unit,
+    onSectionMediaClick: (FlexMediaSectionItem) -> Unit
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 16.dp)
+                .clickable {
+                    onSectionClick(item)
+                },
+            text = item.title,
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.SemiBold,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
 
-                    Column(
+        MediaHomeSectionItemRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp),
+            itemModifier = Modifier.padding(horizontal = 8.dp),
+            items = item.items,
+            onSectionMediaClick = onSectionMediaClick
+        )
+    }
+}
+
+@Composable
+fun MediaHomeSectionItemRow(
+    modifier: Modifier = Modifier,
+    itemModifier: Modifier = Modifier,
+    items: List<FlexMediaSectionItem>,
+    onSectionMediaClick: (FlexMediaSectionItem) -> Unit
+) {
+    LazyRow(modifier = modifier) {
+        items(items) { media ->
+            Column(modifier = itemModifier.width(media.requireLayout.widthDp.dp)) {
+                Box(Modifier.fillMaxWidth()) {
+                    ElevatedImage(
                         modifier = Modifier
-                            .width(media.requireLayout.widthDp.dp)
-                            .padding(horizontal = 8.dp)
-                    ) {
-                        Box(Modifier.fillMaxWidth()) {
-                            ElevatedImage(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .aspectRatio(media.requireLayout.aspectRatio),
-                                overlayBrush = Brush.verticalGradient(
-                                    remember {
-                                        listOf(
-                                            Color.Black.copy(alpha = 0f),
-                                            Color.Black.copy(alpha = 0.1f),
-                                            Color.Black.copy(alpha = 0.9f),
-                                        )
-                                    }
-                                ),
-                                model = media.cover,
-                                onClick = { onSectionMediaClick(media) },
-                            )
+                            .fillMaxWidth()
+                            .aspectRatio(media.requireLayout.aspectRatio),
+                        overlayBrush = Brush.verticalGradient(
+                            remember {
+                                listOf(
+                                    Color.Black.copy(alpha = 0f),
+                                    Color.Black.copy(alpha = 0.1f),
+                                    Color.Black.copy(alpha = 0.9f),
+                                )
+                            }
+                        ),
+                        model = media.cover,
+                        onClick = { onSectionMediaClick(media) },
+                    )
 
-                            if (media.requireOverlay.topStart.orEmpty().isNotBlank()) Text(
-                                modifier = Modifier
-                                    .padding(vertical = 6.dp, horizontal = 6.dp)
-                                    .background(
-                                        color = MaterialTheme.colorScheme.primary,
-                                        shape = MaterialTheme.shapes.small
-                                    )
-                                    .padding(4.dp)
-                                    .align(Alignment.TopStart),
-                                text = media.requireOverlay.topStart.orEmpty(),
-                                style = MaterialTheme.typography.bodySmall,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                color = MaterialTheme.colorScheme.onPrimary
+                    if (media.requireOverlay.topStart.orEmpty().isNotBlank()) Text(
+                        modifier = Modifier
+                            .padding(vertical = 6.dp, horizontal = 6.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.primary,
+                                shape = MaterialTheme.shapes.small
                             )
+                            .padding(4.dp)
+                            .align(Alignment.TopStart),
+                        text = media.requireOverlay.topStart.orEmpty(),
+                        style = MaterialTheme.typography.bodySmall,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
 
-                            if (media.requireOverlay.topEnd.orEmpty().isNotBlank()) Text(
-                                modifier = Modifier
-                                    .padding(vertical = 6.dp, horizontal = 6.dp)
-                                    .background(
-                                        color = MaterialTheme.colorScheme.primary,
-                                        shape = MaterialTheme.shapes.small
-                                    )
-                                    .padding(4.dp)
-                                    .align(Alignment.TopEnd),
-                                text = media.requireOverlay.topEnd.orEmpty(),
-                                style = MaterialTheme.typography.bodySmall,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                color = MaterialTheme.colorScheme.onPrimary
+                    if (media.requireOverlay.topEnd.orEmpty().isNotBlank()) Text(
+                        modifier = Modifier
+                            .padding(vertical = 6.dp, horizontal = 6.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.primary,
+                                shape = MaterialTheme.shapes.small
                             )
+                            .padding(4.dp)
+                            .align(Alignment.TopEnd),
+                        text = media.requireOverlay.topEnd.orEmpty(),
+                        style = MaterialTheme.typography.bodySmall,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
 
-                            Text(
-                                modifier = Modifier
-                                    .padding(vertical = 6.dp, horizontal = 6.dp)
-                                    .align(Alignment.BottomStart),
-                                text = media.requireOverlay.bottomStart.orEmpty(),
-                                style = MaterialTheme.typography.bodySmall,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                color = Color.White
-                            )
+                    Text(
+                        modifier = Modifier
+                            .padding(vertical = 6.dp, horizontal = 6.dp)
+                            .align(Alignment.BottomStart),
+                        text = media.requireOverlay.bottomStart.orEmpty(),
+                        style = MaterialTheme.typography.bodySmall,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = Color.White
+                    )
 
-                            Text(
-                                modifier = Modifier
-                                    .padding(vertical = 6.dp, horizontal = 6.dp)
-                                    .align(Alignment.BottomEnd),
-                                text = media.requireOverlay.bottomEnd.orEmpty(),
-                                style = MaterialTheme.typography.bodySmall,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                color = Color.White
-                            )
-                        }
-
-                        Text(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 12.dp),
-                            text = media.title,
-                            style = MaterialTheme.typography.bodyMedium,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
+                    Text(
+                        modifier = Modifier
+                            .padding(vertical = 6.dp, horizontal = 6.dp)
+                            .align(Alignment.BottomEnd),
+                        text = media.requireOverlay.bottomEnd.orEmpty(),
+                        style = MaterialTheme.typography.bodySmall,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = Color.White
+                    )
                 }
+
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 12.dp),
+                    text = media.title,
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
             }
         }
     }
