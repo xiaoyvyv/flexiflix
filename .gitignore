@@ -16,9 +16,9 @@ local.properties
 /web-nodejs/extension-samples/extension-acfun/dist/
 /web-nodejs/extension-samples/extension-acfun/dist-full/
 /web-nodejs/extension-samples/extension-acfun/node_modules/
-/web-nodejs/setup/dist/
-/web-nodejs/setup/dist-full/
-/web-nodejs/setup/node_modules/
+/web-nodejs/extension-setup/dist/
+/web-nodejs/extension-setup/dist-full/
+/web-nodejs/extension-setup/node_modules/
 /web-nodejs/extension-common/dist/
 /web-nodejs/extension-common/dist-full/
 /web-nodejs/extension-common/node_modules/

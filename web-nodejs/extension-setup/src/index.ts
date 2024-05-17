@@ -3,6 +3,7 @@ import fs from "fs";
 import express from 'express';
 import {MediaSourceExtension} from "@xiaoyvyv/flexiflex-extension-common";
 import crypto from "crypto";
+import e from "express";
 
 const modules: Map<string, MediaSourceExtension> = new Map<string, MediaSourceExtension>();
 
@@ -116,10 +117,20 @@ const startServer = (port = 3000) => {
         }
     });
 
-    // 示例 API 端点，模拟一个需要时间处理的请求
-    app.get('/api/slow', async (req, res) => {
-        await delay(3000);
-        res.json({error: 'This is a slow response', code: 400});
+    // 媒体详情页数据
+    app.get('/api/media/detail/:hash', async (req, res) => {
+        try {
+            const extension = getMediaExtension(req.params.hash);
+            const id = req.query.id?.toString() || '';
+            const extras = req.query;
+            delete extras.id;
+            const extrasMap = new Map(Object.entries(extras).map(([key, value]) => [key, String(value)]));
+
+            res.json(await extension.source.fetchMediaDetail(id, extrasMap));
+        } catch (e) {
+            res.status(400);
+            res.json({error: e?.toString(), code: 400});
+        }
     });
 
     // 启动服务器

@@ -30,7 +30,7 @@ import org.jsoup.nodes.Element
  * @author why
  * @since 5/8/24
  */
-@com.xiaoyv.flexiflix.extension.impl.java.annotation.MediaSource(
+@MediaSource(
     id = "hanime.com",
     name = "Hanime",
     author = "xiaoyv",

@@ -45,6 +45,7 @@ import com.xiaoyv.comic.flexiflix.ui.component.PageStateScreen
 import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
 import com.xiaoyv.comic.flexiflix.ui.component.StringLabelPage
 import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
+import com.xiaoyv.flexiflix.common.utils.debugLog
 import com.xiaoyv.flexiflix.common.utils.isStoped
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
@@ -262,6 +263,7 @@ fun MediaHomeSections(
                     .padding(horizontal = 8.dp)
             ) {
                 items(item.items) { media ->
+
                     Column(
                         modifier = Modifier
                             .width(media.requireLayout.widthDp.dp)

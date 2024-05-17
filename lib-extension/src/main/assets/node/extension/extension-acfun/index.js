@@ -11088,7 +11088,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.fetchHomeSections = void 0;
+exports.fetchMediaDetail = exports.fetchHomeSections = void 0;
 const cheerio_1 = __nccwpck_require__(4612);
 const utils_1 = __importDefault(__nccwpck_require__(239));
 const requestInit = {
@@ -11097,81 +11097,170 @@ const requestInit = {
         'Referer': 'https://www.acfun.cn'
     }
 };
-const fetchHomeSections = () => __awaiter(void 0, void 0, void 0, function* () {
-    const html = yield fetch('https://www.acfun.cn/v/list155/index.htm', requestInit)
-        .then((res) => res.text() || "");
-    const $ = (0, cheerio_1.load)(html);
-    const sections = [];
-    $(".channel-slider").toArray().forEach(element => {
-        const sliderWrapItems = $(element)
-            .find(".slider-wrap ul.slider-con > li")
-            .map((_, li) => {
-            const item = {
-                id: utils_1.default.subLast($(li).find("a").attr("href"), '/'),
-                title: $(li).find("span").text().trim(),
-                cover: $(li).find("img").attr("src") || '',
-                description: $(li).find("span").text().trim(),
+/**
+ * 拉取首页数据
+ */
+function fetchHomeSections() {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a, _b;
+        const html = yield fetch('https://www.acfun.cn/v/list155/index.htm', requestInit)
+            .then((res) => res.text() || "");
+        const $ = (0, cheerio_1.load)(html);
+        // 解析数据集合
+        const script = $("script")
+            .filter((_, el) => $(el).text().indexOf("__INITIAL_STATE__") > 0)
+            .map((_, el) => $(el).text())
+            .toArray()[0] || '';
+        const data = (script.match(/__INITIAL_STATE__[\s\S]+?};/) || [])[0] || '';
+        const js = 'const ' + data + ';__INITIAL_STATE__';
+        const entity = eval(js);
+        const blockList = ((_a = entity['channel']) === null || _a === void 0 ? void 0 : _a['blockList']) || [];
+        const sections = [];
+        function contentToItems(content) {
+            const webContents = content["webContents"] || [];
+            return webContents.map(sub => {
+                const overlayText = {
+                    bottomEnd: '播放：' + sub['formatViewCount'],
+                    topStart: '🔥' + sub['formatCommentCount'],
+                    bottomStart: undefined,
+                    topEnd: undefined,
+                };
+                const sectionItem = {
+                    id: utils_1.default.subLast(sub['link'], '/'),
+                    title: sub['title'] || '',
+                    description: sub['title'] || '',
+                    cover: sub['image'] || '',
+                    extras: utils_1.default.emptyExtras(),
+                    overlay: overlayText,
+                    layout: undefined,
+                    user: undefined
+                };
+                return sectionItem;
+            });
+        }
+        // 顶部热门 Banner
+        const banner = ((_b = blockList[0]) === null || _b === void 0 ? void 0 : _b['content']) || [];
+        const banners = banner.map(content => {
+            const section = {
                 extras: utils_1.default.emptyExtras(),
-                layout: undefined, overlay: undefined, user: undefined,
+                id: '',
+                title: '热门番剧',
+                items: contentToItems(content),
             };
-            return item;
-        })
-            .toArray();
-        const sliderWrap = {
-            id: '',
-            title: '热门番剧',
-            items: sliderWrapItems,
-            extras: utils_1.default.emptyExtras(),
-        };
-        const sliderRightItems = $(element)
-            .find(".slider-right ul > li")
-            .map((_, li) => {
-            const item = {
-                id: utils_1.default.subLast($(li).find("a").attr("href"), '/'),
-                title: $(li).find("img").attr("alt") || '',
-                cover: $(li).find("img").attr("src") || '',
-                description: $(li).find("img").attr("alt") || '',
-                overlay: {
-                    bottomEnd: $(li).find("i.icon-view-player")
-                        .text()
-                        .replace("", "")
-                        .trim(),
-                    topStart: $(li).find("i.icon-danmu")
-                        .text()
-                        .replace("", "")
-                        .trim(),
-                },
-                extras: undefined,
-                user: undefined,
-                layout: undefined
+            return section;
+        });
+        // 下方栏目
+        const items = blockList
+            .filter(item => item['blockType'] === 16)
+            .map(item => {
+            const content = (item['content'] || [])[0] || {};
+            const section = {
+                extras: utils_1.default.emptyExtras(),
+                id: item['id'] || '',
+                title: item['name'],
+                items: contentToItems(content),
             };
-            return item;
-        })
-            .toArray();
-        const sliderRight = {
-            id: '',
-            title: '热门番剧',
-            items: sliderRightItems,
-            extras: utils_1.default.emptyExtras(),
-        };
-        sections.push(sliderWrap);
-        sections.push(sliderRight);
+            return section;
+        });
+        sections.push(...banners);
+        sections.push(...items);
+        return sections;
     });
-    return sections;
-});
+}
 exports.fetchHomeSections = fetchHomeSections;
+/**
+ * 拉取媒体详情数据
+ *
+ * @param id
+ * @param extras
+ */
+function fetchMediaDetail(id, extras) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+        const html = yield fetch(`https://www.acfun.cn/bangumi/${id}`, requestInit)
+            .then((res) => res.text() || "");
+        const $ = (0, cheerio_1.load)(html);
+        const scripts = $("script");
+        // 解析媒体数据
+        const bangumiData = ((_b = (_a = scripts
+            .filter((_, el) => $(el).text().indexOf("window.bangumiData") > 0)
+            .map((_, el) => $(el).text())
+            .toArray()[0]) === null || _a === void 0 ? void 0 : _a.match(/bangumiData[\s\S]+?};/)) === null || _b === void 0 ? void 0 : _b[0]) || '';
+        const bangumiDataEntity = eval(('const ' + bangumiData + ';bangumiData'));
+        const currentVideoInfo = bangumiDataEntity['currentVideoInfo'] || {};
+        const currentVideoId = bangumiDataEntity['videoId'] || '';
+        let currentVideoUrl = "";
+        try {
+            const ksPlayJson = JSON.parse(currentVideoInfo['ksPlayJson']);
+            const ksPlayJsonUrl = (_f = (_e = (_d = (_c = ksPlayJson['adaptationSet']) === null || _c === void 0 ? void 0 : _c[0]) === null || _d === void 0 ? void 0 : _d['representation']) === null || _e === void 0 ? void 0 : _e[0]) === null || _f === void 0 ? void 0 : _f['url'];
+            const ksPlayJsonHevc = JSON.parse(currentVideoInfo['ksPlayJsonHevc']);
+            const ksPlayJsonHevcUrl = (_k = (_j = (_h = (_g = ksPlayJsonHevc['adaptationSet']) === null || _g === void 0 ? void 0 : _g[0]) === null || _h === void 0 ? void 0 : _h['representation']) === null || _j === void 0 ? void 0 : _j[0]) === null || _k === void 0 ? void 0 : _k['url'];
+            currentVideoUrl = ksPlayJsonHevcUrl || ksPlayJsonUrl || '';
+        }
+        catch (e) {
+            console.log(e);
+        }
+        // 解析播放列表
+        const bangumiList = ((_m = (_l = scripts
+            .filter((_, el) => $(el).text().indexOf("window.bangumiList") > 0)
+            .map((_, el) => $(el).text())
+            .toArray()[0]) === null || _l === void 0 ? void 0 : _l.match(/bangumiList[\s\S]+?};/)) === null || _m === void 0 ? void 0 : _m[0]) || '';
+        const bangumiListEntity = eval(('const ' + bangumiList + ';bangumiList'));
+        const playlists = [];
+        const playlist = {
+            title: '播放列表',
+            items: (bangumiListEntity['items'] || []).map(subItem => {
+                var _a;
+                const videoId = subItem['videoId'] || '';
+                const url = {
+                    id: videoId,
+                    title: subItem['episodeName'] + ' - ' + subItem['title'],
+                    cover: ((_a = subItem['imgInfo']) === null || _a === void 0 ? void 0 : _a['thumbnailImageCdnUrl']) || '',
+                    mediaUrl: videoId === currentVideoId ? currentVideoUrl : '',
+                    size: undefined,
+                    type: undefined
+                };
+                return url;
+            }),
+        };
+        playlists.push(playlist);
+        return {
+            id: id,
+            title: bangumiDataEntity['showTitle'] || '',
+            description: bangumiDataEntity['bangumiIntro'] || '',
+            cover: bangumiDataEntity['bangumiCoverImageH'] || '',
+            url: bangumiDataEntity['shareUrl'] || '',
+            type: bangumiDataEntity['episodeName'] || '',
+            playCount: bangumiDataEntity['playCountShow'] || '',
+            createAt: bangumiDataEntity['updateTime'] || '',
+            duration: currentVideoInfo['durationMillis'] || 0,
+            playlist: playlists,
+            size: undefined,
+            publisher: undefined,
+            series: undefined,
+            tags: undefined,
+            relativeTabs: undefined,
+            extras: utils_1.default.emptyExtras()
+        };
+    });
+}
+exports.fetchMediaDetail = fetchMediaDetail;
 
 
 /***/ }),
 
 /***/ 6144:
-/***/ ((module, exports, __nccwpck_require__) => {
+/***/ (function(module, exports, __nccwpck_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const flexiflex_extension_common_1 = __nccwpck_require__(6368);
 const source_1 = __nccwpck_require__(1049);
+const utils_1 = __importDefault(__nccwpck_require__(239));
 /**
  * 自定义一个插件 ID，必须全局唯一
  *
@@ -11190,7 +11279,8 @@ const extensionInfo = {
     author: "xiaoyvyv",
     nsfw: false,
     versionCode: 1,
-    versionName: "1.0.0"
+    versionName: "1.0.0",
+    icon: 'https://imgs.aixifan.com/newUpload/51737407_5c0982b66474402dae1b91ee1d31d7b6.jpeg'
 };
 const main = new flexiflex_extension_common_1.MediaSourceExtension(extensionId, extensionInfo, new source_1.AcfunSource());
 // 必须导出 MediaSourceExtension;
@@ -11202,7 +11292,9 @@ if (require.main === require.cache[eval('__filename')]) {
     console.log("Dev: start main");
     const port = process.env.PORT || 3000;
     const environment = process.env.NODE_ENV || 'development';
-    main.source.fetchHomeSections().then((res) => {
+    main.source
+        .fetchMediaDetail("aa5023295", utils_1.default.emptyExtras())
+        .then((res) => {
         console.log(JSON.stringify(res, null, 4));
     });
 }
@@ -11261,7 +11353,7 @@ class AcfunSource {
     }
     fetchMediaDetail(id, extras) {
         return __awaiter(this, void 0, void 0, function* () {
-            throw new Error("Not yet implemented");
+            return yield api.fetchMediaDetail(id, extras);
         });
     }
     fetchMediaDetailRelative(relativeTab, id, extras) {

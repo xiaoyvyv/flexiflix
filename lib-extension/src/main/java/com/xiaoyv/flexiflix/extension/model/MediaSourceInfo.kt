@@ -29,6 +29,11 @@ data class MediaSourceInfo(
     @SerializedName("description") val description: String,
 
     /**
+     * 数据源描述
+     */
+    @SerializedName("icon") val icon: String,
+
+    /**
      * 数据源作者
      */
     @SerializedName("author") val author: String,
@@ -63,6 +68,10 @@ data class MediaSourceInfo(
                 description = infoMap.getOrDefault(
                     key = MediaSourceInfo::description.name,
                     defaultValue = "暂时没有描述"
+                ),
+                icon = infoMap.getOrDefault(
+                    key = MediaSourceInfo::icon.name,
+                    defaultValue = ""
                 ),
                 author = infoMap.getOrDefault(
                     key = MediaSourceInfo::author.name,

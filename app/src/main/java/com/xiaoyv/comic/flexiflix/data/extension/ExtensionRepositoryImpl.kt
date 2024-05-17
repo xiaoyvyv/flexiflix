@@ -208,7 +208,7 @@ class ExtensionRepositoryImpl @Inject constructor(
                 return InstalledMediaSource(
                     extensionName = extensions.first().info.name,
                     extensionPath = absolutePath,
-                    extensionIcon = null,
+                    extensionIcon = extensions.first().info.icon,
                     created = lastModified().formatTime("yyyy-MM-dd"),
                     sources = extensions
                 )

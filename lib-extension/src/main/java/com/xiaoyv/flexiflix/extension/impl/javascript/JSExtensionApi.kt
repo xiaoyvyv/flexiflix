@@ -14,6 +14,8 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
+import retrofit2.http.QueryMap
 
 /**
  * [JSExtensionApi]
@@ -31,13 +33,12 @@ interface JSExtensionApi {
     @GET("/api/home/{hash}")
     suspend fun fetchHomeSections(@Path("hash") hash: String): List<FlexMediaSection>
 
-    @FormUrlEncoded
-    @POST("/api/sections/{hash}")
+    @GET("/api/sections/{hash}")
     suspend fun fetchSectionMediaPages(
         @Path("hash") hash: String,
-        @Field("id") sectionId: String,
-        @Field("page") page: Int,
-        @FieldMap sectionExtras: Map<String, String>
+        @Query("id") sectionId: String,
+        @Query("page") page: Int,
+        @QueryMap sectionExtras: Map<String, String>
     ): List<FlexMediaSectionItem>
 
     @POST("/api/media/user/{hash}")
@@ -46,12 +47,11 @@ interface JSExtensionApi {
         @Body user: FlexMediaUser
     ): List<FlexMediaSectionItem>
 
-    @FormUrlEncoded
-    @POST("/api/media/detail/{hash}")
+    @GET("/api/media/detail/{hash}")
     suspend fun fetchMediaDetail(
         @Path("hash") hash: String,
-        @Field("id") id: String,
-        @FieldMap extras: Map<String, String>
+        @Query("id") id: String,
+        @QueryMap extras: Map<String, String>
     ): FlexMediaDetail
 
     @FormUrlEncoded

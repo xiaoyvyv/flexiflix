@@ -310,8 +310,6 @@ fun MediaVideoPlayer(
             exoPlayer.prepare()
             exoPlayer.playWhenReady = false
 
-            danmakuPlayer.release()
-
             debugLog { "SetMediaItem: ${playlistUrl.mediaUrl}" }
         }
     }
@@ -369,7 +367,7 @@ fun createPlayerView(
     playerView.setShowSubtitleButton(true)
     playerView.setKeepContentOnPlayerReset(false)
 
-    //快进15s 和 快退5s
+    // 快进15s 和 快退5s
     playerView.setShowFastForwardButton(false)
     playerView.setShowRewindButton(false)
 
@@ -378,11 +376,18 @@ fun createPlayerView(
         ViewGroup.LayoutParams.MATCH_PARENT,
         ViewGroup.LayoutParams.MATCH_PARENT
     )
+
     playerView.setControllerVisibilityListener(ControllerVisibilityListener { visibility ->
         onControllerVisibilityChanged(visibility)
     })
+
     playerView.setFullscreenButtonClickListener {
         onFullscreenButtonClick(context, it)
+
+        // 全屏自动隐藏控制器
+        if (it) {
+            playerView.hideController()
+        }
     }
 
     // 注入叠加层视图

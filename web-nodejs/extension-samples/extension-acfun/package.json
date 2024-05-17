@@ -7,13 +7,13 @@
   "scripts": {
     "acfun-dev": "npx ts-node src/index.ts",
     "acfun-package": "npx tsc",
-    "acfun-package-single": "npx ncc build src/index.ts -o ../../extension-repository/extension-acfun"
+    "acfun-package-single": "npx ncc build src/index.ts -o ../../../lib-extension/src/main/assets/node/extension/extension-acfun"
   },
   "keywords": [],
   "author": "xiaoyvyv",
   "license": "ISC",
   "dependencies": {
-    "@xiaoyvyv/flexiflex-extension-common": "1.0.3",
+    "@xiaoyvyv/flexiflex-extension-common": "1.0.5",
     "cheerio": "^1.0.0-rc.12"
   },
   "devDependencies": {

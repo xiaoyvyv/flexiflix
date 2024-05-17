@@ -1,5 +1,6 @@
 import {MediaSourceExtension, MediaSourceInfo} from "@xiaoyvyv/flexiflex-extension-common";
 import {AcfunSource} from "./source/source";
+import utils from "./utils/utils";
 
 /**
  * 自定义一个插件 ID，必须全局唯一
@@ -20,7 +21,8 @@ const extensionInfo: MediaSourceInfo = {
     author: "xiaoyvyv",
     nsfw: false,
     versionCode: 1,
-    versionName: "1.0.0"
+    versionName: "1.0.0",
+    icon: 'https://imgs.aixifan.com/newUpload/51737407_5c0982b66474402dae1b91ee1d31d7b6.jpeg'
 };
 
 const main = new MediaSourceExtension(extensionId, extensionInfo, new AcfunSource());
@@ -37,7 +39,9 @@ if (require.main === module) {
     const environment = process.env.NODE_ENV || 'development';
 
 
-    main.source.fetchHomeSections().then((res) => {
-        console.log(JSON.stringify(res, null, 4));
-    });
+    main.source
+        .fetchMediaDetail("aa5023295", utils.emptyExtras())
+        .then((res) => {
+            console.log(JSON.stringify(res, null, 4));
+        });
 }

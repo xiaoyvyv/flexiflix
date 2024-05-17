@@ -21481,10 +21481,21 @@ const startServer = (port = 3000) => {
             res.json({ error: e === null || e === void 0 ? void 0 : e.toString(), code: 400 });
         }
     }));
-    // 示例 API 端点，模拟一个需要时间处理的请求
-    app.get('/api/slow', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        yield delay(3000);
-        res.json({ error: 'This is a slow response', code: 400 });
+    // 媒体详情页数据
+    app.get('/api/media/detail/:hash', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        var _a;
+        try {
+            const extension = getMediaExtension(req.params.hash);
+            const id = ((_a = req.query.id) === null || _a === void 0 ? void 0 : _a.toString()) || '';
+            const extras = req.query;
+            delete extras.id;
+            const extrasMap = new Map(Object.entries(extras).map(([key, value]) => [key, String(value)]));
+            res.json(yield extension.source.fetchMediaDetail(id, extrasMap));
+        }
+        catch (e) {
+            res.status(400);
+            res.json({ error: e === null || e === void 0 ? void 0 : e.toString(), code: 400 });
+        }
     }));
     // 启动服务器
     const server = app.listen(port, () => {

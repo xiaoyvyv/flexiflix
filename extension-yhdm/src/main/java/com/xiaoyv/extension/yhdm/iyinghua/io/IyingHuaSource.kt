@@ -25,7 +25,7 @@ import com.xiaoyv.flexiflix.extension.utils.runCatchingPrint
  * @author why
  * @since 5/11/24
  */
-@com.xiaoyv.flexiflix.extension.impl.java.annotation.MediaSource(
+@MediaSource(
     id = "iyinghua.io",
     name = "樱花动漫源 - iyinghua.io",
     author = "xiaoyv",

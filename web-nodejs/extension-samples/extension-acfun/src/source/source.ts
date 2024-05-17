@@ -18,7 +18,7 @@ export class AcfunSource implements Source {
     }
 
     async fetchMediaDetail(id: string, extras: Map<string, string>): Promise<FlexMediaDetail> {
-        throw new Error("Not yet implemented");
+        return await api.fetchMediaDetail(id, extras);
     }
 
     async fetchMediaDetailRelative(relativeTab: FlexMediaDetailTab, id: string, extras: Map<string, string>): Promise<FlexMediaSection[]> {

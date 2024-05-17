@@ -21,6 +21,16 @@ export interface MediaSourceInfo {
     description: string
 
     /**
+     * 图标链接
+     *
+     * - 支持网络图片
+     * - 支持 base64 编码的图片数据，固定格式为 http://localhost/api/image?data=[ImageBase64Data]，ImageBase64Data 为完整的图片 Base64 编码
+     *
+     * 示例链接：http://localhost/api/image?data=data:image/jpeg;base64,FASLKFKAMCZLFAKFQALCAS;FALFQPF==ASF=...
+     */
+    icon: string
+
+    /**
      * 数据源作者
      */
     author: string

@@ -30,7 +30,7 @@ import java.net.URLDecoder
  * @author why
  * @since 5/11/24
  */
-@com.xiaoyv.flexiflix.extension.impl.java.annotation.MediaSource(
+@MediaSource(
     id = "yhdmba.net",
     name = "樱花动漫源 - yhdmba.net",
     author = "xiaoyv",
