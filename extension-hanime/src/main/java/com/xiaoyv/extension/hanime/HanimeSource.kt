@@ -3,15 +3,18 @@
 package com.xiaoyv.extension.hanime
 
 import com.xiaoyv.flexiflix.extension.impl.java.annotation.MediaSource
+import com.xiaoyv.flexiflix.extension.model.FlexKeyValue
 import com.xiaoyv.flexiflix.extension.model.FlexMediaDetail
 import com.xiaoyv.flexiflix.extension.model.FlexMediaDetailSeries
 import com.xiaoyv.flexiflix.extension.model.FlexMediaDetailTab
-import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
-import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
 import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylist
 import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
+import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
+import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
 import com.xiaoyv.flexiflix.extension.model.FlexMediaTag
 import com.xiaoyv.flexiflix.extension.model.FlexMediaUser
+import com.xiaoyv.flexiflix.extension.model.FlexSearchOption
+import com.xiaoyv.flexiflix.extension.model.FlexSearchOptionItem
 import com.xiaoyv.flexiflix.extension.source.HttpParseSource
 import com.xiaoyv.flexiflix.extension.utils.UNKNOWN_LONG
 import com.xiaoyv.flexiflix.extension.utils.UNKNOWN_STRING
@@ -31,8 +34,8 @@ import org.jsoup.nodes.Element
  * @since 5/8/24
  */
 @MediaSource(
-    id = "hanime.com",
-    name = "Hanime",
+    id = "jvm.hanime.com",
+    name = "Hanime Jvm 数据源",
     author = "xiaoyv",
     description = "Datasource for Hanime",
     nsfw = true
@@ -127,7 +130,7 @@ class HanimeSource : HttpParseSource() {
     override suspend fun fetchSectionMediaPages(
         sectionId: String,
         sectionExtras: Map<String, String>,
-        page: Int
+        page: Int,
     ): Result<List<FlexMediaSectionItem>> {
         return runCatchingPrint {
             if (sectionId.isBlank()) return@runCatchingPrint emptyList()
@@ -155,7 +158,7 @@ class HanimeSource : HttpParseSource() {
 
     override suspend fun fetchMediaDetail(
         id: String,
-        extras: Map<String, String>
+        extras: Map<String, String>,
     ): Result<FlexMediaDetail> {
         return runCatchingPrint {
             val document = hanimeApi.queryMediaDetail(id)
@@ -238,15 +241,85 @@ class HanimeSource : HttpParseSource() {
     override suspend fun fetchMediaDetailRelative(
         relativeTab: FlexMediaDetailTab,
         id: String,
-        extras: Map<String, String>
+        extras: Map<String, String>,
     ): Result<List<FlexMediaSection>> {
         return runCatchingPrint {
-
 
             listOf()
         }
     }
 
+    override suspend fun fetchMediaSearchConfig(): Result<FlexSearchOption> {
+        return runCatchingPrint {
+            FlexSearchOption(
+                keywordKey = "query",
+                options = listOf(
+                    FlexSearchOptionItem(
+                        key = "tags[]",
+                        keyLabel = "标签",
+                        maxSelect = -1,
+                        values = SearchOptions.tags
+                    ),
+                    FlexSearchOptionItem(
+                        key = "broad",
+                        keyLabel = "廣泛配對",
+                        maxSelect = 1,
+                        values = listOf(FlexKeyValue("on", "开启"), FlexKeyValue("off", "关闭"))
+                    ),
+                    FlexSearchOptionItem(
+                        key = "sort",
+                        keyLabel = "排序方式",
+                        maxSelect = 1,
+                        values = SearchOptions.sort
+                    ),
+                    FlexSearchOptionItem(
+                        key = "year",
+                        keyLabel = "年份",
+                        maxSelect = 1,
+                        values = SearchOptions.years
+                    ),
+                    FlexSearchOptionItem(
+                        key = "month",
+                        keyLabel = "月份",
+                        maxSelect = 1,
+                        values = SearchOptions.months
+                    )
+                )
+            )
+        }
+    }
+
+    /**
+     * 搜索媒体条目数据
+     */
+    override suspend fun fetchMediaSearchResult(
+        keyword: String,
+        page: Int,
+        searchMap: Map<String, String>,
+    ): Result<List<FlexMediaSectionItem>> {
+        return runCatchingPrint {
+            val tags = searchMap["tags[]"]?.split(",")
+
+            val document = hanimeApi.searchMedia(
+                page = page,
+                query = keyword,
+                genre = searchMap["genre"],
+                month = searchMap["month"],
+                year = searchMap["year"],
+                broad = searchMap["broad"],
+                tags = tags,
+            )
+
+            document.select(".content-padding-new > div > div.col-xs-6")
+                .map { media ->
+                    media.toMediaItem()
+                }
+        }
+    }
+
+    /**
+     * 通用的单个 Html 卡片块解析到模型
+     */
     private fun Element.toMediaItem(): FlexMediaSectionItem {
         val media = this
         return FlexMediaSectionItem(

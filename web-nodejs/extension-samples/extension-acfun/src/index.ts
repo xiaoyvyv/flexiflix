@@ -38,7 +38,7 @@ if (require.main === module) {
     console.log("Dev: start main");
 
     main.source
-        .fetchMediaRawUrl({id:"aa6140273_36188_2077598"} as FlexMediaPlaylistUrl)
+        .fetchMediaSearchResult("历史", 1, utils.emptyExtras())
         .then((res) => {
             console.log(JSON.stringify(res, null, 4));
         });

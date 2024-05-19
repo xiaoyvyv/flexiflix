@@ -362,7 +362,11 @@ class MediaVideoGestureView @JvmOverloads constructor(
                 playerView?.showController()
             }
 
-            val newProgress = (initialProgress + (deltaX / width.toFloat()) * mediaDuration / 2f)
+            // 调节进度的阻尼系数，1f 为无阻尼
+            // 底部 200px 内调节无阻尼，其它空间设置 2 倍阻尼
+            val dampingMultiple = if ((height - e1.y) > 200) 2f else 1f
+            val newProgress =
+                (initialProgress + (deltaX / width.toFloat()) * mediaDuration / dampingMultiple)
 
             val progress = newProgress.coerceIn(0f, mediaDuration.toFloat())
                 .roundToLong()

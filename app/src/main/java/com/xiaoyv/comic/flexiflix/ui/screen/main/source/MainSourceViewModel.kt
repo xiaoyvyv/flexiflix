@@ -25,10 +25,10 @@ import javax.inject.Inject
 class MainSourceViewModel @Inject constructor(
     @ApplicationContext val context: Context,
     stateHandle: SavedStateHandle,
-    private val extensionRepository: ExtensionRepository
+    private val extensionRepository: ExtensionRepository,
 ) : ViewModel() {
     private val _installState = mutableStateFlowOf<Result<InstalledMediaSource>?>(null)
-    val installState = _installState.asStateFlow()
+    val installState get() = _installState.asStateFlow()
 
     /**
      * 安装插件

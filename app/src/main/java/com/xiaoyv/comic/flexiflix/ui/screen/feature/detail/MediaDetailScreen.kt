@@ -45,8 +45,8 @@ import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
 import com.xiaoyv.comic.flexiflix.ui.component.StringLabelPage
 import com.xiaoyv.comic.flexiflix.ui.component.TabPager
 import com.xiaoyv.comic.flexiflix.ui.screen.feature.detail.tab.MediaDetailSummaryTab
-import com.xiaoyv.flexiflix.common.model.hasData
 import com.xiaoyv.flexiflix.common.model.payload
+import com.xiaoyv.flexiflix.common.model.asSinglePage
 import com.xiaoyv.flexiflix.common.utils.findActivity
 import com.xiaoyv.flexiflix.common.utils.isLandscape
 import com.xiaoyv.flexiflix.common.utils.isStoped
@@ -67,7 +67,7 @@ import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
 @Composable
 fun MediaDetailRoute(
     onNavUp: () -> Unit,
-    onSectionMediaClick: (String, FlexMediaSectionItem) -> Unit
+    onSectionMediaClick: (String, FlexMediaSectionItem) -> Unit = { _, _ -> }
 ) {
     val context = LocalContext.current
     val view = LocalView.current
@@ -209,7 +209,7 @@ fun MediaDetailScreen(
         ) {
             PageStateScreen(
                 loadState = uiState.loadState,
-                itemCount = { if (uiState.data.hasData) 1 else 0 },
+                itemCount = { uiState.data.asSinglePage()},
                 onRetryClick = onRetryClick
             ) {
                 val mediaDetail = uiState.data.payload()

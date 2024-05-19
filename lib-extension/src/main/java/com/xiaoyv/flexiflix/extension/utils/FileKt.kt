@@ -1,5 +1,6 @@
 package com.xiaoyv.flexiflix.extension.utils
 
+import com.xiaoyv.flexiflix.extension.ExtensionProvider.Companion.application
 import java.io.File
 import java.io.FileInputStream
 import java.security.MessageDigest
@@ -22,4 +23,14 @@ fun File.md5(): String {
     }
     val md5Bytes = digest.digest()
     return md5Bytes.joinToString("") { "%02x".format(it) }.lowercase()
+}
+
+/**
+ * 创建目录
+ */
+fun workDir(relative: String): String {
+    return File(application.filesDir.absolutePath, relative).let {
+        if (it.exists().not()) it.mkdirs()
+        it.absolutePath
+    }
 }

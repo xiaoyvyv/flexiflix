@@ -120,7 +120,7 @@
     <View
         android:id="@id/exo_progress_placeholder"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/exo_styled_progress_layout_height"
+        android:layout_height="24dp"
         android:layout_gravity="bottom"
         android:layout_marginBottom="@dimen/exo_styled_progress_margin_bottom" />
 

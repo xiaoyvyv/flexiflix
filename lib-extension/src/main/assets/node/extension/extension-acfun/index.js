@@ -11089,7 +11089,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.fetchMediaRawUrl = exports.fetchMediaDetail = exports.fetchHomeSections = void 0;
+exports.fetchMediaSearchResult = exports.fetchMediaRawUrl = exports.fetchMediaDetail = exports.fetchHomeSections = void 0;
 const cheerio_1 = __nccwpck_require__(4612);
 const utils_1 = __importDefault(__nccwpck_require__(239));
 const requestInit = {
@@ -11344,18 +11344,65 @@ function fetchMediaRawUrl(playlistUrl) {
     });
 }
 exports.fetchMediaRawUrl = fetchMediaRawUrl;
+function fetchMediaSearchResult(keyword, page, searchMap) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (keyword.trim().length === 0) {
+            throw Error("请输入搜索内容！");
+        }
+        const dataHtml = yield fetch(`https://www.acfun.cn/search?type=bgm&keyword=${encodeURI(keyword)}&pCursor=${page}`)
+            .then(res => res.text())
+            .then(html => {
+            const $ = (0, cheerio_1.load)(html);
+            const element = $("script").toArray()
+                .find(item => {
+                return $(item).text().indexOf('"pagelet_bangumi"') >= 0;
+            });
+            const script = element ? $(element).text() : '';
+            const init = "var bangumiData; var bigPipe = { onPageletArrive: (data) => { bangumiData = data; } };";
+            const out = ";bangumiData;";
+            const data = eval((init + script + out));
+            return data['html'] || '';
+        });
+        const $ = (0, cheerio_1.load)(dataHtml);
+        return $(".search-bangumi")
+            .map((_, el) => {
+            const data = {
+                cover: $(el).find(".bangumi__cover img").attr("src") || '',
+                description: $(el).find(".bangumi__main__intro").text() || '',
+                extras: utils_1.default.emptyExtras(),
+                id: utils_1.default.subLast($(el).find(".bangumi__main__title a").attr("href"), '/'),
+                layout: undefined,
+                overlay: {
+                    topStart: $(el).find(".info__year").text(),
+                    topEnd: $(el).find(".info__type").text(),
+                    bottomStart: $(el).find(".episode-info").text(),
+                    bottomEnd: $(el).find(".info__view-count").text(),
+                },
+                title: $(el).find(".bangumi__main__title").text() || '',
+                user: undefined
+            };
+            return data;
+        })
+            .toArray();
+    });
+}
+exports.fetchMediaSearchResult = fetchMediaSearchResult;
 
 
 /***/ }),
 
 /***/ 6144:
-/***/ ((module, exports, __nccwpck_require__) => {
+/***/ (function(module, exports, __nccwpck_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const flexiflex_extension_common_1 = __nccwpck_require__(6368);
 const source_1 = __nccwpck_require__(1049);
+const utils_1 = __importDefault(__nccwpck_require__(239));
 /**
  * 自定义一个插件 ID，必须全局唯一
  *
@@ -11386,7 +11433,7 @@ module.exports = main;
 if (require.main === require.cache[eval('__filename')]) {
     console.log("Dev: start main");
     main.source
-        .fetchMediaRawUrl({ id: "aa6140273_36188_2077598" })
+        .fetchMediaSearchResult("历史", 1, utils_1.default.emptyExtras())
         .then((res) => {
         console.log(JSON.stringify(res, null, 4));
     });
@@ -11467,6 +11514,16 @@ class AcfunSource {
     fetchUserMediaPages(user) {
         return __awaiter(this, void 0, void 0, function* () {
             throw new Error("Not yet implemented");
+        });
+    }
+    fetchMediaSearchConfig() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return { keywordKey: "keyword", options: undefined };
+        });
+    }
+    fetchMediaSearchResult(keyword, page, searchMap) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield api.fetchMediaSearchResult(keyword, page, searchMap);
         });
     }
 }

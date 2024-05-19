@@ -21,4 +21,16 @@ interface HanimeApi {
 
     @GET("/watch")
     suspend fun queryMediaDetail(@Query("v") mediaId: String): Document
+
+    @GET("/search")
+    suspend fun searchMedia(
+        @Query("page") page: Int,
+        @Query("query") query: String? = null,
+        @Query("genre") genre: String? = null,
+        @Query("broad") broad: String? = null,
+        @Query("tags[]") tags: List<String>? = null,
+        @Query("sort") sort: String? = null,
+        @Query("year") year: String? = null,
+        @Query("month") month: String? = null,
+    ): Document
 }

@@ -10,8 +10,15 @@ import {FlexMediaUser} from "./model/FlexMediaUser";
 import {MediaSourceExtension} from "./model/MediaSourceExtension";
 import {MediaSourceInfo} from "./model/MediaSourceInfo";
 import {Source} from "./interface/Source";
+import {FlexKeyValue} from "./model/FlexKeyValue";
+import {FlexSearchOptionItem} from "./model/FlexSearchOptionItem";
+import {FlexSearchOption} from "./model/FlexSearchOption";
+
 
 export {
+    FlexKeyValue,
+    FlexSearchOption,
+    FlexSearchOptionItem,
     FlexMediaDetail,
     FlexMediaDetailSeries,
     FlexMediaDetailTab,
@@ -26,5 +33,5 @@ export {
     MediaSourceInfo,
     Source,
     ImageLayout,
-    OverlayText
+    OverlayText,
 };

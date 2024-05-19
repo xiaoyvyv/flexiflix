@@ -23,7 +23,7 @@ import com.xiaoyv.flexiflix.i18n.I18n
 @Composable
 fun <T : Any> PageStateScreen(
     pagingItems: LazyPagingItems<T>,
-    refreshState: PullToRefreshState,
+    refreshState: PullToRefreshState? = null,
     @StringRes emptyTitleRes: Int = I18n.empty_title,
     @StringRes emptySubtitleRes: Int = I18n.empty_subtitle,
     @DrawableRes emptyImageRes: Int = R.drawable.ill_bookmarks,
@@ -34,8 +34,13 @@ fun <T : Any> PageStateScreen(
 ) {
     pagingItems.loadState.refresh.apply {
         // 初次进入加载中...
-        if (this is LoadState.Loading && !refreshState.isRefreshing) {
-            Loading(modifier = Modifier.fillMaxSize())
+        if (this is LoadState.Loading) {
+            if (refreshState != null && !refreshState.isRefreshing) {
+                Loading(modifier = Modifier.fillMaxSize())
+            }
+            if (refreshState == null) {
+                Loading(modifier = Modifier.fillMaxSize())
+            }
         }
         // 刷新无数据
         if (this is LoadState.NotLoading && pagingItems.itemCount == 0) {
@@ -69,7 +74,7 @@ fun PageStateScreen(
     @StringRes errorSubtitleRes: Int = I18n.error_something_goes_wrong,
     @DrawableRes errorImageRes: Int = R.drawable.ill_error,
     onRetryClick: (() -> Unit)? = { },
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     when (loadState) {
         is LoadState.Loading -> {

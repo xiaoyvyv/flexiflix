@@ -24,6 +24,8 @@ import com.xiaoyv.comic.flexiflix.ui.screen.ROUTE_MAIN_TAB
 import com.xiaoyv.comic.flexiflix.ui.screen.addMainTabScreen
 import com.xiaoyv.comic.flexiflix.ui.screen.feature.detail.addMediaDetailScreen
 import com.xiaoyv.comic.flexiflix.ui.screen.feature.home.addMediaHomeScreen
+import com.xiaoyv.comic.flexiflix.ui.screen.feature.search.addMediaSearchScreen
+import com.xiaoyv.comic.flexiflix.ui.screen.feature.search.result.addMediaSearchResultScreen
 import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
 
 /**
@@ -89,6 +91,12 @@ fun MainScreen() {
 
         // 媒体详情页
         addMediaDetailScreen(navController)
+
+        // 媒体搜索页面
+        addMediaSearchScreen(navController)
+
+        // 媒体搜索结果页面
+        addMediaSearchResultScreen(navController)
     }
 }
 

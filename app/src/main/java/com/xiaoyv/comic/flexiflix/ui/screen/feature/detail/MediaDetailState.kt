@@ -15,3 +15,4 @@ data class MediaDetailState(
     val data: StateContent<FlexMediaDetail> = StateContent.Idle()
 )
 
+

@@ -13,7 +13,7 @@
   "author": "xiaoyvyv",
   "license": "ISC",
   "dependencies": {
-    "@xiaoyvyv/flexiflex-extension-common": "1.0.6",
+    "@xiaoyvyv/flexiflex-extension-common": "1.0.8",
     "cheerio": "^1.0.0-rc.12"
   },
   "devDependencies": {

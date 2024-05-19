@@ -6,7 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.xiaoyv.flexiflix.common.utils.navigateSafe
+import com.xiaoyv.flexiflix.common.utils.navigateByPath
 
 /**
  * [addMediaDetailScreen]
@@ -26,7 +26,7 @@ data class MediaDetailArgument(val sourceId: String, val mediaId: String) {
 }
 
 fun NavController.navigateMediaDetail(sourceId: String, mediaId: String) {
-    navigateSafe(ROUTE_MEDIA_MEDIA, sourceId, mediaId)
+    navigateByPath(ROUTE_MEDIA_MEDIA, listOf(sourceId, mediaId))
 }
 
 fun NavGraphBuilder.addMediaDetailScreen(navController: NavController) {

@@ -47,6 +47,7 @@ import androidx.media3.common.text.CueGroup
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
@@ -133,6 +134,9 @@ fun MediaVideoPlayer(
     val exoPlayer = remember {
         val httpDataSourceFactory = OkHttpDataSource.Factory(MediaSourceFactory.okhttp)
             .setUserAgent("Jetpack-Media3")
+
+//        val httpDataSourceFactory = DefaultHttpDataSource.Factory()
+//            .setUserAgent("Jetpack-Media3")
 
         val defaultDataSourceFactory = DefaultDataSource.Factory(context, httpDataSourceFactory)
 
@@ -421,7 +425,7 @@ fun createPlayerView(
         // 封面加载和监听隐藏
         Glide.with(this)
             .load(poster)
-            .apply(RequestOptions().placeholder(R.color.black))
+            .apply(RequestOptions().placeholder(R.color.black).centerCrop())
             .transition(DrawableTransitionOptions.with(drawableCrossFadeFactory))
             .into(imageView)
 

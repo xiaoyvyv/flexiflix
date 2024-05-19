@@ -1,11 +1,12 @@
 package com.xiaoyv.flexiflix.extension.source
 
+import com.xiaoyv.flexiflix.extension.model.FlexMediaDetail
+import com.xiaoyv.flexiflix.extension.model.FlexMediaDetailTab
 import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
 import com.xiaoyv.flexiflix.extension.model.FlexMediaUser
-import com.xiaoyv.flexiflix.extension.model.FlexMediaDetail
-import com.xiaoyv.flexiflix.extension.model.FlexMediaDetailTab
+import com.xiaoyv.flexiflix.extension.model.FlexSearchOption
 import com.xiaoyv.flexiflix.extension.utils.runCatchingPrint
 
 /**
@@ -42,7 +43,7 @@ interface Source {
     suspend fun fetchSectionMediaPages(
         sectionId: String,
         sectionExtras: Map<String, String>,
-        page: Int
+        page: Int,
     ): Result<List<FlexMediaSectionItem>>
 
     /**
@@ -77,6 +78,22 @@ interface Source {
     suspend fun fetchMediaDetailRelative(
         relativeTab: FlexMediaDetailTab,
         id: String,
-        extras: Map<String, String>
+        extras: Map<String, String>,
     ): Result<List<FlexMediaSection>>
+
+    /**
+     * 获取搜索的配置项数据，比如关键词的 key 和可选项等
+     */
+    suspend fun fetchMediaSearchConfig(): Result<FlexSearchOption>
+
+    /**
+     * 搜索媒体数据
+     *
+     * @param searchMap 搜索的参数，<key-value> 结构，多个 value 用`,`区分
+     */
+    suspend fun fetchMediaSearchResult(
+        keyword: String,
+        page: Int,
+        searchMap: Map<String, String>,
+    ): Result<List<FlexMediaSectionItem>>
 }

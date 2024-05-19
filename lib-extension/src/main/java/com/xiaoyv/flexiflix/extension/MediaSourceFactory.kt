@@ -15,6 +15,7 @@ import com.xiaoyv.flexiflix.extension.impl.java.network.interceptor.CommonInterc
 import com.xiaoyv.flexiflix.extension.source.HttpSource
 import com.xiaoyv.flexiflix.extension.source.Source
 import com.xiaoyv.flexiflix.extension.impl.javascript.JSExtensionSource
+import com.xiaoyv.flexiflix.extension.utils.decodeUnicode
 import com.xiaoyv.flexiflix.extension.utils.jvmSignature
 import com.xiaoyv.flexiflix.extension.utils.md5
 import dalvik.system.PathClassLoader
@@ -177,6 +178,7 @@ object MediaSourceFactory {
                             val infoMap = mediaSourceAnnotation.elements.associate { element ->
                                 element.name to element.value.toString()
                                     .trim { char -> char == '\"' }
+                                    .decodeUnicode()
                             }
 
                             val sourceInfo = MediaSourceInfo.loadFromMap(infoMap)

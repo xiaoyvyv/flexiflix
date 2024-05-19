@@ -3,7 +3,6 @@ import fs from "fs";
 import express from 'express';
 import {FlexMediaPlaylistUrl, MediaSourceExtension} from "@xiaoyvyv/flexiflex-extension-common";
 import crypto from "crypto";
-import e from "express";
 
 const modules: Map<string, MediaSourceExtension> = new Map<string, MediaSourceExtension>();
 
@@ -111,7 +110,7 @@ const startServer = (port = 3000) => {
         try {
             const extension = getMediaExtension(req.params.hash);
             res.json(await extension.source.fetchHomeSections());
-        } catch ( e) {
+        } catch (e) {
             res.status(400);
             res.json({error: e?.toString(), code: 400});
         }
@@ -144,6 +143,32 @@ const startServer = (port = 3000) => {
             res.json({error: e?.toString(), code: 400});
         }
     });
+
+    // 搜索的配置项
+    app.get('/api/search/config/:hash', async (req, res) => {
+        try {
+            const extension = getMediaExtension(req.params.hash);
+            res.json(await extension.source.fetchMediaSearchConfig());
+        } catch (e) {
+            res.status(400);
+            res.json({error: e?.toString(), code: 400});
+        }
+    });
+
+    // 搜索媒体
+    app.get('/api/search/media/:hash', async (req, res) => {
+        try {
+            const extension = getMediaExtension(req.params.hash);
+            const extrasMap = new Map(Object.entries(req.query).map(([key, value]) => [key, String(value)]));
+            const keyword = extrasMap.get('keyword') || '';
+            const page: number = parseInt(extrasMap.get('page') || '1');
+            res.json(await extension.source.fetchMediaSearchResult(keyword, page, extrasMap));
+        } catch (e) {
+            res.status(400);
+            res.json({error: e?.toString(), code: 400});
+        }
+    });
+
 
     // 启动服务器
     const server = app.listen(port, () => {

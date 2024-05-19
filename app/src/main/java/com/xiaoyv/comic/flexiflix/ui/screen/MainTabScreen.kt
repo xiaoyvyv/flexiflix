@@ -75,7 +75,10 @@ fun MainTabScreen(
                 composable(ROUTE_MAIN_TAB_SOURCE) {
                     MainSourceRoute(
                         onSourceClick = {
-                            navController.navigateMediaHome(it.sources.last().info.id)
+                            navController.navigateMediaHome(
+                                it.sources.first().info.id,
+                                it.sources.first().info.name
+                            )
                         }
                     )
                 }

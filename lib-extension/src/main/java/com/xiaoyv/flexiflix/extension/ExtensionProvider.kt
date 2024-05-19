@@ -10,6 +10,8 @@ import androidx.lifecycle.lifecycleScope
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
 import com.xiaoyv.flexiflix.extension.impl.javascript.JSExtensionService
+import com.xiaoyv.flexiflix.extension.utils.copyAssetsFolder
+import com.xiaoyv.flexiflix.extension.utils.workDir
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -36,6 +38,11 @@ class ExtensionProvider : ContentProvider() {
         // NodeJS 初始化脚本资源复制
         ProcessLifecycleOwner.get().lifecycleScope.launch(Dispatchers.IO) {
             JSExtensionService.instacne.setup(application, BuildConfig.DEBUG)
+        }
+
+        // Jvm 初始化插件复制
+        if (BuildConfig.DEBUG) {
+            application.copyAssetsFolder("extension", workDir("extension/jvm"))
         }
         return true
     }

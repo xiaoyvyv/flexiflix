@@ -7,7 +7,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.xiaoyv.comic.flexiflix.ui.screen.feature.detail.navigateMediaDetail
-import com.xiaoyv.flexiflix.common.utils.navigateSafe
+import com.xiaoyv.comic.flexiflix.ui.screen.feature.search.navigateMediaSearch
+import com.xiaoyv.flexiflix.common.utils.navigateByPath
 
 /**
  * [addMediaHomeScreen]
@@ -17,23 +18,29 @@ import com.xiaoyv.flexiflix.common.utils.navigateSafe
  */
 const val ROUTE_MEDIA_HOME = "media-home"
 const val EXTRA_MEDIA_SOURCE_ID = "source"
+const val EXTRA_MEDIA_SOURCE_NAME = "name"
 
-data class MediaHomeArgument(val sourceId: String) {
+data class MediaHomeArgument(val sourceId: String, val sourceName: String) {
     constructor(savedStateHandle: SavedStateHandle) : this(
-        sourceId = requireNotNull(savedStateHandle[EXTRA_MEDIA_SOURCE_ID])
+        sourceId = requireNotNull(savedStateHandle[EXTRA_MEDIA_SOURCE_ID]),
+        sourceName = savedStateHandle.get<String>(EXTRA_MEDIA_SOURCE_NAME).orEmpty()
     )
 }
 
-fun NavController.navigateMediaHome(sourceId: String) {
-    navigateSafe(ROUTE_MEDIA_HOME, sourceId)
+fun NavController.navigateMediaHome(sourceId: String, name: String) {
+    navigateByPath(ROUTE_MEDIA_HOME, listOf(sourceId), mapOf(EXTRA_MEDIA_SOURCE_NAME to name))
 }
 
 fun NavGraphBuilder.addMediaHomeScreen(navController: NavController) {
     composable(
-        route = ROUTE_MEDIA_HOME + "/{${EXTRA_MEDIA_SOURCE_ID}}",
-        arguments = listOf(navArgument(EXTRA_MEDIA_SOURCE_ID) {
-            type = NavType.StringType
-        })
+        route = ROUTE_MEDIA_HOME + "/{${EXTRA_MEDIA_SOURCE_ID}}?$EXTRA_MEDIA_SOURCE_NAME={${EXTRA_MEDIA_SOURCE_NAME}}",
+        arguments = listOf(
+            navArgument(EXTRA_MEDIA_SOURCE_ID) { type = NavType.StringType },
+            navArgument(EXTRA_MEDIA_SOURCE_NAME) {
+                type = NavType.StringType
+                defaultValue = ""
+            }
+        )
     ) {
         MediaHomeRoute(
             onSectionClick = { sourceId, section ->
@@ -41,6 +48,9 @@ fun NavGraphBuilder.addMediaHomeScreen(navController: NavController) {
             },
             onSectionMediaClick = { sourceId, media ->
                 navController.navigateMediaDetail(sourceId, media.id)
+            },
+            onSearchClick = { sourceId, sourceName ->
+                navController.navigateMediaSearch(sourceId, sourceName)
             }
         )
     }

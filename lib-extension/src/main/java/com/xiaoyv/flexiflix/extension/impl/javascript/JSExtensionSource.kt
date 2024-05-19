@@ -6,6 +6,7 @@ import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
 import com.xiaoyv.flexiflix.extension.model.FlexMediaUser
+import com.xiaoyv.flexiflix.extension.model.FlexSearchOption
 import com.xiaoyv.flexiflix.extension.model.MediaSourceInfo
 import com.xiaoyv.flexiflix.extension.source.Source
 import com.xiaoyv.flexiflix.extension.utils.md5
@@ -59,7 +60,7 @@ class JSExtensionSource(private val jsPath: String) : Source {
     override suspend fun fetchSectionMediaPages(
         sectionId: String,
         sectionExtras: Map<String, String>,
-        page: Int
+        page: Int,
     ): Result<List<FlexMediaSectionItem>> {
         return runCatchingPrint {
             makeSureServiceRunning()
@@ -84,7 +85,7 @@ class JSExtensionSource(private val jsPath: String) : Source {
 
     override suspend fun fetchMediaDetail(
         id: String,
-        extras: Map<String, String>
+        extras: Map<String, String>,
     ): Result<FlexMediaDetail> {
         return runCatchingPrint {
             makeSureServiceRunning()
@@ -99,7 +100,7 @@ class JSExtensionSource(private val jsPath: String) : Source {
     override suspend fun fetchMediaDetailRelative(
         relativeTab: FlexMediaDetailTab,
         id: String,
-        extras: Map<String, String>
+        extras: Map<String, String>,
     ): Result<List<FlexMediaSection>> {
         return runCatchingPrint {
             makeSureServiceRunning()
@@ -108,6 +109,29 @@ class JSExtensionSource(private val jsPath: String) : Source {
                 relativeTab = relativeTab,
                 id = id,
                 extras = extras
+            )
+        }
+    }
+
+    override suspend fun fetchMediaSearchConfig(): Result<FlexSearchOption> {
+        return runCatchingPrint {
+            makeSureServiceRunning()
+            JSExtensionService.instacne.jsApi.fetchMediaSearchConfig(hash = hash)
+        }
+    }
+
+    override suspend fun fetchMediaSearchResult(
+        keyword: String,
+        page: Int,
+        searchMap: Map<String, String>,
+    ): Result<List<FlexMediaSectionItem>> {
+        return runCatchingPrint {
+            makeSureServiceRunning()
+            JSExtensionService.instacne.jsApi.fetchMediaSearch(
+                hash = hash,
+                keyword = keyword,
+                page = page,
+                searchMap = searchMap,
             )
         }
     }

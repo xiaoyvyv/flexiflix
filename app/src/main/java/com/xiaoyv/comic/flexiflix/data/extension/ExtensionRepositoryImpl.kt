@@ -154,7 +154,7 @@ class ExtensionRepositoryImpl @Inject constructor(
     override suspend fun getExtensionById(sourceId: String): Result<Source> {
         return withContext(Dispatchers.IO) {
             runCatchingPrint {
-                if (!sourceMapCache.contains(sourceId)) {
+                if (!sourceMapCache.contains(key = sourceId)) {
                     getInstalledExtensions()
                 }
 
@@ -184,9 +184,16 @@ class ExtensionRepositoryImpl @Inject constructor(
 
                 val manager = context.packageManager
                 val packageInfo = manager.getPackageArchiveInfo(absolutePath, 0)
-                val drawable = packageInfo?.applicationInfo?.loadIcon(manager)
-                val extensionName = packageInfo?.applicationInfo?.loadLabel(manager)?.toString()
-                    ?: nameWithoutExtension
+                val result = packageInfo?.applicationInfo?.let {
+                    it.sourceDir = absolutePath
+                    it.publicSourceDir = absolutePath
+                    val icon = it.loadIcon(manager)
+                    val name = it.loadLabel(manager).toString()
+                    (name to icon)
+                }
+
+                val extensionName = result?.first ?: nameWithoutExtension
+                val drawable = result?.second
 
                 return InstalledMediaSource(
                     type = MediaSourceType.TYPE_JVM,

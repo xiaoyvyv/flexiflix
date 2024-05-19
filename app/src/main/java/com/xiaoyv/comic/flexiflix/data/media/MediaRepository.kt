@@ -4,6 +4,8 @@ import androidx.paging.PagingSource
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
 import com.xiaoyv.flexiflix.extension.model.FlexMediaDetail
 import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
+import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
+import com.xiaoyv.flexiflix.extension.model.FlexSearchOption
 
 /**
  * [MediaRepository]
@@ -14,12 +16,23 @@ import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
 interface MediaRepository {
     fun pageSource(sourceId: String): PagingSource<Int, FlexMediaSection>
 
+    /**
+     * 搜索数据
+     */
+    fun searchSource(
+        sourceId: String,
+        keyword: String,
+        queryMap: Map<String, String>,
+    ): PagingSource<Int, FlexMediaSectionItem>
+
     suspend fun getHomeSections(sourceId: String): Result<List<FlexMediaSection>>
 
     suspend fun getMediaDetail(sourceId: String, mediaId: String): Result<FlexMediaDetail>
 
     suspend fun getMediaRawUrl(
         sourceId: String,
-        playlistUrl: FlexMediaPlaylistUrl
+        playlistUrl: FlexMediaPlaylistUrl,
     ): Result<FlexMediaPlaylistUrl>
+
+    suspend fun getMediaSearchOption(sourceId: String): Result<FlexSearchOption>
 }

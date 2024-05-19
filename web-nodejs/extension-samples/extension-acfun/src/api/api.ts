@@ -278,4 +278,49 @@ export async function fetchMediaRawUrl(playlistUrl: FlexMediaPlaylistUrl): Promi
 }
 
 
+export async function fetchMediaSearchResult(keyword: string, page: number, searchMap: Map<String, String>) {
+    if (keyword.trim().length === 0) {
+        throw Error("请输入搜索内容！");
+    }
+
+    const dataHtml = await fetch(`https://www.acfun.cn/search?type=bgm&keyword=${encodeURI(keyword)}&pCursor=${page}`)
+        .then(res => res.text())
+        .then(html => {
+            const $ = load(html);
+            const element = $("script").toArray()
+                .find(item => {
+                    return $(item).text().indexOf('"pagelet_bangumi"') >= 0
+                });
+
+            const script = element ? $(element).text() : '';
+            const init = "var bangumiData; var bigPipe = { onPageletArrive: (data) => { bangumiData = data; } };"
+            const out = ";bangumiData;"
+            const data = eval((init + script + out));
+            return data['html'] || '';
+        });
+
+    const $ = load(dataHtml);
+    return $(".search-bangumi")
+        .map((_, el) => {
+            const data: FlexMediaSectionItem = {
+                cover: $(el).find(".bangumi__cover img").attr("src") || '',
+                description: $(el).find(".bangumi__main__intro").text() || '',
+                extras: utils.emptyExtras(),
+                id: utils.subLast($(el).find(".bangumi__main__title a").attr("href"), '/'),
+                layout: undefined,
+                overlay: {
+                    topStart: $(el).find(".info__year").text(),
+                    topEnd: $(el).find(".info__type").text(),
+                    bottomStart: $(el).find(".episode-info").text(),
+                    bottomEnd: $(el).find(".info__view-count").text(),
+                },
+                title: $(el).find(".bangumi__main__title").text() || '',
+                user: undefined
+            }
+            return data;
+        })
+        .toArray();
+}
+
+
 

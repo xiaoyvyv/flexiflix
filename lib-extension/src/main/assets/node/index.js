@@ -21509,6 +21509,31 @@ const startServer = (port = 3000) => {
             res.json({ error: e === null || e === void 0 ? void 0 : e.toString(), code: 400 });
         }
     }));
+    // 搜索的配置项
+    app.get('/api/search/config/:hash', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const extension = getMediaExtension(req.params.hash);
+            res.json(yield extension.source.fetchMediaSearchConfig());
+        }
+        catch (e) {
+            res.status(400);
+            res.json({ error: e === null || e === void 0 ? void 0 : e.toString(), code: 400 });
+        }
+    }));
+    // 搜索媒体
+    app.get('/api/search/media/:hash', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const extension = getMediaExtension(req.params.hash);
+            const extrasMap = new Map(Object.entries(req.query).map(([key, value]) => [key, String(value)]));
+            const keyword = extrasMap.get('keyword') || '';
+            const page = parseInt(extrasMap.get('page') || '1');
+            res.json(yield extension.source.fetchMediaSearchResult(keyword, page, extrasMap));
+        }
+        catch (e) {
+            res.status(400);
+            res.json({ error: e === null || e === void 0 ? void 0 : e.toString(), code: 400 });
+        }
+    }));
     // 启动服务器
     const server = app.listen(port, () => {
         console.log(`NodeJs 扩展服务已启动 http://localhost:${port}`);

@@ -1,7 +1,11 @@
 package com.xiaoyv.comic.flexiflix.ui.screen.feature.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -15,12 +19,20 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -38,16 +50,21 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
 import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.GlideImage
+import com.xiaoyv.comic.flexiflix.ui.component.AppBar
 import com.xiaoyv.comic.flexiflix.ui.component.ElevatedImage
 import com.xiaoyv.comic.flexiflix.ui.component.PageStateScreen
 import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
 import com.xiaoyv.comic.flexiflix.ui.component.StringLabelPage
 import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
+import com.xiaoyv.flexiflix.common.utils.isNotLoading
 import com.xiaoyv.flexiflix.common.utils.isStoped
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 
 /**
  * [MediaHomeScreen]
@@ -59,11 +76,13 @@ import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
 fun MediaHomeRoute(
     onSectionClick: (String, FlexMediaSection) -> Unit,
     onSectionMediaClick: (String, FlexMediaSectionItem) -> Unit,
+    onSearchClick: (String, String) -> Unit = { _, _ -> },
 ) {
     val viewModel = hiltViewModel<MediaHomeViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     MediaHomeScreen(
+        title = viewModel.args.sourceName,
         uiState = uiState,
         onRefresh = { viewModel.refresh() },
         onSectionMediaClick = {
@@ -71,16 +90,21 @@ fun MediaHomeRoute(
         },
         onSectionClick = {
             onSectionClick(viewModel.args.sourceId, it)
+        },
+        onSearchClick = {
+            onSearchClick(viewModel.args.sourceId, viewModel.args.sourceName)
         }
     )
 }
 
 @Composable
 fun MediaHomeScreen(
+    title: String,
     uiState: MediaHomeState,
-    onRefresh: () -> Unit,
-    onSectionClick: (FlexMediaSection) -> Unit,
-    onSectionMediaClick: (FlexMediaSectionItem) -> Unit
+    onRefresh: () -> Unit = {},
+    onSectionClick: (FlexMediaSection) -> Unit = {},
+    onSectionMediaClick: (FlexMediaSectionItem) -> Unit = {},
+    onSearchClick: () -> Unit = {},
 ) {
     val refreshState = rememberPullToRefreshState()
     if (refreshState.isRefreshing) {
@@ -96,10 +120,45 @@ fun MediaHomeScreen(
     }
 
     val scrollState = rememberScrollState()
+    val showTopBar by remember {
+        derivedStateOf { scrollState.value > 250 }
+    }
+
     ScaffoldWrap(
         modifier = Modifier
             .fillMaxSize()
-            .nestedScroll(refreshState.nestedScrollConnection)
+            .nestedScroll(refreshState.nestedScrollConnection),
+        topBar = {
+            AnimatedVisibility(
+                visible = showTopBar,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                AppBar(
+                    title = title.ifBlank { "数据源详情" },
+                    hideNavigationIcon = true
+                )
+            }
+
+            // 右侧固定搜索按钮，不会随滑动改变
+            if (uiState.loadState.isNotLoading) AppBar(
+                title = { },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+                actions = {
+                    IconButton(
+                        onClick = onSearchClick,
+                        colors = IconButtonDefaults.iconButtonColors(
+                            contentColor = if (showTopBar) MaterialTheme.colorScheme.onSurface else Color.White
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = null
+                        )
+                    }
+                }
+            )
+        }
     ) {
         Box(
             modifier = Modifier
@@ -146,21 +205,23 @@ fun MediaHomeScreen(
 @Composable
 fun MediaHomeTopBanner(
     banner: FlexMediaSection,
-    onSectionMediaClick: (FlexMediaSectionItem) -> Unit
+    onSectionMediaClick: (FlexMediaSectionItem) -> Unit,
 ) {
     val bannerState = rememberPagerState { banner.items.size }
-    val surfaceColor = MaterialTheme.colorScheme.inverseSurface
     val gradientColors = remember {
         listOf(
-            surfaceColor.copy(alpha = 0f),
-            surfaceColor.copy(alpha = 0.8f),
+            Color.Black.copy(alpha = 0f),
+            Color.Black.copy(alpha = 0.8f),
         )
     }
 
     val pages = remember(banner.items) {
         banner.items.map { item ->
             StringLabelPage(label = item.title) {
-                ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+                ConstraintLayout(modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onSectionMediaClick(item) }
+                ) {
                     val (bg, title, subtitle) = createRefs()
 
                     GlideImage(
@@ -226,6 +287,17 @@ fun MediaHomeTopBanner(
     HorizontalPager(state = bannerState) {
         pages[it].content()
     }
+
+    // 拖动时取消轮播计时器
+    val isDragged by bannerState.interactionSource.collectIsDraggedAsState()
+    if (!isDragged) {
+        LaunchedEffect(Unit) {
+            while (isActive) {
+                delay(2500)
+                bannerState.animateScrollToPage(page = (bannerState.currentPage + 1) % bannerState.pageCount)
+            }
+        }
+    }
 }
 
 
@@ -236,7 +308,7 @@ fun MediaHomeTopBanner(
 fun MediaHomeSections(
     pagingItems: List<FlexMediaSection>,
     onSectionClick: (FlexMediaSection) -> Unit,
-    onSectionMediaClick: (FlexMediaSectionItem) -> Unit
+    onSectionMediaClick: (FlexMediaSectionItem) -> Unit,
 ) {
     for (i in 1 until pagingItems.size) {
         MediaHomeSectionItem(
@@ -251,7 +323,7 @@ fun MediaHomeSections(
 fun MediaHomeSectionItem(
     item: FlexMediaSection,
     onSectionClick: (FlexMediaSection) -> Unit,
-    onSectionMediaClick: (FlexMediaSectionItem) -> Unit
+    onSectionMediaClick: (FlexMediaSectionItem) -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
@@ -284,7 +356,7 @@ fun MediaHomeSectionItemRow(
     modifier: Modifier = Modifier,
     itemModifier: Modifier = Modifier,
     items: List<FlexMediaSectionItem>,
-    onSectionMediaClick: (FlexMediaSectionItem) -> Unit
+    onSectionMediaClick: (FlexMediaSectionItem) -> Unit,
 ) {
     LazyRow(modifier = modifier) {
         items(items) { media ->
@@ -365,7 +437,7 @@ fun MediaHomeSectionItemRow(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 12.dp),
+                        .padding(top = 8.dp),
                     text = media.title,
                     style = MaterialTheme.typography.bodyMedium,
                     maxLines = 1,
@@ -381,46 +453,72 @@ fun MediaHomeSectionItemRow(
 @Composable
 @Preview(widthDp = 411, heightDp = 711)
 fun PreviewMediaHomeScreen() {
-    AppTheme {
-
-        MediaHomeSections(
-            pagingItems = listOf(
-                FlexMediaSection(
-                    id = "",
-                    title = "测试",
-                    items = listOf()
-                ),
-                FlexMediaSection(
-                    id = "",
-                    title = "测试",
-                    items = listOf(
-                        FlexMediaSectionItem(
-                            id = "",
-                            title = "媒体条目1",
-                            description = "你好",
-                            cover = "",
-                            overlay = FlexMediaSectionItem.OverlayText(
-                                topStart = "左上角",
-                                topEnd = "右上角",
-                                bottomStart = "左下角",
-                                bottomEnd = "右下角"
-                            ),
-                            layout = FlexMediaSectionItem.ImageLayout(
-                                widthDp = 180,
-                                aspectRatio = 3 / 4f
-                            )
-                        ),
-                        FlexMediaSectionItem(
-                            id = "",
-                            title = "媒体条目1",
-                            description = "你好",
-                            cover = "",
-                        ),
-                    )
-                ),
+    val items = listOf(
+        FlexMediaSectionItem(
+            id = "",
+            title = "媒体条目1",
+            description = "你好",
+            cover = "",
+            overlay = FlexMediaSectionItem.OverlayText(
+                topStart = "左上角",
+                topEnd = "右上角",
+                bottomStart = "左下角",
+                bottomEnd = "右下角"
             ),
-            onSectionMediaClick = {},
-            onSectionClick = {}
+            layout = FlexMediaSectionItem.ImageLayout(
+                widthDp = 120,
+                aspectRatio = 3 / 4f
+            )
+        ),
+        FlexMediaSectionItem(
+            id = "",
+            title = "媒体条目1",
+            description = "你好",
+            cover = "",
+            overlay = FlexMediaSectionItem.OverlayText(
+                topStart = "左上角",
+                topEnd = "右上角",
+                bottomStart = "左下角",
+                bottomEnd = "右下角"
+            ),
+        ),
+        FlexMediaSectionItem(
+            id = "",
+            title = "媒体条目1",
+            description = "你好",
+            cover = "",
+            overlay = FlexMediaSectionItem.OverlayText(
+                topStart = "左上角",
+                topEnd = "右上角",
+                bottomStart = "左下角",
+                bottomEnd = "右下角"
+            )
+        ),
+    )
+
+    AppTheme {
+        MediaHomeScreen(
+            title = "数据源详情",
+            uiState = MediaHomeState(
+                loadState = LoadState.NotLoading(true),
+                items = listOf(
+                    FlexMediaSection(
+                        id = "",
+                        title = "测试",
+                        items = items
+                    ),
+                    FlexMediaSection(
+                        id = "",
+                        title = "测试",
+                        items = items
+                    ),
+                    FlexMediaSection(
+                        id = "",
+                        title = "测试",
+                        items = items
+                    ),
+                ),
+            )
         )
     }
 }

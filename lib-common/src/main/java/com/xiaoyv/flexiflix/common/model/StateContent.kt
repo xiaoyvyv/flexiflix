@@ -23,8 +23,14 @@ val StateContent<*>.hasData: Boolean
         return false
     }
 
-
 inline fun <reified T : Any> StateContent<T>.payload(): T {
     return (this as StateContent.Payload<T>).data
+}
+
+/**
+ * 单页，非列表的页面，配合 PageStateScreen 判断是否有内容了
+ */
+fun <T> StateContent<T>.asSinglePage(): Int {
+    return if (hasData) 1 else 0
 }
 

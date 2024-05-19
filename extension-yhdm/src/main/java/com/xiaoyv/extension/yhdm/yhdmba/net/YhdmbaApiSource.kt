@@ -12,6 +12,7 @@ import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
 import com.xiaoyv.flexiflix.extension.model.FlexMediaUser
+import com.xiaoyv.flexiflix.extension.model.FlexSearchOption
 import com.xiaoyv.flexiflix.extension.source.HttpParseSource
 import com.xiaoyv.flexiflix.extension.utils.UNKNOWN_LONG
 import com.xiaoyv.flexiflix.extension.utils.UNKNOWN_STRING
@@ -196,6 +197,18 @@ class YhdmbaApiSource : HttpParseSource() {
         id: String,
         extras: Map<String, String>
     ): Result<List<FlexMediaSection>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun fetchMediaSearchConfig(): Result<FlexSearchOption> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun fetchMediaSearchResult(
+        keyword: String,
+        page: Int,
+        searchMap: Map<String, String>,
+    ): Result<List<FlexMediaSectionItem>> {
         TODO("Not yet implemented")
     }
 }

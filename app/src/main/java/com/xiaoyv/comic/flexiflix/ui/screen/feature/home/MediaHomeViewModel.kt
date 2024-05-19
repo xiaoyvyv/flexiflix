@@ -34,7 +34,7 @@ class MediaHomeViewModel @Inject constructor(
     val args = MediaHomeArgument(savedStateHandle)
 
     private val _uiState = mutableStateFlowOf(MediaHomeState())
-    val uiState = _uiState.asStateFlow()
+    val uiState get()= _uiState.asStateFlow()
 
     /**
      * 分页数据源

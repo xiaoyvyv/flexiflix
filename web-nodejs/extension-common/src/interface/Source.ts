@@ -4,6 +4,7 @@ import {FlexMediaUser} from "../model/FlexMediaUser";
 import {FlexMediaDetail} from "../model/FlexMediaDetail";
 import {FlexMediaPlaylistUrl} from "../model/FlexMediaPlaylistUrl";
 import {FlexMediaDetailTab} from "../model/FlexMediaDetailTab";
+import {FlexSearchOption} from "../model/FlexSearchOption";
 
 /**
  * [Source]
@@ -73,4 +74,20 @@ export interface Source {
         id: string,
         extras: Map<string, string>
     ) => Promise<FlexMediaSection[]>
+
+    /**
+     * 获取搜索的配置项数据，比如关键词的 key 和可选项等
+     */
+    fetchMediaSearchConfig: () => Promise<FlexSearchOption>
+
+    /**
+     * 搜索媒体数据
+     *
+     * @param searchMap 搜索的参数，<key-value> 结构，多个 value 用`,`区分
+     */
+    fetchMediaSearchResult: (
+        keyword: string,
+        page: number,
+        searchMap: Map<string, string>,
+    ) => Promise<FlexMediaSectionItem[]>
 }

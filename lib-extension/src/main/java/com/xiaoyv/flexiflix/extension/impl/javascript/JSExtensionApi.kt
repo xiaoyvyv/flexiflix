@@ -6,6 +6,7 @@ import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
 import com.xiaoyv.flexiflix.extension.model.FlexMediaUser
+import com.xiaoyv.flexiflix.extension.model.FlexSearchOption
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -69,4 +70,15 @@ interface JSExtensionApi {
         @Path("hash") hash: String,
         @Body playlistUrl: FlexMediaPlaylistUrl
     ): FlexMediaPlaylistUrl
+
+    @GET("/api/search/media/{hash}")
+    suspend fun fetchMediaSearch(
+        @Path("hash") hash: String,
+        @Query("keyword") keyword: String,
+        @Query("page") page: Int,
+        @QueryMap searchMap: Map<String, String>
+    ): List<FlexMediaSectionItem>
+
+    @GET("/api/search/config/{hash}")
+    suspend fun fetchMediaSearchConfig(@Path("hash") hash: String): FlexSearchOption
 }

@@ -2,7 +2,10 @@ import {
     FlexMediaDetail,
     FlexMediaDetailTab,
     FlexMediaPlaylistUrl,
-    FlexMediaSection, FlexMediaSectionItem, FlexMediaUser,
+    FlexMediaSection,
+    FlexMediaSectionItem,
+    FlexMediaUser,
+    FlexSearchOption,
     Source
 } from "@xiaoyvyv/flexiflex-extension-common";
 
@@ -12,7 +15,6 @@ import * as api from '../api/api';
  * 实现数据源接口的逻辑
  */
 export class AcfunSource implements Source {
-
     async fetchHomeSections(): Promise<FlexMediaSection[]> {
         return await api.fetchHomeSections();
     }
@@ -35,5 +37,13 @@ export class AcfunSource implements Source {
 
     async fetchUserMediaPages(user: FlexMediaUser): Promise<FlexMediaSectionItem[]> {
         throw new Error("Not yet implemented");
+    }
+
+    async fetchMediaSearchConfig(): Promise<FlexSearchOption> {
+        return {keywordKey: "keyword", options: undefined}
+    }
+
+    async fetchMediaSearchResult(keyword: string, page: number, searchMap: Map<string, string>): Promise<FlexMediaSectionItem[]> {
+        return await api.fetchMediaSearchResult(keyword, page, searchMap);
     }
 }

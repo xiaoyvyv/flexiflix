@@ -27,8 +27,8 @@ import com.xiaoyv.comic.flexiflix.model.InstalledMediaSource
 import com.xiaoyv.comic.flexiflix.ui.component.ElevatedCardWrap
 import com.xiaoyv.comic.flexiflix.ui.component.LazyList
 import com.xiaoyv.comic.flexiflix.ui.component.PageStateScreen
-import com.xiaoyv.flexiflix.common.model.hasData
 import com.xiaoyv.flexiflix.common.model.payload
+import com.xiaoyv.flexiflix.common.model.asSinglePage
 import com.xiaoyv.flexiflix.extension.MediaSourceType
 
 /**
@@ -64,7 +64,7 @@ fun SourceInstalledTabScreen(
 ) {
     PageStateScreen(
         loadState = uiState.loadState,
-        itemCount = { if (uiState.data.hasData) 1 else 0 }
+        itemCount = { uiState.data.asSinglePage()}
     ) {
         LazyList(
             modifier = Modifier
