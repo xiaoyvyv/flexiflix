@@ -11,11 +11,17 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.xiaoyv.comic.flexiflix.ui.component.AppThemeState
+import com.xiaoyv.flexiflix.common.config.settings.AppSettings
+import com.xiaoyv.flexiflix.common.utils.debugLog
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
@@ -250,7 +256,7 @@ data class ColorFamily(
     val color: Color,
     val onColor: Color,
     val colorContainer: Color,
-    val onColorContainer: Color
+    val onColorContainer: Color,
 )
 
 val unspecified_scheme = ColorFamily(
@@ -259,20 +265,34 @@ val unspecified_scheme = ColorFamily(
 
 @Composable
 fun AppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
-    content: @Composable() () -> Unit
+    themeState: AppThemeState = remember { AppThemeState() },
+    content: @Composable () -> Unit,
 ) {
+    val darkTheme = isSystemInDarkTheme()
+    val darkMode by themeState.darkMode.collectAsStateWithLifecycle()
+
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+        // 跟随系统（Android 12+）支持
+        darkMode == AppSettings.THEME_DARK_MODE_VALUE_SYSTEM && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            if (darkTheme) {
+                dynamicDarkColorScheme(context)
+            } else {
+                dynamicLightColorScheme(context)
+            }
+        }
+        // 暗色模式
+        darkMode == AppSettings.THEME_DARK_MODE_VALUE_ON -> {
+            darkScheme
+        }
+        // 亮色模式
+        darkMode == AppSettings.THEME_DARK_MODE_VALUE_OFF -> {
+            lightScheme
         }
 
-        darkTheme -> darkScheme
-        else -> lightScheme
+        else -> error("主题配置错误")
     }
+
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {

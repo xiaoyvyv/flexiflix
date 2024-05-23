@@ -5,8 +5,10 @@ package com.xiaoyv.flexiflix.common.utils
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Point
+import android.net.Uri
 import android.os.Vibrator
 import android.view.WindowManager
 import android.widget.Toast
@@ -86,4 +88,15 @@ fun Context.vibrate(mills: Long) {
 
 fun Context.toast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+}
+
+fun Context.openUrl(url: String) {
+    runCatching {
+        startActivity(
+            Intent(Intent.ACTION_VIEW).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                setData(Uri.parse(url))
+            }
+        )
+    }
 }

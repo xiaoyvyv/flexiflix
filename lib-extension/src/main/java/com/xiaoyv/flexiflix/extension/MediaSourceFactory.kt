@@ -78,8 +78,8 @@ object MediaSourceFactory {
             }
 //            .dns(NetworkDns())
             .addInterceptor(CommonInterceptor())
-            .addNetworkInterceptor(AdBlockInterceptor())
             .addInterceptor(Base64ImageInterceptor())
+            .addNetworkInterceptor(AdBlockInterceptor())
             .build()
     }
 

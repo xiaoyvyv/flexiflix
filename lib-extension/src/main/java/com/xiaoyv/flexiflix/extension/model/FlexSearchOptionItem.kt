@@ -46,17 +46,3 @@ data class FlexSearchOptionItem(
      */
     @SerializedName("mergeSymbol") val mergeSymbol: String? = null,
 ) : Parcelable
-
-fun a() {
-    FlexSearchOptionItem(
-        key = "type",
-        keyLabel = "类型",
-        values = listOf(
-            FlexKeyValue("a", "选项A"),
-            FlexKeyValue("b", "选项B"),
-            FlexKeyValue("c", "选项C"),
-            FlexKeyValue("d", "选项D")
-        ),
-        maxSelect = 1
-    )
-}

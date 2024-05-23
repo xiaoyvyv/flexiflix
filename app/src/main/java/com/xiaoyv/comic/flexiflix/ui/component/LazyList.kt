@@ -124,7 +124,7 @@ internal class ScrollState {
 internal val LocalScrollState = staticCompositionLocalOf { ScrollState() }
 
 @Composable
-internal fun rememberScrollState() = remember { ScrollState() }
+internal fun rememberListScrollState() = remember { ScrollState() }
 
 /*
 fun LazyListScope.appendItems(

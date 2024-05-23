@@ -19,7 +19,7 @@ import com.bumptech.glide.integration.compose.RequestBuilderTransform
 import com.bumptech.glide.integration.compose.Transition
 
 /**
- * [Image]
+ * [ElevatedImage]
  *
  * @author why
  * @since 5/12/24

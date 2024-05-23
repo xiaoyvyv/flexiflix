@@ -4,4 +4,5 @@
     android:id="@+id/player_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:controller_layout_id="@layout/video_player_controller" />
+    app:controller_layout_id="@layout/video_player_controller"
+    app:surface_type="texture_view" />

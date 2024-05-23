@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -30,8 +31,6 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LifecycleEventEffect
-import androidx.lifecycle.compose.LifecycleResumeEffect
-import androidx.lifecycle.compose.LifecycleResumePauseEffectScope
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.DeviceInfo
 import androidx.media3.common.MediaItem
@@ -47,7 +46,6 @@ import androidx.media3.common.text.CueGroup
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.datasource.DefaultDataSource
-import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
@@ -125,7 +123,7 @@ fun MediaVideoPlayer(
     onSurfaceSizeChanged: (Int, Int) -> Unit = { _, _ -> },
     onRenderedFirstFrame: () -> Unit = {},
     onCues: (CueGroup) -> Unit = {},
-    onTimelineChanged: (Timeline, reason: Int) -> Unit = { _, _ -> }
+    onTimelineChanged: (Timeline, reason: Int) -> Unit = { _, _ -> },
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
@@ -234,7 +232,7 @@ fun MediaVideoPlayer(
                     override fun onPositionDiscontinuity(
                         oldPosition: Player.PositionInfo,
                         newPosition: Player.PositionInfo,
-                        reason: Int
+                        reason: Int,
                     ) {
                         onPositionDiscontinuity(oldPosition, newPosition, reason)
                     }
@@ -356,8 +354,8 @@ fun MediaVideoPlayer(
             }
         )
     }
-
 }
+
 
 /**
  * 插件播放器
@@ -373,6 +371,10 @@ fun createPlayerView(
     onControllerVisibilityChanged: (Int) -> Unit = {},
 ): View {
     val playerView = LayoutInflater.from(context).inflate(R.layout.video_player, null) as PlayerView
+    val surfaceView = playerView.videoSurfaceView
+    if (surfaceView is TextureView) {
+         //surfaceView.addOnLayoutChangeListener(CropTopLayoutListener(surfaceView))
+    }
 
     // 上一个和下一个按钮
     playerView.setShowNextButton(false)
@@ -432,7 +434,7 @@ fun createPlayerView(
         exoPlayer.addListener(object : Player.Listener {
             override fun onPlayWhenReadyChanged(
                 playWhenReady: Boolean,
-                reason: Int
+                reason: Int,
             ) {
                 if (imageView.isVisible) {
                     imageView.isGone = playWhenReady

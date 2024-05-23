@@ -8,6 +8,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,7 +28,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -326,19 +328,31 @@ fun MediaHomeSectionItem(
     onSectionMediaClick: (FlexMediaSectionItem) -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 16.dp)
-                .clickable {
-                    onSectionClick(item)
-                },
-            text = item.title,
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.SemiBold,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                modifier = Modifier
+                    .padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 16.dp)
+                    .clickable {
+                        onSectionClick(item)
+                    },
+                text = item.title,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+
+            Spacer(Modifier.weight(1f))
+
+            TextButton(
+                modifier = Modifier
+                    .align(Alignment.Bottom)
+                    .padding(bottom = 8.dp, end = 4.dp),
+                onClick = { onSectionClick(item) }
+            ) {
+                Text(text = "更多 >>")
+            }
+        }
 
         MediaHomeSectionItemRow(
             modifier = Modifier

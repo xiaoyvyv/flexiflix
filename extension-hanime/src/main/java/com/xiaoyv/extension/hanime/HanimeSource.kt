@@ -289,6 +289,10 @@ class HanimeSource : HttpParseSource() {
         }
     }
 
+    override suspend fun fetchSectionMediaFilter(section: FlexMediaSection): Result<List<FlexSearchOptionItem>> {
+        TODO("Not yet implemented")
+    }
+
     /**
      * 搜索媒体条目数据
      */

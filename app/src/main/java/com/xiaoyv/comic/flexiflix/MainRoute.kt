@@ -26,6 +26,14 @@ import com.xiaoyv.comic.flexiflix.ui.screen.feature.detail.addMediaDetailScreen
 import com.xiaoyv.comic.flexiflix.ui.screen.feature.home.addMediaHomeScreen
 import com.xiaoyv.comic.flexiflix.ui.screen.feature.search.addMediaSearchScreen
 import com.xiaoyv.comic.flexiflix.ui.screen.feature.search.result.addMediaSearchResultScreen
+import com.xiaoyv.comic.flexiflix.ui.screen.feature.section.addMediaSectionScreen
+import com.xiaoyv.comic.flexiflix.ui.screen.main.profile.about.addAboutScreen
+import com.xiaoyv.comic.flexiflix.ui.screen.main.profile.extension.addExtensionCompatScreen
+import com.xiaoyv.comic.flexiflix.ui.screen.main.profile.settings.addSettingsScreen
+import com.xiaoyv.comic.flexiflix.ui.screen.main.profile.settings_beta.addSettingBetaScreen
+import com.xiaoyv.comic.flexiflix.ui.screen.main.profile.settings_network.addSettingNetworkScreen
+import com.xiaoyv.comic.flexiflix.ui.screen.main.profile.settings_player.addSettingPlayerScreen
+import com.xiaoyv.comic.flexiflix.ui.screen.main.profile.settings_theme.addSettingThemeScreen
 import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
 
 /**
@@ -97,6 +105,22 @@ fun MainScreen() {
 
         // 媒体搜索结果页面
         addMediaSearchResultScreen(navController)
+
+        // 媒体条目分类页面
+        addMediaSectionScreen(navController)
+
+        // 关于页面
+        addAboutScreen(navController)
+
+        // 插件兼容性
+        addExtensionCompatScreen(navController)
+
+        // 设置页面
+        addSettingsScreen(navController)
+        addSettingBetaScreen(navController)
+        addSettingNetworkScreen(navController)
+        addSettingPlayerScreen(navController)
+        addSettingThemeScreen(navController)
     }
 }
 

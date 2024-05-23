@@ -5,16 +5,21 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.LoadState
+import androidx.room.ColumnInfo
+import androidx.room.PrimaryKey
+import com.xiaoyv.comic.flexiflix.data.database.DatabaseRepository
 import com.xiaoyv.comic.flexiflix.data.media.MediaRepository
+import com.xiaoyv.flexiflix.common.database.collect.CollectionEntity
 import com.xiaoyv.flexiflix.common.model.StateContent
+import com.xiaoyv.flexiflix.common.model.hasData
+import com.xiaoyv.flexiflix.common.model.payload
 import com.xiaoyv.flexiflix.common.utils.debugLog
 import com.xiaoyv.flexiflix.common.utils.errMsg
 import com.xiaoyv.flexiflix.common.utils.mutableStateFlowOf
-import com.xiaoyv.flexiflix.common.utils.showSystemUi
 import com.xiaoyv.flexiflix.common.utils.toast
+import com.xiaoyv.flexiflix.extension.model.FlexMediaDetail
 import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylist
 import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
-import com.xiaoyv.flexiflix.extension.utils.toJson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -35,7 +40,8 @@ import javax.inject.Inject
 class MediaDetailViewModel @Inject constructor(
     @ApplicationContext val context: Context,
     savedStateHandle: SavedStateHandle,
-    private val mediaRepository: MediaRepository
+    private val mediaRepository: MediaRepository,
+    private val databaseRepository: DatabaseRepository,
 ) : ViewModel() {
     val args = MediaDetailArgument(savedStateHandle)
 
@@ -51,6 +57,7 @@ class MediaDetailViewModel @Inject constructor(
     init {
         refresh()
     }
+
 
     fun refresh(delay: Long = 0) {
         viewModelScope.launch {
@@ -68,7 +75,38 @@ class MediaDetailViewModel @Inject constructor(
                     MediaDetailState(loadState = LoadState.Error(it))
                 }
 
+            // 保存浏览历史
+            if (state.data.hasData) {
+                saveHistory(state.data.payload())
+            }
+
             _uiState.update { state }
+        }
+    }
+
+    /**
+     * 保存历史
+     */
+    private fun saveHistory(payload: FlexMediaDetail) {
+        viewModelScope.launch {
+            val entity = CollectionEntity(
+                type = 1,
+                sourceId = args.sourceId,
+                mediaId = payload.id,
+                title = payload.title,
+                description = payload.description,
+                cover = payload.cover,
+                url = payload.url,
+                playCount = payload.playCount,
+                createAt = payload.createAt,
+                publisher = payload.publisher?.name,
+                playlistCount = payload.playlist?.size ?: 0,
+                seriesCount = payload.series?.size ?: 0,
+                tags = payload.tags.orEmpty().joinToString(",") { it.name },
+            )
+
+            // 保存
+            databaseRepository.saveCollections(entity)
         }
     }
 
@@ -92,6 +130,7 @@ class MediaDetailViewModel @Inject constructor(
             } else {
                 Result.success(playUrl)
             }
+            debugLog { "data-vid: ${urlResult.getOrNull()}" }
 
             // 出错了
             val error = urlResult.exceptionOrNull()

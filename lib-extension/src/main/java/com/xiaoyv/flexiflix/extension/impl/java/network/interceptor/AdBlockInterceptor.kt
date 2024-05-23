@@ -1,81 +1,99 @@
 package com.xiaoyv.flexiflix.extension.impl.java.network.interceptor
 
+import android.util.Log
+import com.xiaoyv.flexiflix.extension.BuildConfig
+import com.xiaoyv.flexiflix.extension.utils.toJson
 import okhttp3.Interceptor
 import okhttp3.Response
 import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
+import kotlin.math.ceil
+import kotlin.math.min
 
 /**
- * [AdBlockInterceptor] M3U8 去除广告等不连续片段
- *
- * ```m3u8
- * #EXTM3U
- * #EXT-X-VERSION:3
- * #EXT-X-TARGETDURATION:4
- * #EXT-X-PLAYLIST-TYPE:VOD
- * #EXT-X-MEDIA-SEQUENCE:0
- * #EXTINF:2.24,
- * 0000000.ts
- * #EXTINF:2.48,
- * 0000001.ts
- * #EXTINF:1.32,
- * 0000002.ts
- * #EXTINF:2.32,
- * 0000328.ts
- * #EXTINF:2,
- * 0000329.ts
- * #EXT-X-DISCONTINUITY
- * #EXTINF:4.12,
- * /video/adjump/time/17137142947010000000.ts
- * #EXTINF:3,
- * /video/adjump/time/17137142947020000001.ts
- * #EXTINF:2.6,
- * /video/adjump/time/17137142947020000002.ts
- * #EXTINF:2.72,
- * /video/adjump/time/17137142947020000003.ts
- * #EXTINF:3,
- * /video/adjump/time/17137142947020000004.ts
- * #EXTINF:1.8,
- * /video/adjump/time/17137142947020000005.ts
- * #EXT-X-DISCONTINUITY
- * #EXTINF:1.96,
- * 0000330.ts
- * 0000630.ts
- * #EXTINF:2.4,
- * 0000631.ts
- * #EXTINF:2,
- * 0000632.ts
- * #EXTINF:2,
- * 0000633.ts
- * #EXTINF:2,
- * 0000634.ts
- * #EXTINF:1.12,
- * 0000635.ts
- * #EXT-X-ENDLIST
- * ```
+ * [AdBlockInterceptor] M3U8 去除广告
  *
  * @author why
  * @since 5/11/24
  */
 class AdBlockInterceptor : Interceptor {
+    private val String.tsSeq: Long
+        get() = "(\\d+).ts".toRegex().find(this)?.groupValues.orEmpty()
+            .getOrNull(1).orEmpty().toLongOrNull() ?: 0
+
+
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
 
         // 只处理 m3u8
         val string = request.url.toString()
-        if (!string.endsWith(".m3u8", true)) {
+        if (!string.endsWith(".m3u8", true) && !string.endsWith(".m3u", true)) {
             return chain.proceed(request)
         }
 
         val response = chain.proceed(request)
         val responseBody = response.body
-        val content = responseBody.string()
-        val replace =
-            content.replace("#EXT-X-DISCONTINUITY[\\s\\S]+#EXT-X-DISCONTINUITY\n".toRegex(), "")
-        val newBody: ResponseBody = replace.toResponseBody(responseBody.contentType())
+
+        // 离群检测算法去广告
+        val newBody = blockAdByOutliers(responseBody.string())
+            .toResponseBody(responseBody.contentType())
 
         return response.newBuilder()
             .body(newBody)
             .build()
+    }
+
+    /**
+     * 离群检测算法去广告，通过 ts 匹配序列号实现
+     */
+    private fun blockAdByOutliers(content: String): String {
+        val tsArray = content.split("\n").filter { it.endsWith(".ts") }
+        val tsSeqArray = tsArray.map { it.tsSeq }
+        val filterTsSeqArray = removeOutliers(tsSeqArray)
+
+        val tmp = mutableListOf<String>()
+        val strings = content.split("\n")
+        strings.forEach { old ->
+            tmp.add(old)
+
+            // 移除目标 .ts 和其前一个
+            if (old.endsWith(".ts") && !filterTsSeqArray.contains(old.tsSeq)) {
+                tmp.removeLastOrNull()
+                tmp.removeLastOrNull()
+
+                if (tmp.lastOrNull() == "#EXT-X-DISCONTINUITY") {
+                    tmp.removeLastOrNull()
+                }
+            }
+        }
+        val newContent = tmp.joinToString("\n")
+        if (BuildConfig.DEBUG && content != newContent) {
+            Log.e(javaClass.simpleName, "原始数据：${tsSeqArray.joinToString(",")}")
+            Log.e(javaClass.simpleName, "去广数据：${filterTsSeqArray.joinToString(",")}")
+        }
+        return newContent
+    }
+
+    /**
+     * 四分位距，离群值检测算法剔除广告片段
+     */
+    private fun removeOutliers(data: List<Long>): List<Long> {
+        if (data.isEmpty()) return data
+
+        fun percentile(data: List<Long>, percentile: Long): Double {
+            val index = percentile / 100.0 * (data.size - 1)
+            val lower = data[index.toInt()]
+            val upper = data[ceil(index).toInt()]
+            return lower + (upper - lower) * (index - index.toInt())
+        }
+
+        val sortedData = data.sorted()
+        val q1 = percentile(sortedData, 25)
+        val q3 = percentile(sortedData, 75)
+        val iqr = q3 - q1
+        val lowerBound = q1 - 1.5 * iqr
+        val upperBound = q3 + 1.5 * iqr
+
+        return sortedData.filter { it >= lowerBound && it <= upperBound }
     }
 }

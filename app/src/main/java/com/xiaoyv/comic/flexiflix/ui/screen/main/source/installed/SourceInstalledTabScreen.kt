@@ -41,15 +41,15 @@ import com.xiaoyv.flexiflix.extension.MediaSourceType
 @Composable
 fun SourceInstalledTabRoute(
     onSourceClick: (InstalledMediaSource) -> Unit,
-    refreshListState: Any,
+//    refreshListState: Any,
 ) {
     val viewModel = hiltViewModel<SourceInstalledTabViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     // 刷新安装列表
-    LaunchedEffect(refreshListState) {
-        viewModel.refresh()
-    }
+//    LaunchedEffect(refreshListState) {
+//         viewModel.refresh()
+//    }
 
     SourceInstalledTabScreen(
         uiState = uiState,

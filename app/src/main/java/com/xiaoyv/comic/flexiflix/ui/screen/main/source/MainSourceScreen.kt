@@ -10,20 +10,12 @@ import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LifecycleEventEffect
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xiaoyv.comic.flexiflix.model.InstalledMediaSource
 import com.xiaoyv.comic.flexiflix.ui.component.AppBar
-import com.xiaoyv.comic.flexiflix.ui.component.LocalSnackbarHostState
 import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
 import com.xiaoyv.comic.flexiflix.ui.component.StringLabelPage
 import com.xiaoyv.comic.flexiflix.ui.component.TabPager
@@ -47,27 +39,27 @@ fun MainSourceRoute(
             viewModel.installExtension(it ?: return@rememberLauncherForActivityResult)
         }
 
-    var refreshState by remember { mutableIntStateOf(0) }
+//    var refreshState by remember { mutableIntStateOf(0) }
 
 
     // 插件安装状态提示
-    val hostState = LocalSnackbarHostState.current
-    val installState by viewModel.installState.collectAsStateWithLifecycle()
-    LaunchedEffect(installState) {
-        if (installState != null) {
-            refreshState++
-
-            hostState.showSnackbar(if (requireNotNull(installState).isSuccess) "安装成功" else "安装失败")
-        }
-    }
-
-    // 清除安装提示
-    LifecycleEventEffect(event = Lifecycle.Event.ON_STOP) {
-        viewModel.clearInstallState()
-    }
+//    val hostState = LocalSnackbarHostState.current
+//    val installState by viewModel.installState.collectAsStateWithLifecycle()
+//    LaunchedEffect(installState) {
+//        if (installState != null) {
+//            refreshState++
+//
+//            hostState.showSnackbar(if (requireNotNull(installState).isSuccess) "安装成功" else "安装失败")
+//        }
+//    }
+//
+//    // 清除安装提示
+//    LifecycleEventEffect(event = Lifecycle.Event.ON_STOP) {
+//        viewModel.clearInstallState()
+//    }
 
     MainSourceScreen(
-        refreshListState = refreshState,
+//        refreshListState = refreshState,
         onSourceClick = onSourceClick,
         onPickExtensionClick = {
             pickExtensionLauncher.launch("application/vnd.android.package-archive")
@@ -77,16 +69,16 @@ fun MainSourceRoute(
 
 @Composable
 fun MainSourceScreen(
-    refreshListState: Any,
+//    refreshListState: Any,
     onSourceClick: (InstalledMediaSource) -> Unit,
     onPickExtensionClick: () -> Unit = {},
 ) {
-    val labelPages = remember(refreshListState) {
+    val labelPages = remember {
         listOf(
             StringLabelPage(label = "媒体源") {
                 SourceInstalledTabRoute(
                     onSourceClick = onSourceClick,
-                    refreshListState = refreshListState
+//                    refreshListState = refreshListState
                 )
             },
             StringLabelPage(label = "插件") {
@@ -98,7 +90,7 @@ fun MainSourceScreen(
     ScaffoldWrap(
         topBar = {
             AppBar(
-                title = "浏览",
+                title = "数据源插件",
                 hideNavigationIcon = true,
                 actions = {
                     IconButton(onClick = onPickExtensionClick) {
@@ -133,7 +125,6 @@ fun PreviewMainSourceScreen() {
     AppTheme {
         MainSourceScreen(
             onSourceClick = {},
-            refreshListState = 0,
         )
     }
 }

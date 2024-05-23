@@ -5,6 +5,10 @@ plugins {
     id("kotlin-parcelize")
 }
 
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
 android {
     namespace = "com.xiaoyv.player.common"
     compileSdk = 34
@@ -58,6 +62,13 @@ dependencies {
     api(libs.glide.okhttp3.integration)
     ksp(libs.glide.ksp)
 
+
+    val room_version = "2.6.1"
+
+    ksp("androidx.room:room-compiler:$room_version")
+    api("androidx.room:room-runtime:$room_version")
+    api("androidx.room:room-ktx:$room_version")
+
     api(libs.androidx.media3.exoplayer)
     api(libs.androidx.media3.exoplayer.dash)
     api(libs.androidx.media3.exoplayer.hls)
@@ -65,7 +76,13 @@ dependencies {
     api(libs.androidx.media3.datasource.okhttp)
     api(libs.androidx.media3.ui)
 
+    implementation(libs.androidx.ui.tooling.preview)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 }

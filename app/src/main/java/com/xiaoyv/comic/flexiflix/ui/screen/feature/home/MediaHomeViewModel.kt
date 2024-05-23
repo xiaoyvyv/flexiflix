@@ -36,13 +36,6 @@ class MediaHomeViewModel @Inject constructor(
     private val _uiState = mutableStateFlowOf(MediaHomeState())
     val uiState get()= _uiState.asStateFlow()
 
-    /**
-     * 分页数据源
-     */
-    val pageSource = defaultPaging {
-        mediaRepository.pageSource(args.sourceId)
-    }
-
     init {
         refresh()
     }

@@ -13,6 +13,7 @@ import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
 import com.xiaoyv.flexiflix.extension.model.FlexMediaUser
 import com.xiaoyv.flexiflix.extension.model.FlexSearchOption
+import com.xiaoyv.flexiflix.extension.model.FlexSearchOptionItem
 import com.xiaoyv.flexiflix.extension.source.HttpParseSource
 import com.xiaoyv.flexiflix.extension.utils.UNKNOWN_LONG
 import com.xiaoyv.flexiflix.extension.utils.UNKNOWN_STRING
@@ -201,6 +202,10 @@ class YhdmbaApiSource : HttpParseSource() {
     }
 
     override suspend fun fetchMediaSearchConfig(): Result<FlexSearchOption> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun fetchSectionMediaFilter(section: FlexMediaSection): Result<List<FlexSearchOptionItem>> {
         TODO("Not yet implemented")
     }
 

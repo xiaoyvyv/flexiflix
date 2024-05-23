@@ -18,14 +18,14 @@ import com.xiaoyv.flexiflix.common.utils.toBase64Obj
  * @author why
  * @since 5/8/24
  */
-const val ROUTE_MEDIA_SEARCH_RESULT = "media-search-result"
-const val EXTRA_MEDIA_SOURCE_ID = "source"
-const val EXTRA_MEDIA_SEARCH_PARAM = "param"
+private const val ROUTE_MEDIA_SEARCH_RESULT = "media-search-result"
+const val PATH_MEDIA_SOURCE_ID = "source"
+const val PATH_MEDIA_SEARCH_PARAM = "param"
 
 data class MediaSearchResultArgument(val sourceId: String, val param: SearchRequestParam) {
     constructor(savedStateHandle: SavedStateHandle) : this(
-        sourceId = requireNotNull(savedStateHandle[EXTRA_MEDIA_SOURCE_ID]),
-        param = savedStateHandle.decodeBase64Obj(EXTRA_MEDIA_SEARCH_PARAM)
+        sourceId = requireNotNull(savedStateHandle[PATH_MEDIA_SOURCE_ID]),
+        param = savedStateHandle.decodeBase64Obj(PATH_MEDIA_SEARCH_PARAM)
     )
 }
 
@@ -38,10 +38,14 @@ fun NavController.navigateMediaSearchResult(sourceId: String, param: SearchReque
 
 fun NavGraphBuilder.addMediaSearchResultScreen(navController: NavController) {
     composable(
-        route = ROUTE_MEDIA_SEARCH_RESULT + "/{${EXTRA_MEDIA_SOURCE_ID}}/{${EXTRA_MEDIA_SEARCH_PARAM}}",
+        route = "%s/{%s}/{%s}".format(
+            ROUTE_MEDIA_SEARCH_RESULT,
+            PATH_MEDIA_SOURCE_ID,
+            PATH_MEDIA_SEARCH_PARAM
+        ),
         arguments = listOf(
-            navArgument(EXTRA_MEDIA_SOURCE_ID) { type = NavType.StringType },
-            navArgument(EXTRA_MEDIA_SEARCH_PARAM) { type = NavType.StringType }
+            navArgument(PATH_MEDIA_SOURCE_ID) { type = NavType.StringType },
+            navArgument(PATH_MEDIA_SEARCH_PARAM) { type = NavType.StringType }
         )
     ) {
         MediaSearchResultRoute(

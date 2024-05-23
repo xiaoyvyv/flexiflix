@@ -11,14 +11,18 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
+import com.chaquo.python.PyObject
 import com.chaquo.python.Python
-import com.xiaoyv.comic.flexiflix.ui.component.DelegateSnackbarHostState
+import com.xiaoyv.comic.flexiflix.ui.component.AppThemeState
+import com.xiaoyv.comic.flexiflix.ui.component.DelegateSnackBarHostState
 import com.xiaoyv.comic.flexiflix.ui.component.LocalPopupHostState
-import com.xiaoyv.comic.flexiflix.ui.component.LocalSnackbarHostState
+import com.xiaoyv.comic.flexiflix.ui.component.LocalSnackBarHostState
+import com.xiaoyv.comic.flexiflix.ui.component.LocalThemeConfigState
 import com.xiaoyv.comic.flexiflix.ui.component.PopupHostScreen
 import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
 import com.xiaoyv.comic.flexiflix.ui.component.rememberPopupHostState
 import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
+import com.xiaoyv.flexiflix.common.utils.debugLog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,20 +36,22 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            AppTheme {
-                val popupHostState = rememberPopupHostState()
-                val snackbarState = remember { SnackbarHostState() }
-                val delegateSnackbarState = remember { DelegateSnackbarHostState(snackbarState) }
+            val popupHostState = rememberPopupHostState()
+            val snackBarState = remember { SnackbarHostState() }
+            val delegateSnackBarState = remember { DelegateSnackBarHostState(snackBarState) }
+            val themeState = remember { AppThemeState() }
 
-                CompositionLocalProvider(
-                    LocalPopupHostState provides popupHostState,
-                    LocalSnackbarHostState provides delegateSnackbarState
-                ) {
+            CompositionLocalProvider(
+                LocalPopupHostState provides popupHostState,
+                LocalSnackBarHostState provides delegateSnackBarState,
+                LocalThemeConfigState provides themeState
+            ) {
+                AppTheme(themeState = themeState) {
                     ScaffoldWrap(
                         snackbarHost = {
                             SnackbarHost(
                                 modifier = Modifier.navigationBarsPadding(),
-                                hostState = snackbarState,
+                                hostState = snackBarState,
                             )
                         }
                     ) {
@@ -80,8 +86,14 @@ class MainActivity : ComponentActivity() {
         Python.getInstance()
             .getModule("sys")["path"]?.callAttr("append", pythonDir.absolutePath)
 
-        Python.getInstance()
+
+        val source: PyObject = Python.getInstance()
             .getModule("test")
-            .callAttr("main")
+            .callAttr("defineSource")
+
+        // json.dumps(source.fetch_home_sections(), default=source.serializable())
+        val sections = source.callAttr("fetch_home_sections")
+        val string = source.callAttr("serializable", sections).toString()
+        debugLog { "string:$string" }
     }
 }

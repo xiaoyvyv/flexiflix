@@ -5,16 +5,19 @@ package com.xiaoyv.extension.yhdm.iyinghua.io
 import com.xiaoyv.flexiflix.extension.impl.java.annotation.MediaSource
 import com.xiaoyv.flexiflix.extension.model.FlexMediaDetail
 import com.xiaoyv.flexiflix.extension.model.FlexMediaDetailTab
-import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
-import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
 import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylist
 import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
+import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
+import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
 import com.xiaoyv.flexiflix.extension.model.FlexMediaTag
 import com.xiaoyv.flexiflix.extension.model.FlexMediaUser
 import com.xiaoyv.flexiflix.extension.model.FlexSearchOption
+import com.xiaoyv.flexiflix.extension.model.FlexSearchOptionItem
 import com.xiaoyv.flexiflix.extension.source.HttpParseSource
 import com.xiaoyv.flexiflix.extension.utils.UNKNOWN_LONG
 import com.xiaoyv.flexiflix.extension.utils.UNKNOWN_STRING
+import com.xiaoyv.flexiflix.extension.utils.decodeUnicode
+import com.xiaoyv.flexiflix.extension.utils.decodeUrl
 import com.xiaoyv.flexiflix.extension.utils.parseNumberStr
 import com.xiaoyv.flexiflix.extension.utils.regex
 import com.xiaoyv.flexiflix.extension.utils.runCatchingPrint
@@ -60,9 +63,12 @@ class IyingHuaSource : HttpParseSource() {
 
             val area = document.select(".firs > .dtit").mapNotNull { item ->
                 val element = item.nextElementSibling() ?: return@mapNotNull null
+                val sectionId = item.select("a").attr("href")
+                    .let { it.decodeUrl() }
+                    .replace("/", "").trim()
 
                 FlexMediaSection(
-                    id = item.select("a").attr("href"),
+                    id = sectionId,
                     title = item.select("h2").text(),
                     items = element.select("ul > li").map { media ->
                         val p = media.select("p").lastOrNull()
@@ -74,7 +80,7 @@ class IyingHuaSource : HttpParseSource() {
                             cover = media.select("img").attr("src"),
                             description = media.select("p").text(),
                             overlay = FlexMediaSectionItem.OverlayText(
-                                topStart = p?.text().orEmpty(),
+                                topStart = p?.text().orEmpty().replace("最新:", ""),
                                 bottomEnd = duration
                             ),
                             layout = FlexMediaSectionItem.ImageLayout(
@@ -89,9 +95,12 @@ class IyingHuaSource : HttpParseSource() {
             val side = document.select(".side.r .pics").let { item ->
                 val element = item.firstOrNull()
                 val header = element?.previousElementSibling()
+                val sectionId = header?.select("a")?.attr("href").orEmpty()
+                    .let { it.decodeUrl() }
+                    .replace("/", "").trim()
 
                 FlexMediaSection(
-                    id = header?.select("a")?.attr("href").orEmpty(),
+                    id = sectionId,
                     title = header?.select("h2")?.text().orEmpty(),
                     items = element?.select("ul > li")?.map { media ->
                         FlexMediaSectionItem(
@@ -118,12 +127,65 @@ class IyingHuaSource : HttpParseSource() {
         }
     }
 
+    override suspend fun fetchSectionMediaFilter(section: FlexMediaSection): Result<List<FlexSearchOptionItem>> {
+        return runCatchingPrint { listOf() }
+    }
+
     override suspend fun fetchSectionMediaPages(
         sectionId: String,
         sectionExtras: Map<String, String>,
-        page: Int
+        page: Int,
     ): Result<List<FlexMediaSectionItem>> {
-        TODO("Not yet implemented")
+        return runCatchingPrint {
+            val pagePath = if (page <= 1) "" else "$page.html"
+            val document = iyhdmmApi.section(sectionId, pagePath)
+            when (sectionId) {
+                // 最近更新、一周排行
+                "new", "top" -> {
+                    document.select(".topli ul > li").map { item ->
+                        FlexMediaSectionItem(
+                            id = item.select("li > a").attr("href").parseNumberStr(),
+                            cover = "",
+                            title = item.select("li > a").text(),
+                            description = item.select("a").text(),
+                            overlay = FlexMediaSectionItem.OverlayText(
+                                topStart = item.select("span > a").text(),
+                                topEnd = item.select("b > a").text().trim(),
+                                bottomEnd = item.select("em").text().trim()
+                            )
+                        )
+                    }
+                }
+
+                // 动漫电影
+                "movie" -> {
+                    document.select(".area .imgs ul > li").map { item ->
+                        FlexMediaSectionItem(
+                            id = item.select("p a").attr("href").parseNumberStr(),
+                            cover = item.select("a img").attr("src"),
+                            title = item.select("p a").text(),
+                            description = item.select("p a").text()
+                        )
+                    }
+                }
+
+                // 其它
+                else -> {
+                    document.select(".fire.l ul > li").map { item ->
+                        FlexMediaSectionItem(
+                            id = item.select("h2 a").attr("href").parseNumberStr(),
+                            cover = item.select("a img").attr("src"),
+                            title = item.select("h2").text(),
+                            description = item.select("p").text(),
+                            overlay = FlexMediaSectionItem.OverlayText(
+                                topStart = item.select("span > font").text(),
+                                bottomEnd = item.select("span > a").text().trim()
+                            )
+                        )
+                    }
+                }
+            }
+        }
     }
 
     override suspend fun fetchUserMediaPages(user: FlexMediaUser): Result<List<FlexMediaSectionItem>> {
@@ -132,7 +194,7 @@ class IyingHuaSource : HttpParseSource() {
 
     override suspend fun fetchMediaDetail(
         id: String,
-        extras: Map<String, String>
+        extras: Map<String, String>,
     ): Result<FlexMediaDetail> {
         return runCatchingPrint {
             val document = iyhdmmApi.qeuryDetail(id)
@@ -221,19 +283,37 @@ class IyingHuaSource : HttpParseSource() {
     override suspend fun fetchMediaDetailRelative(
         relativeTab: FlexMediaDetailTab,
         id: String,
-        extras: Map<String, String>
+        extras: Map<String, String>,
     ): Result<List<FlexMediaSection>> {
         TODO("Not yet implemented")
     }
 
     override suspend fun fetchMediaSearchConfig(): Result<FlexSearchOption> {
-        TODO("Not yet implemented")
+        return runCatchingPrint { FlexSearchOption(keywordKey = "serach") }
     }
+
+
     override suspend fun fetchMediaSearchResult(
         keyword: String,
         page: Int,
         searchMap: Map<String, String>,
     ): Result<List<FlexMediaSectionItem>> {
-        TODO("Not yet implemented")
+        return runCatchingPrint {
+            require(keyword.isNotBlank()) { "请输入搜索内容" }
+
+            val document = iyhdmmApi.search(keyword, page)
+            document.select(".fire.l ul > li").map { item ->
+                FlexMediaSectionItem(
+                    id = item.select("h2 a").attr("href").parseNumberStr(),
+                    cover = item.select("a img").attr("src"),
+                    title = item.select("h2").text(),
+                    description = item.select("p").text(),
+                    overlay = FlexMediaSectionItem.OverlayText(
+                        topStart = item.select("span > font").text(),
+                        bottomEnd = item.select("span > a").text().trim()
+                    )
+                )
+            }
+        }
     }
 }

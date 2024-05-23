@@ -15,13 +15,13 @@ import com.xiaoyv.flexiflix.common.utils.navigateByPath
  * @author why
  * @since 5/8/24
  */
-const val ROUTE_MEDIA_SEARCH = "media-search"
-const val EXTRA_MEDIA_SOURCE_ID = "source"
+private const val ROUTE_MEDIA_SEARCH = "media-search"
+const val PATH_MEDIA_SOURCE_ID = "source"
 const val EXTRA_MEDIA_SOURCE_NAME = "name"
 
 data class MediaSearchArgument(val sourceId: String, val sourceName: String) {
     constructor(savedStateHandle: SavedStateHandle) : this(
-        sourceId = requireNotNull(savedStateHandle[EXTRA_MEDIA_SOURCE_ID]),
+        sourceId = requireNotNull(savedStateHandle[PATH_MEDIA_SOURCE_ID]),
         sourceName = savedStateHandle.get<String>(EXTRA_MEDIA_SOURCE_NAME).orEmpty()
     )
 }
@@ -32,9 +32,13 @@ fun NavController.navigateMediaSearch(sourceId: String, name: String) {
 
 fun NavGraphBuilder.addMediaSearchScreen(navController: NavController) {
     composable(
-        route = ROUTE_MEDIA_SEARCH + "/{${EXTRA_MEDIA_SOURCE_ID}}?$EXTRA_MEDIA_SOURCE_NAME={${EXTRA_MEDIA_SOURCE_NAME}}",
+        route = "%s/{%s}?%s={%s}".format(
+            ROUTE_MEDIA_SEARCH,
+            PATH_MEDIA_SOURCE_ID,
+            EXTRA_MEDIA_SOURCE_NAME, EXTRA_MEDIA_SOURCE_NAME
+        ),
         arguments = listOf(
-            navArgument(EXTRA_MEDIA_SOURCE_ID) { type = NavType.StringType },
+            navArgument(PATH_MEDIA_SOURCE_ID) { type = NavType.StringType },
             navArgument(EXTRA_MEDIA_SOURCE_NAME) {
                 type = NavType.StringType
                 defaultValue = ""

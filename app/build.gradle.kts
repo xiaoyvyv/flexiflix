@@ -73,7 +73,7 @@ android {
             "-opt-in=androidx.compose.ui.ExperimentalComposeUiApi",
             "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi",
             "-opt-in=androidx.compose.foundation.layout.ExperimentalLayoutApi",
-            "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+            "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
         )
     }
 
@@ -111,13 +111,15 @@ dependencies {
     implementation(project(":lib-common"))
 
     implementation(libs.androidx.activity.compose)
+
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.compose.material.icons.extended)
-    implementation(libs.androidx.ui.text.google.fonts)
+
 
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)

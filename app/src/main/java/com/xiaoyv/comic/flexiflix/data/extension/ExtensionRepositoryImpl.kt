@@ -18,6 +18,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * [ExtensionRepositoryImpl]
@@ -25,6 +26,7 @@ import javax.inject.Inject
  * @author why
  * @since 5/10/24
  */
+@Singleton
 class ExtensionRepositoryImpl @Inject constructor(
     @ApplicationContext val context: Context
 ) : ExtensionRepository {

@@ -22,11 +22,15 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class SourceInstalledTabViewModel @Inject constructor(
-    private val repository: ExtensionRepository
+    private val repository: ExtensionRepository,
 ) : ViewModel() {
 
     private val _uiState = mutableStateFlowOf(SourceInstalledTabState())
     val uiState get() = _uiState.asStateFlow()
+
+    init {
+        refresh()
+    }
 
     fun refresh() {
         viewModelScope.launch {

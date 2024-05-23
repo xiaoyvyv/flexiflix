@@ -25,4 +25,13 @@ interface IyingHuaApi {
      */
     @GET("/v/{epId}.html")
     suspend fun qeuryDetailPlayer(@Path("epId") epId: String): Document
+
+    @GET("/search/{search}")
+    suspend fun search(@Path("search") search: String, @Query("page") page: Int): Document
+
+    @GET("/{section}/{page}")
+    suspend fun section(
+        @Path("section") section: String,
+        @Path("page") page: String,
+    ): Document
 }

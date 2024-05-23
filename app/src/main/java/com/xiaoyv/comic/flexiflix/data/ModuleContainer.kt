@@ -1,24 +1,36 @@
 package com.xiaoyv.comic.flexiflix.data
 
+import android.content.Context
+import androidx.room.Room
+import com.xiaoyv.comic.flexiflix.data.database.DatabaseRepository
+import com.xiaoyv.comic.flexiflix.data.database.DatabaseRepositoryImpl
 import com.xiaoyv.comic.flexiflix.data.extension.ExtensionRepository
 import com.xiaoyv.comic.flexiflix.data.extension.ExtensionRepositoryImpl
 import com.xiaoyv.comic.flexiflix.data.media.MediaRepository
 import com.xiaoyv.comic.flexiflix.data.media.MediaRepositoryImpl
+import com.xiaoyv.flexiflix.common.database.LocalDatabase
+import com.xiaoyv.flexiflix.common.database.collect.CollectionDao
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 /**
- * [ModuleContainer]
+ * [ModuleBindsContainer]
  *
  * @author why
  * @since 5/9/24
  */
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class ModuleContainer {
+abstract class ModuleBindsContainer {
+
+    @Binds
+    @Singleton
+    abstract fun bindDatabaseRepository(repositoryImpl: DatabaseRepositoryImpl): DatabaseRepository
 
     @Binds
     @Singleton
@@ -28,4 +40,28 @@ abstract class ModuleContainer {
     @Binds
     @Singleton
     abstract fun bindExtensionRepository(repositoryImpl: ExtensionRepositoryImpl): ExtensionRepository
+}
+
+/**
+ * [ModuleProvidesContainer]
+ *
+ * @author why
+ * @since 5/9/24
+ */
+@Module
+@InstallIn(SingletonComponent::class)
+object ModuleProvidesContainer {
+
+    @Provides
+    @Singleton
+    fun provideLocalDatabase(@ApplicationContext context: Context): LocalDatabase {
+        return Room.databaseBuilder(context, LocalDatabase::class.java, LocalDatabase.DATABASE_NAME)
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+
+    @Provides
+    fun provideLogDao(database: LocalDatabase): CollectionDao {
+        return database.collectionDao()
+    }
 }

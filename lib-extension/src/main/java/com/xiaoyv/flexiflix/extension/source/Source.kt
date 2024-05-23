@@ -7,6 +7,7 @@ import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
 import com.xiaoyv.flexiflix.extension.model.FlexMediaUser
 import com.xiaoyv.flexiflix.extension.model.FlexSearchOption
+import com.xiaoyv.flexiflix.extension.model.FlexSearchOptionItem
 import com.xiaoyv.flexiflix.extension.utils.runCatchingPrint
 
 /**
@@ -32,6 +33,11 @@ interface Source {
      * 默认第一个 [FlexMediaSection] 会在顶部以 Banner 形式展示
      */
     suspend fun fetchHomeSections(): Result<List<FlexMediaSection>>
+
+    /**
+     * 获取对应的某个 section 的细分筛选项，没有细化筛选项返回空集合即可
+     */
+    suspend fun fetchSectionMediaFilter(section: FlexMediaSection): Result<List<FlexSearchOptionItem>>
 
     /**
      * 获取对应的某个 section 的全部分页数据

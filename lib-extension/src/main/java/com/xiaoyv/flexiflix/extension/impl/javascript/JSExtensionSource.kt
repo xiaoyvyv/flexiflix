@@ -7,6 +7,7 @@ import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
 import com.xiaoyv.flexiflix.extension.model.FlexMediaUser
 import com.xiaoyv.flexiflix.extension.model.FlexSearchOption
+import com.xiaoyv.flexiflix.extension.model.FlexSearchOptionItem
 import com.xiaoyv.flexiflix.extension.model.MediaSourceInfo
 import com.xiaoyv.flexiflix.extension.source.Source
 import com.xiaoyv.flexiflix.extension.utils.md5
@@ -118,6 +119,10 @@ class JSExtensionSource(private val jsPath: String) : Source {
             makeSureServiceRunning()
             JSExtensionService.instacne.jsApi.fetchMediaSearchConfig(hash = hash)
         }
+    }
+
+    override suspend fun fetchSectionMediaFilter(section: FlexMediaSection): Result<List<FlexSearchOptionItem>> {
+        TODO("Not yet implemented")
     }
 
     override suspend fun fetchMediaSearchResult(

@@ -14,14 +14,14 @@ import com.xiaoyv.flexiflix.common.utils.navigateByPath
  * @author why
  * @since 5/8/24
  */
-const val ROUTE_MEDIA_MEDIA = "media-media"
-const val EXTRA_MEDIA_SOURCE_ID = "source"
-const val EXTRA_MEDIA_DETAIL_ID = "id"
+private const val ROUTE_MEDIA_MEDIA = "media-media"
+const val PATH_MEDIA_SOURCE_ID = "source"
+const val PATH_MEDIA_DETAIL_ID = "id"
 
 data class MediaDetailArgument(val sourceId: String, val mediaId: String) {
     constructor(savedStateHandle: SavedStateHandle) : this(
-        sourceId = requireNotNull(savedStateHandle[EXTRA_MEDIA_SOURCE_ID]),
-        mediaId = requireNotNull(savedStateHandle[EXTRA_MEDIA_DETAIL_ID]),
+        sourceId = requireNotNull(savedStateHandle[PATH_MEDIA_SOURCE_ID]),
+        mediaId = requireNotNull(savedStateHandle[PATH_MEDIA_DETAIL_ID]),
     )
 }
 
@@ -31,10 +31,14 @@ fun NavController.navigateMediaDetail(sourceId: String, mediaId: String) {
 
 fun NavGraphBuilder.addMediaDetailScreen(navController: NavController) {
     composable(
-        route = ROUTE_MEDIA_MEDIA + "/{${EXTRA_MEDIA_SOURCE_ID}}/{${EXTRA_MEDIA_DETAIL_ID}}",
+        route = "%s/{%s}/{%s}".format(
+            ROUTE_MEDIA_MEDIA,
+            PATH_MEDIA_SOURCE_ID,
+            PATH_MEDIA_DETAIL_ID
+        ),
         arguments = listOf(
-            navArgument(EXTRA_MEDIA_SOURCE_ID) { type = NavType.StringType },
-            navArgument(EXTRA_MEDIA_DETAIL_ID) { type = NavType.StringType },
+            navArgument(PATH_MEDIA_SOURCE_ID) { type = NavType.StringType },
+            navArgument(PATH_MEDIA_DETAIL_ID) { type = NavType.StringType },
         )
     ) {
         MediaDetailRoute(

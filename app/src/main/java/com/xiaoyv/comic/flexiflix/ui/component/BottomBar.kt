@@ -3,7 +3,11 @@ package com.xiaoyv.comic.flexiflix.ui.component
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Api
+import androidx.compose.material.icons.filled.EditCalendar
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Source
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -13,7 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import com.xiaoyv.comic.flexiflix.ui.screen.ROUTE_MAIN_TAB_HOME
+import com.xiaoyv.comic.flexiflix.ui.screen.ROUTE_MAIN_TAB_COLLECT
+import com.xiaoyv.comic.flexiflix.ui.screen.ROUTE_MAIN_TAB_HISTORY
 import com.xiaoyv.comic.flexiflix.ui.screen.ROUTE_MAIN_TAB_PROFILE
 import com.xiaoyv.comic.flexiflix.ui.screen.ROUTE_MAIN_TAB_SOURCE
 import com.xiaoyv.flexiflix.i18n.I18n
@@ -27,21 +32,27 @@ data class TopLevelDestination(
 
 val TOP_LEVEL_DESTINATIONS = listOf(
     TopLevelDestination(
-        route = ROUTE_MAIN_TAB_HOME,
-        selectedIcon = Icons.Default.Home,
-        unselectedIcon = Icons.Default.Home,
-        iconTextId = I18n.tab_home
+        route = ROUTE_MAIN_TAB_COLLECT,
+        selectedIcon = Icons.Default.EditCalendar,
+        unselectedIcon = Icons.Default.EditCalendar,
+        iconTextId = I18n.tab_collect
+    ),
+    TopLevelDestination(
+        route = ROUTE_MAIN_TAB_HISTORY,
+        selectedIcon = Icons.Default.History,
+        unselectedIcon = Icons.Default.History,
+        iconTextId = I18n.tab_history
     ),
     TopLevelDestination(
         route = ROUTE_MAIN_TAB_SOURCE,
-        selectedIcon = Icons.Default.Source,
-        unselectedIcon = Icons.Default.Source,
+        selectedIcon = Icons.Default.Api,
+        unselectedIcon = Icons.Default.Api,
         iconTextId = I18n.tab_source
     ),
     TopLevelDestination(
         route = ROUTE_MAIN_TAB_PROFILE,
-        selectedIcon = Icons.Default.AccountCircle,
-        unselectedIcon = Icons.Default.AccountCircle,
+        selectedIcon = Icons.Default.Settings,
+        unselectedIcon = Icons.Default.Settings,
         iconTextId = I18n.tab_profile
     )
 )

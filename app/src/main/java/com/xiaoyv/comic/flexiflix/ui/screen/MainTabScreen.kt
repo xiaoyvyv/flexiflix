@@ -1,6 +1,5 @@
 package com.xiaoyv.comic.flexiflix.ui.screen
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -17,12 +16,18 @@ import com.xiaoyv.comic.flexiflix.ui.animation.materialFadeThroughIn
 import com.xiaoyv.comic.flexiflix.ui.animation.materialFadeThroughOut
 import com.xiaoyv.comic.flexiflix.ui.component.BottomNavBar
 import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
+import com.xiaoyv.comic.flexiflix.ui.screen.feature.detail.navigateMediaDetail
 import com.xiaoyv.comic.flexiflix.ui.screen.feature.home.navigateMediaHome
+import com.xiaoyv.comic.flexiflix.ui.screen.main.collect.MainCollectRoute
 import com.xiaoyv.comic.flexiflix.ui.screen.main.history.MainHistoryRoute
 import com.xiaoyv.comic.flexiflix.ui.screen.main.profile.MainProfileRoute
+import com.xiaoyv.comic.flexiflix.ui.screen.main.profile.about.navigateAbout
+import com.xiaoyv.comic.flexiflix.ui.screen.main.profile.extension.navigateExtensionCompat
+import com.xiaoyv.comic.flexiflix.ui.screen.main.profile.settings.navigateSettings
 import com.xiaoyv.comic.flexiflix.ui.screen.main.source.MainSourceRoute
 
-internal const val ROUTE_MAIN_TAB_HOME = "main-home"
+internal const val ROUTE_MAIN_TAB_COLLECT = "main-collect"
+internal const val ROUTE_MAIN_TAB_HISTORY = "main-history"
 internal const val ROUTE_MAIN_TAB_SOURCE = "main-source"
 internal const val ROUTE_MAIN_TAB_PROFILE = "main-profile"
 
@@ -35,7 +40,7 @@ internal const val ROUTE_MAIN_TAB_PROFILE = "main-profile"
  */
 @Composable
 fun MainTabRoute(
-    navController: NavController
+    navController: NavController,
 ) {
     MainTabScreen(
         navController = navController
@@ -44,18 +49,18 @@ fun MainTabRoute(
 
 @Composable
 fun MainTabScreen(
-    navController: NavController
+    navController: NavController,
 ) {
     val tabNavController = rememberNavController()
     val navBackStackEntry by tabNavController.currentBackStackEntryAsState()
-    val selectedDestination = navBackStackEntry?.destination?.route ?: ROUTE_MAIN_TAB_HOME
+    val selectedDestination = navBackStackEntry?.destination?.route ?: ROUTE_MAIN_TAB_COLLECT
 
     ScaffoldWrap {
         Column(modifier = Modifier.fillMaxSize()) {
             NavHost(
                 modifier = Modifier.weight(1f),
                 navController = tabNavController,
-                startDestination = ROUTE_MAIN_TAB_HOME,
+                startDestination = ROUTE_MAIN_TAB_COLLECT,
                 enterTransition = {
                     materialFadeThroughIn(
                         initialScale = 1f,
@@ -66,9 +71,19 @@ fun MainTabScreen(
                     materialFadeThroughOut(durationMillis = MotionConstants.DefaultFadeOutDuration)
                 }
             ) {
-                // 首页
-                composable(ROUTE_MAIN_TAB_HOME) {
-                    MainHistoryRoute()
+                // 在追
+                composable(ROUTE_MAIN_TAB_COLLECT) {
+                    MainCollectRoute(
+                    )
+                }
+
+                // 历史
+                composable(ROUTE_MAIN_TAB_HISTORY) {
+                    MainHistoryRoute(
+                        onMediaClick = { sourceId, mediaId ->
+                            navController.navigateMediaDetail(sourceId, mediaId)
+                        }
+                    )
                 }
 
                 // 数据源
@@ -85,24 +100,32 @@ fun MainTabScreen(
 
                 // 个人中心
                 composable(ROUTE_MAIN_TAB_PROFILE) {
-                    MainProfileRoute()
+                    MainProfileRoute(
+                        onNavAboutScreen = {
+                            navController.navigateAbout()
+                        },
+                        onNavSettingsScreen = {
+                            navController.navigateSettings()
+                        },
+                        onNavExtensionCompat = {
+                            navController.navigateExtensionCompat()
+                        }
+                    )
                 }
             }
 
-            AnimatedVisibility(visible = true) {
-                BottomNavBar(
-                    selectedDestination = selectedDestination,
-                    navigateToTopLevelDestination = {
-                        tabNavController.navigate(it.route) {
-                            popUpTo(tabNavController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
+            BottomNavBar(
+                selectedDestination = selectedDestination,
+                navigateToTopLevelDestination = {
+                    tabNavController.navigate(it.route) {
+                        popUpTo(tabNavController.graph.findStartDestination().id) {
+                            saveState = true
                         }
+                        launchSingleTop = true
+                        restoreState = true
                     }
-                )
-            }
+                }
+            )
         }
     }
 }

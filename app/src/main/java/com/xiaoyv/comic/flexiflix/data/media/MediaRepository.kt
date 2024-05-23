@@ -1,11 +1,12 @@
 package com.xiaoyv.comic.flexiflix.data.media
 
 import androidx.paging.PagingSource
-import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
 import com.xiaoyv.flexiflix.extension.model.FlexMediaDetail
 import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
+import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
 import com.xiaoyv.flexiflix.extension.model.FlexSearchOption
+import com.xiaoyv.flexiflix.extension.model.FlexSearchOptionItem
 
 /**
  * [MediaRepository]
@@ -14,7 +15,6 @@ import com.xiaoyv.flexiflix.extension.model.FlexSearchOption
  * @since 5/9/24
  */
 interface MediaRepository {
-    fun pageSource(sourceId: String): PagingSource<Int, FlexMediaSection>
 
     /**
      * 搜索数据
@@ -23,6 +23,11 @@ interface MediaRepository {
         sourceId: String,
         keyword: String,
         queryMap: Map<String, String>,
+    ): PagingSource<Int, FlexMediaSectionItem>
+
+    fun sectionSource(
+        sourceId: String,
+        section: FlexMediaSection,
     ): PagingSource<Int, FlexMediaSectionItem>
 
     suspend fun getHomeSections(sourceId: String): Result<List<FlexMediaSection>>
@@ -35,4 +40,10 @@ interface MediaRepository {
     ): Result<FlexMediaPlaylistUrl>
 
     suspend fun getMediaSearchOption(sourceId: String): Result<FlexSearchOption>
+
+    suspend fun getSectionMediaFilter(
+        sourceId: String,
+        section: FlexMediaSection,
+    ): Result<List<FlexSearchOptionItem>>
+
 }

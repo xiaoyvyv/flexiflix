@@ -3,6 +3,7 @@ package com.xiaoyv.flexiflix.extension.source
 import android.util.Log
 import com.xiaoyv.flexiflix.extension.BuildConfig
 import com.xiaoyv.flexiflix.extension.MediaSourceFactory
+import com.xiaoyv.flexiflix.extension.model.FlexSearchOptionItem
 import com.xiaoyv.flexiflix.extension.utils.ignoreCertificate
 import okhttp3.CookieJar
 import okhttp3.OkHttpClient
@@ -64,4 +65,5 @@ abstract class HttpSource : Source {
     fun debugLog(any: () -> Any?) {
         if (BuildConfig.DEBUG) Log.e(javaClass.simpleName, any.invoke().toString())
     }
+
 }
