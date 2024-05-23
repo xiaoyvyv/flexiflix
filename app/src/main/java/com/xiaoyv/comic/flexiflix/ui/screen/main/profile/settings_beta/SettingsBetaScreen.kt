@@ -30,6 +30,8 @@ import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
 import com.xiaoyv.comic.flexiflix.ui.component.SettingNormalItem
 import com.xiaoyv.comic.flexiflix.ui.component.SettingOptionsItem
 import com.xiaoyv.comic.flexiflix.ui.component.SettingSwitchItem
+import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
+import com.xiaoyv.flexiflix.common.config.settings.AppSettings
 import com.xiaoyv.flexiflix.extension.utils.versionCode
 import com.xiaoyv.flexiflix.extension.utils.versionName
 
@@ -70,7 +72,8 @@ fun SettingBetaScreen(
         ) {
 
             SettingSwitchItem(
-                key = "beta_block_ad",
+                key = AppSettings.Beta.BETA_BLOCK_M3U8_AD_KEY,
+                default = AppSettings.Beta.blockM3u8Ad,
                 title = "过滤 M3U8 数据源广告",
                 subtitle = "通过离群检测算法过滤掉广告片段",
                 icon = {
@@ -83,22 +86,22 @@ fun SettingBetaScreen(
             )
 
             SettingOptionsItem(
-                key = "beta_crop_top",
+                key = AppSettings.Beta.BETA_CROP_TOP_KEY,
+                default = AppSettings.Beta.cropTop,
                 title = "裁除顶部轮播广告",
                 subtitle = { label, _ -> "%s 顶部高度像素".format(label) },
                 formatClass = requireNotNull(Float::class.javaPrimitiveType),
-                default = 0f,
                 values = remember {
                     mapOf(
-                        "不裁剪" to 0f,
-                        "2.5%" to 0.025f,
-                        "5%" to 0.05f,
-                        "7.5%" to 0.075f,
-                        "10%" to 0.1f,
-                        "12.5%" to 0.125f,
-                        "15%" to 0.15f,
-                        "17.5%" to 0.175f,
-                        "20%" to 0.2f,
+                        "不裁剪" to AppSettings.Beta.BETA_CROP_TOP_VALUE_0,
+                        "2.5%" to AppSettings.Beta.BETA_CROP_TOP_VALUE_0_025,
+                        "5%" to AppSettings.Beta.BETA_CROP_TOP_VALUE_0_05,
+                        "7.5%" to AppSettings.Beta.BETA_CROP_TOP_VALUE_0_075,
+                        "10%" to AppSettings.Beta.BETA_CROP_TOP_VALUE_0_1,
+                        "12.5%" to AppSettings.Beta.BETA_CROP_TOP_VALUE_0_125,
+                        "15%" to AppSettings.Beta.BETA_CROP_TOP_VALUE_0_15,
+                        "17.5%" to AppSettings.Beta.BETA_CROP_TOP_VALUE_0_175,
+                        "20%" to AppSettings.Beta.BETA_CROP_TOP_VALUE_0_2,
                     )
                 },
                 icon = {
@@ -117,5 +120,7 @@ fun SettingBetaScreen(
 @Preview(widthDp = 411, heightDp = 711)
 @Composable
 fun PreviewSettingBetaScreen() {
-    SettingBetaScreen()
+   AppTheme {
+       SettingBetaScreen()
+   }
 }

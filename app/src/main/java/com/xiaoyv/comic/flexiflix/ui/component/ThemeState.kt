@@ -1,8 +1,11 @@
 package com.xiaoyv.comic.flexiflix.ui.component
 
+import android.content.Context
+import android.content.res.Configuration
 import androidx.compose.runtime.staticCompositionLocalOf
 import com.xiaoyv.flexiflix.common.config.settings.AppSettings
 import com.xiaoyv.flexiflix.common.utils.mutableStateFlowOf
+import com.xiaoyv.flexiflix.extension.editMode
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
@@ -17,19 +20,19 @@ class AppThemeState {
     /**
      * 深色模式
      */
-    private val _darkMode = mutableStateFlowOf(AppSettings.darkModeSpValue)
+    private val _darkMode by lazy { mutableStateFlowOf(AppSettings.Theme.darkMode) }
     val darkMode get() = _darkMode.asStateFlow()
 
     /**
      * 主题颜色
      */
-    private val _theme = mutableStateFlowOf(AppSettings.themeSpValue)
+    private val _theme by lazy { mutableStateFlowOf(AppSettings.Theme.theme) }
     val theme get() = _theme.asStateFlow()
 
     /**
      * 暗色模式强制黑色主题
      */
-    private val _darkForceBlack = mutableStateFlowOf(AppSettings.darkForceBlackSpValue)
+    private val _darkForceBlack by lazy { mutableStateFlowOf(AppSettings.Theme.darkForceBlack) }
     val darkForceBlack get() = _darkForceBlack.asStateFlow()
 
     /**
@@ -39,14 +42,14 @@ class AppThemeState {
      * - 暗色
      * - 亮色
      */
-    fun changeDarkMode(@AppSettings.DarkMode value: Int) {
+    fun changeDarkMode(@AppSettings.Theme.DarkMode value: Int) {
         _darkMode.update { value }
     }
 
     /**
      * 主题颜色切换
      */
-    fun changeTheme(@AppSettings.ThemeColor value: Int) {
+    fun changeTheme(@AppSettings.Theme.ThemeColor value: Int) {
         _theme.update { value }
     }
 
@@ -54,10 +57,30 @@ class AppThemeState {
      * 暗色模式强制黑色主题开关
      */
     fun changeDarkForceBlack(value: Boolean) {
-        _darkForceBlack.update { value }
+        if (!editMode) {
+            _darkForceBlack.update { value }
+        }
+    }
+
+    /**
+     * App 内当前主题是否为暗色
+     */
+    fun isDarkMode(context: Context): Boolean {
+        val darkMode = darkMode.value
+        val systemDarkTheme =
+            (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+        return when (darkMode) {
+            // 跟随系统
+            AppSettings.Theme.THEME_DARK_MODE_VALUE_SYSTEM -> systemDarkTheme
+            // 暗色模式
+            AppSettings.Theme.THEME_DARK_MODE_VALUE_ON -> true
+            // 亮色模式
+            AppSettings.Theme.THEME_DARK_MODE_VALUE_OFF -> false
+            else -> error("error")
+        }
     }
 }
 
 val LocalThemeConfigState = staticCompositionLocalOf<AppThemeState> {
-    error("")
+    error("Please provide <AppThemeState> for LocalThemeConfigState")
 }

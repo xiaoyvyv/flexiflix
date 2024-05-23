@@ -28,6 +28,8 @@ import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
 import com.xiaoyv.comic.flexiflix.ui.component.SettingInputItem
 import com.xiaoyv.comic.flexiflix.ui.component.SettingNormalItem
 import com.xiaoyv.comic.flexiflix.ui.component.SettingSwitchItem
+import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
+import com.xiaoyv.flexiflix.common.config.settings.AppSettings
 import com.xiaoyv.flexiflix.extension.utils.versionCode
 import com.xiaoyv.flexiflix.extension.utils.versionName
 
@@ -68,7 +70,8 @@ fun SettingNetworkScreen(
         ) {
 
             SettingSwitchItem(
-                key = "network_host_enable",
+                key = AppSettings.Network.NETWORK_HOST_ENABLE_KEY,
+                default = AppSettings.Network.hostEnable,
                 title = "启用自定义 Host",
                 subtitle = "固定指定域名的 IP 解析地址",
                 icon = {
@@ -85,10 +88,10 @@ fun SettingNetworkScreen(
 
             if (rememberCustomHostState) {
                 SettingSwitchItem(
-                    key = "network_host_extension_enable",
+                    key = AppSettings.Network.NETWORK_HOST_EXTENSION_ENABLE_KEY,
+                    default = AppSettings.Network.hostExtensionEnable,
                     title = "启用插件 Host 配置",
                     subtitle = "部分插件源自带 Host 配置",
-                    default = true,
                     icon = {
                         Icon(
                             modifier = Modifier.alpha(0f),
@@ -100,7 +103,8 @@ fun SettingNetworkScreen(
                 )
 
                 SettingInputItem(
-                    key = "network_host_content",
+                    key = AppSettings.Network.NETWORK_HOST_CONTENT_KEY,
+                    default = AppSettings.Network.hostContent,
                     title = "Host",
                     subtitle = "自定义 Host",
                     icon = {
@@ -112,7 +116,6 @@ fun SettingNetworkScreen(
                         )
                     }
                 )
-
             }
 
             SettingNormalItem(
@@ -134,5 +137,7 @@ fun SettingNetworkScreen(
 @Preview(widthDp = 411, heightDp = 711)
 @Composable
 fun PreviewSettingNetworkScreen() {
-    SettingNetworkScreen()
+    AppTheme {
+        SettingNetworkScreen()
+    }
 }

@@ -5,6 +5,7 @@ import dagger.hilt.android.HiltAndroidApp
 
 lateinit var application: Application
 
+
 /**
  * [MainApplication]
  *

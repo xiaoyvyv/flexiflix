@@ -4,8 +4,6 @@ package com.xiaoyv.flexiflix.extension.impl.javascript
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.ProcessLifecycleOwner
-import androidx.lifecycle.lifecycleScope
 import com.xiaoyv.flexiflix.extension.ExtensionProvider
 import com.xiaoyv.flexiflix.extension.MediaSourceFactory
 import com.xiaoyv.flexiflix.extension.utils.copyAssetFile
@@ -13,9 +11,6 @@ import com.xiaoyv.flexiflix.extension.utils.copyAssetsFolder
 import com.xiaoyv.flexiflix.extension.utils.runCatchingPrint
 import com.xiaoyv.flexiflix.extension.utils.sharePreference
 import com.xiaoyv.flexiflix.extension.utils.versionCode
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import java.io.File
 import kotlin.concurrent.thread
 

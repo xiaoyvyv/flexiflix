@@ -3,6 +3,7 @@ package com.xiaoyv.flexiflix.extension
 import android.app.Application
 import android.content.ContentProvider
 import android.content.ContentValues
+import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import androidx.lifecycle.ProcessLifecycleOwner
@@ -52,7 +53,7 @@ class ExtensionProvider : ContentProvider() {
         projection: Array<out String>?,
         selection: String?,
         selectionArgs: Array<out String>?,
-        sortOrder: String?
+        sortOrder: String?,
     ): Cursor? {
         return null
     }
@@ -73,7 +74,7 @@ class ExtensionProvider : ContentProvider() {
         uri: Uri,
         values: ContentValues?,
         selection: String?,
-        selectionArgs: Array<out String>?
+        selectionArgs: Array<out String>?,
     ): Int {
         return 0
     }

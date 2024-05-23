@@ -29,21 +29,26 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.xiaoyv.comic.flexiflix.application
 import com.xiaoyv.comic.flexiflix.ui.component.AppBar
+import com.xiaoyv.comic.flexiflix.ui.component.AppThemeState
 import com.xiaoyv.comic.flexiflix.ui.component.LocalThemeConfigState
 import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
 import com.xiaoyv.comic.flexiflix.ui.component.SettingNormalItem
 import com.xiaoyv.comic.flexiflix.ui.component.SettingOptionsItem
 import com.xiaoyv.comic.flexiflix.ui.component.SettingSwitchItem
+import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
 import com.xiaoyv.flexiflix.common.config.settings.AppSettings
+import com.xiaoyv.flexiflix.extension.ExtensionProvider
 
 /**
  * [SettingThemeScreen]
@@ -82,15 +87,15 @@ fun SettingThemeScreen(
                 .padding(it)
         ) {
             SettingOptionsItem(
-                key = AppSettings.THEME_DARK_MODE_KEY,
+                key = AppSettings.Theme.THEME_DARK_MODE_KEY,
                 title = "深色模式",
                 formatClass = requireNotNull(Int::class.javaPrimitiveType),
-                default = AppSettings.THEME_DARK_MODE_VALUE_SYSTEM,
+                default = remember { AppSettings.Theme.darkMode },
                 values = remember {
                     mapOf(
-                        "跟随系统" to AppSettings.THEME_DARK_MODE_VALUE_SYSTEM,
-                        "开启" to AppSettings.THEME_DARK_MODE_VALUE_ON,
-                        "关闭" to AppSettings.THEME_DARK_MODE_VALUE_OFF,
+                        "跟随系统" to AppSettings.Theme.THEME_DARK_MODE_VALUE_SYSTEM,
+                        "开启" to AppSettings.Theme.THEME_DARK_MODE_VALUE_ON,
+                        "关闭" to AppSettings.Theme.THEME_DARK_MODE_VALUE_OFF,
                     )
                 },
                 icon = {
@@ -105,19 +110,24 @@ fun SettingThemeScreen(
                 }
             )
 
-
-            SettingSwitchItem(
-                key = AppSettings.THEME_DARK_PURE_KEY,
-                title = "深色模式下纯黑主题",
-                default = AppSettings.THEME_DARK_PURE_VALUE_DEFAULT,
-                icon = {
-                    Icon(
-                        imageVector = Icons.Default.DarkMode,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-            )
+            // 当前主题为深色才显示该配置
+            if (themeState.isDarkMode(context)) {
+                SettingSwitchItem(
+                    key = AppSettings.Theme.THEME_DARK_PURE_KEY,
+                    title = "深色模式下纯黑主题",
+                    default = remember { AppSettings.Theme.darkForceBlack },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.DarkMode,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    },
+                    onValueChange = { value ->
+                        themeState.changeDarkForceBlack(value)
+                    }
+                )
+            }
 
             SettingNormalItem(
                 title = "应用主题",
@@ -285,5 +295,9 @@ fun LazyItemScope.SettingThemePreview(
 @Preview(widthDp = 411, heightDp = 711)
 @Composable
 fun PreviewSettingThemeScreen() {
-    SettingThemeScreen()
+    CompositionLocalProvider(LocalThemeConfigState provides AppThemeState()) {
+        AppTheme {
+            SettingThemeScreen()
+        }
+    }
 }

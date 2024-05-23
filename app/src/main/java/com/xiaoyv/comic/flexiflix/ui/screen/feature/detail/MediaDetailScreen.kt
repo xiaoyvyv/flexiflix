@@ -24,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,6 +48,7 @@ import com.xiaoyv.comic.flexiflix.ui.component.TabPager
 import com.xiaoyv.comic.flexiflix.ui.screen.feature.detail.tab.MediaDetailSummaryTab
 import com.xiaoyv.flexiflix.common.model.payload
 import com.xiaoyv.flexiflix.common.model.asSinglePage
+import com.xiaoyv.flexiflix.common.utils.debugLog
 import com.xiaoyv.flexiflix.common.utils.findActivity
 import com.xiaoyv.flexiflix.common.utils.isLandscape
 import com.xiaoyv.flexiflix.common.utils.isStoped
@@ -67,7 +69,7 @@ import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
 @Composable
 fun MediaDetailRoute(
     onNavUp: () -> Unit,
-    onSectionMediaClick: (String, FlexMediaSectionItem) -> Unit = { _, _ -> }
+    onSectionMediaClick: (String, FlexMediaSectionItem) -> Unit = { _, _ -> },
 ) {
     val context = LocalContext.current
     val view = LocalView.current
@@ -77,7 +79,9 @@ fun MediaDetailRoute(
     val currentPlayUrl by viewModel.currentPlayUrl.collectAsStateWithLifecycle()
     val currentPlaylist by viewModel.currentPlaylist.collectAsStateWithLifecycle()
 
-    BackHandler(enabled = context.isLandscape) {
+    // 返回键拦截
+    var backHandlerEnable by remember { mutableStateOf(false) }
+    BackHandler(enabled = backHandlerEnable) {
         view
             .findViewById<View>(androidx.media3.ui.R.id.exo_minimal_fullscreen)
             .performClick()
@@ -87,6 +91,9 @@ fun MediaDetailRoute(
         uiState = uiState,
         currentPlayUrl = currentPlayUrl,
         currentPlaylist = currentPlaylist,
+        onOrientationChange = { landscape ->
+            backHandlerEnable = landscape
+        },
         onChangePlayItem = { list, index -> viewModel.changePlayItem(list, index) },
         onSelectPlayList = { viewModel.selectPlayList(it) },
         onRefresh = { viewModel.refresh() },
@@ -112,6 +119,7 @@ fun MediaDetailScreen(
     uiState: MediaDetailState,
     currentPlayUrl: FlexMediaPlaylistUrl?,
     currentPlaylist: FlexMediaPlaylist?,
+    onOrientationChange: (Boolean) -> Unit = {},
     onNavUp: () -> Unit = {},
     onRefresh: () -> Unit = {},
     onRetryClick: () -> Unit = {},
@@ -137,6 +145,8 @@ fun MediaDetailScreen(
         } else {
             playerDefaultHeight
         }
+
+        onOrientationChange(isLandscape)
 
         // 全屏隐藏系统栏
         context.findActivity()?.let {
@@ -209,7 +219,7 @@ fun MediaDetailScreen(
         ) {
             PageStateScreen(
                 loadState = uiState.loadState,
-                itemCount = { uiState.data.asSinglePage()},
+                itemCount = { uiState.data.asSinglePage() },
                 onRetryClick = onRetryClick
             ) {
                 val mediaDetail = uiState.data.payload()
@@ -280,7 +290,7 @@ fun MediaDetailTabPage(
     currentPlayItem: FlexMediaPlaylistUrl?,
     onSelectPlayList: (FlexMediaPlaylist) -> Unit,
     onChangePlayItem: (FlexMediaPlaylist, Int) -> Unit = { _, _ -> },
-    onSectionMediaClick: (FlexMediaSectionItem) -> Unit
+    onSectionMediaClick: (FlexMediaSectionItem) -> Unit,
 ) {
     val updatedPlayListState by rememberUpdatedState(newValue = currentPlayList)
     val updatedPlayItemState by rememberUpdatedState(newValue = currentPlayItem)

@@ -6,10 +6,12 @@ package com.xiaoyv.flexiflix.extension.utils
 import android.content.Context
 import android.content.SharedPreferences
 import com.xiaoyv.flexiflix.extension.ExtensionProvider
+import com.xiaoyv.flexiflix.extension.editMode
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 const val GLOBAL_SP_NAME = "default_prefs"
+
 
 /**
  * 本地 SP 储存
@@ -47,6 +49,10 @@ class SharedPreferencesDelegate<T>(
     }
 
     override fun getValue(thisRef: Any, property: KProperty<*>): T {
+        if (editMode) {
+            return default
+        }
+
         return when (default) {
             is Int -> prefs.getInt(name, default) as T
             is Long -> prefs.getLong(name, default) as T
@@ -58,6 +64,8 @@ class SharedPreferencesDelegate<T>(
     }
 
     override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
+        if (editMode) return
+
         with(prefs.edit()) {
             when (value) {
                 is Int -> putInt(name, value)
