@@ -1,10 +1,8 @@
 @file:Suppress("MemberVisibilityCanBePrivate")
 
-package com.xiaoyv.flexiflix.common.config.settings
+package com.xiaoyv.flexiflix.extension.config.settings
 
 import androidx.annotation.IntDef
-import com.xiaoyv.flexiflix.common.config.settings.AppSettings.Player.PLAYER_DRAG_SENSITIVITY_KEY
-import com.xiaoyv.flexiflix.common.config.settings.AppSettings.Player.PLAYER_DRAG_SENSITIVITY_VALUE_MIDDLE
 import com.xiaoyv.flexiflix.extension.utils.sharePreference
 
 /**
@@ -14,6 +12,9 @@ import com.xiaoyv.flexiflix.extension.utils.sharePreference
  * @since 5/23/24
  */
 object AppSettings {
+    const val GLOBAL_SP_NAME = "default_prefs"
+
+    var editMode = false
 
     /**
      * 主题相关配置
@@ -147,3 +148,4 @@ object AppSettings {
         var cropTop by sharePreference(BETA_CROP_TOP_KEY, BETA_CROP_TOP_VALUE_0)
     }
 }
+

@@ -9,22 +9,27 @@ import java.util.concurrent.ConcurrentHashMap
  * @since 5/11/24
  */
 class NetworkManager private constructor() {
-    private val map = ConcurrentHashMap<String, String>()
+    /**
+     * HOST
+     *
+     * HostName - IP
+     */
+    private val extensionDnsMap = ConcurrentHashMap<String, String>()
 
     companion object {
         private val instance by lazy { NetworkManager() }
 
         @JvmStatic
         fun put(host: String, ip: String) {
-            instance.map[host] = ip
+            instance.extensionDnsMap[host] = ip
         }
 
         @JvmStatic
         fun putAll(map: Map<String, String>) {
-            instance.map.putAll(map)
+            instance.extensionDnsMap.putAll(map)
         }
 
         @JvmStatic
-        fun getSourceDnsMap() = instance.map
+        fun getSourceDnsMap() = instance.extensionDnsMap
     }
 }

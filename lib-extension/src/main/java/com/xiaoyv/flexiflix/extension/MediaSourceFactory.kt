@@ -4,17 +4,20 @@ package com.xiaoyv.flexiflix.extension
 
 import com.android.tools.smali.dexlib2.Opcodes
 import com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile
-import com.xiaoyv.flexiflix.extension.model.MediaSourceInfo
 import com.xiaoyv.flexiflix.extension.impl.java.network.converter.WebDocumentConverter
 import com.xiaoyv.flexiflix.extension.impl.java.network.converter.WebHtmlConverter
 import com.xiaoyv.flexiflix.extension.impl.java.network.cookie.PersistentCookieJar
+import com.xiaoyv.flexiflix.extension.impl.java.network.cookie.cache.SetCookieCache
+import com.xiaoyv.flexiflix.extension.impl.java.network.cookie.persistence.SharedPrefsCookiePersistor
+import com.xiaoyv.flexiflix.extension.impl.java.network.dns.NetworkDns
 import com.xiaoyv.flexiflix.extension.impl.java.network.dns.NetworkManager
 import com.xiaoyv.flexiflix.extension.impl.java.network.interceptor.AdBlockInterceptor
 import com.xiaoyv.flexiflix.extension.impl.java.network.interceptor.Base64ImageInterceptor
 import com.xiaoyv.flexiflix.extension.impl.java.network.interceptor.CommonInterceptor
+import com.xiaoyv.flexiflix.extension.impl.javascript.JSExtensionSource
+import com.xiaoyv.flexiflix.extension.model.MediaSourceInfo
 import com.xiaoyv.flexiflix.extension.source.HttpSource
 import com.xiaoyv.flexiflix.extension.source.Source
-import com.xiaoyv.flexiflix.extension.impl.javascript.JSExtensionSource
 import com.xiaoyv.flexiflix.extension.utils.decodeUnicode
 import com.xiaoyv.flexiflix.extension.utils.jvmSignature
 import com.xiaoyv.flexiflix.extension.utils.md5
@@ -55,8 +58,8 @@ object MediaSourceFactory {
      */
     val cookieJar: CookieJar by lazy {
         PersistentCookieJar(
-            com.xiaoyv.flexiflix.extension.impl.java.network.cookie.cache.SetCookieCache(),
-            com.xiaoyv.flexiflix.extension.impl.java.network.cookie.persistence.SharedPrefsCookiePersistor(
+            SetCookieCache(),
+            SharedPrefsCookiePersistor(
                 requireNotNull(ExtensionProvider.application)
             )
         )
@@ -76,7 +79,7 @@ object MediaSourceFactory {
                     addNetworkInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 }
             }
-//            .dns(NetworkDns())
+            .dns(NetworkDns())
             .addInterceptor(CommonInterceptor())
             .addInterceptor(Base64ImageInterceptor())
             .addNetworkInterceptor(AdBlockInterceptor())
@@ -130,7 +133,7 @@ object MediaSourceFactory {
      */
     suspend fun loadJvmExtension(
         apkPath: String,
-        force: Boolean = false
+        force: Boolean = false,
     ): List<MediaSourceExtension> {
         return withContext(Dispatchers.IO) {
             val key = File(apkPath).md5()
@@ -225,7 +228,7 @@ object MediaSourceFactory {
      */
     suspend fun loadJavaScriptExtension(
         jsPath: String,
-        force: Boolean = false
+        force: Boolean = false,
     ): List<MediaSourceExtension> {
         return withContext(Dispatchers.IO) {
             val key = File(jsPath).md5()
@@ -256,7 +259,7 @@ object MediaSourceFactory {
      */
     suspend fun loadPythonExtension(
         pyPath: String,
-        force: Boolean = false
+        force: Boolean = false,
     ): List<MediaSourceExtension> {
         return withContext(Dispatchers.IO) {
             val key = File(pyPath).md5()

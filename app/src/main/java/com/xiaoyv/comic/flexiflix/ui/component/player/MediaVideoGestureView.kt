@@ -29,6 +29,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.PlayerView
 import com.xiaoyv.comic.flexiflix.R
+import com.xiaoyv.flexiflix.extension.config.settings.AppSettings
 import com.xiaoyv.flexiflix.common.utils.vibrate
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -39,7 +40,7 @@ import kotlin.math.roundToLong
  */
 @OptIn(UnstableApi::class)
 class MediaVideoGestureView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0,
 ) : FrameLayout(context, attrs, defStyleAttr) {
     private val root = LayoutInflater.from(context).inflate(R.layout.video_player_overlay, this)
 
@@ -52,8 +53,6 @@ class MediaVideoGestureView @JvmOverloads constructor(
 
     val brightnessState = MutableLiveData<Float>()
     val volumeState = MutableLiveData<Int>()
-
-    private val handler = Handler(Looper.getMainLooper())
 
     /**
      * 亮度提示面板
@@ -303,6 +302,7 @@ class MediaVideoGestureView @JvmOverloads constructor(
         private var isScrollingVertically = false
         private val threshold = 10
 
+        private val dragSensitivity by lazy { AppSettings.Player.dragSensitivity }
 
         override fun onDown(e: MotionEvent): Boolean {
             initialX = e.x
@@ -324,7 +324,7 @@ class MediaVideoGestureView @JvmOverloads constructor(
             e1: MotionEvent?,
             e2: MotionEvent,
             distanceX: Float,
-            distanceY: Float
+            distanceY: Float,
         ): Boolean {
             e1 ?: return false
             if (!isScrollingHorizontally && !isScrollingVertically) {
@@ -363,8 +363,8 @@ class MediaVideoGestureView @JvmOverloads constructor(
             }
 
             // 调节进度的阻尼系数，1f 为无阻尼
-            // 底部 200px 内调节无阻尼，其它空间设置 2 倍阻尼
-            val dampingMultiple = if ((height - e1.y) > 200) 2f else 1f
+            // 底部 200px 内调节无阻尼，其它空间设置 dragSensitivity 倍阻尼
+            val dampingMultiple = if ((height - e1.y) > 200) dragSensitivity else 1f
             val newProgress =
                 (initialProgress + (deltaX / width.toFloat()) * mediaDuration / dampingMultiple)
 
@@ -436,7 +436,7 @@ class MediaVideoGestureView @JvmOverloads constructor(
                     fastForwardText.clearAnimation()
                     fastForwardText.startAnimation(alphaAnimation)
 
-                    playbackParameters = playbackParameters.withSpeed(3f)
+                    playbackParameters = playbackParameters.withSpeed(AppSettings.Player.pressSpeed)
                     context.vibrate(50)
                 }
             }

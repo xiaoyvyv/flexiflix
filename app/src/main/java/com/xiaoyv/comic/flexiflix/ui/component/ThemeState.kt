@@ -3,9 +3,8 @@ package com.xiaoyv.comic.flexiflix.ui.component
 import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.runtime.staticCompositionLocalOf
-import com.xiaoyv.flexiflix.common.config.settings.AppSettings
+import com.xiaoyv.flexiflix.extension.config.settings.AppSettings
 import com.xiaoyv.flexiflix.common.utils.mutableStateFlowOf
-import com.xiaoyv.flexiflix.extension.editMode
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
@@ -57,7 +56,7 @@ class AppThemeState {
      * 暗色模式强制黑色主题开关
      */
     fun changeDarkForceBlack(value: Boolean) {
-        if (!editMode) {
+        if (!AppSettings.editMode) {
             _darkForceBlack.update { value }
         }
     }

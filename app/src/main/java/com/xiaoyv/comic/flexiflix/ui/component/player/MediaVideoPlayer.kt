@@ -67,6 +67,7 @@ import com.kuaishou.akdanmaku.ui.DanmakuPlayer
 import com.kuaishou.akdanmaku.ui.DanmakuView
 import com.xiaoyv.comic.flexiflix.R
 import com.xiaoyv.comic.flexiflix.application
+import com.xiaoyv.flexiflix.extension.config.settings.AppSettings
 import com.xiaoyv.flexiflix.common.utils.debugLog
 import com.xiaoyv.flexiflix.extension.MediaSourceFactory
 import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
@@ -372,8 +373,11 @@ fun createPlayerView(
 ): View {
     val playerView = LayoutInflater.from(context).inflate(R.layout.video_player, null) as PlayerView
     val surfaceView = playerView.videoSurfaceView
-    if (surfaceView is TextureView) {
-         //surfaceView.addOnLayoutChangeListener(CropTopLayoutListener(surfaceView))
+
+    // 顶部裁剪功能
+    val cropTop = AppSettings.Beta.cropTop
+    if (surfaceView is TextureView && cropTop != AppSettings.Beta.BETA_CROP_TOP_VALUE_0) {
+        surfaceView.addOnLayoutChangeListener(CropTopLayoutListener(surfaceView, cropTop))
     }
 
     // 上一个和下一个按钮

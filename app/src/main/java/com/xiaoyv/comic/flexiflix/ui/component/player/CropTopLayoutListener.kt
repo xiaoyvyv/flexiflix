@@ -12,7 +12,10 @@ import androidx.media3.common.util.UnstableApi
  * @author why
  * @since 5/23/24
  */
-class CropTopLayoutListener(private val textureView: TextureView) : View.OnLayoutChangeListener {
+class CropTopLayoutListener(
+    private val textureView: TextureView,
+    private val cropTop: Float,
+) : View.OnLayoutChangeListener {
     @OptIn(UnstableApi::class)
     override fun onLayoutChange(
         v: View?,
@@ -31,7 +34,6 @@ class CropTopLayoutListener(private val textureView: TextureView) : View.OnLayou
 
         // 顶部裁剪功能
         if (textureViewWidth != 0f && textureViewHeight != 0f) {
-            val cropTop = 0.1f
             val pivotX = textureViewWidth / 2
             transformMatrix.postScale(1f + cropTop, 1f + cropTop, pivotX, textureViewHeight)
         }

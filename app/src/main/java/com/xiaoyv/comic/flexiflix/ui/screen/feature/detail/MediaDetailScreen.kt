@@ -24,7 +24,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,9 +45,9 @@ import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
 import com.xiaoyv.comic.flexiflix.ui.component.StringLabelPage
 import com.xiaoyv.comic.flexiflix.ui.component.TabPager
 import com.xiaoyv.comic.flexiflix.ui.screen.feature.detail.tab.MediaDetailSummaryTab
+import com.xiaoyv.flexiflix.extension.config.settings.AppSettings
 import com.xiaoyv.flexiflix.common.model.payload
 import com.xiaoyv.flexiflix.common.model.asSinglePage
-import com.xiaoyv.flexiflix.common.utils.debugLog
 import com.xiaoyv.flexiflix.common.utils.findActivity
 import com.xiaoyv.flexiflix.common.utils.isLandscape
 import com.xiaoyv.flexiflix.common.utils.isStoped
@@ -131,11 +130,11 @@ fun MediaDetailScreen(
     val configuration = LocalConfiguration.current
     val density = LocalDensity.current
 
-    // 监听屏幕方向，记录播放器高度和全屏状态记录，默认宽高比 16/9f
-    val playerDefaultHeight = remember {
-        Dp((context.screenInfo.first / (8 / 5f)) / density.density)
+    // 监听屏幕方向，记录播放器高度和全屏状态记录，竖屏默认宽高比 AppSettings.Player.portraitRatio
+    val playerPortraitHeight = remember {
+        Dp((context.screenInfo.first / (AppSettings.Player.portraitRatio)) / density.density)
     }
-    var playerCurrentHeight by remember { mutableStateOf(playerDefaultHeight) }
+    var playerCurrentHeight by remember { mutableStateOf(playerPortraitHeight) }
     var playerFullScreenState by remember { mutableStateOf(false) }
     LaunchedEffect(configuration.orientation) {
         val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -143,7 +142,7 @@ fun MediaDetailScreen(
         playerCurrentHeight = if (isLandscape) {
             Dp(context.resources.displayMetrics.heightPixels.toFloat())
         } else {
-            playerDefaultHeight
+            playerPortraitHeight
         }
 
         onOrientationChange(isLandscape)
@@ -175,7 +174,6 @@ fun MediaDetailScreen(
             refreshState.endRefresh()
         }
     }
-
 
 
     ScaffoldWrap(

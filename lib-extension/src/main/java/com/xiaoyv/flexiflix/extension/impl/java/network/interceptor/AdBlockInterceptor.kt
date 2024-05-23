@@ -2,13 +2,11 @@ package com.xiaoyv.flexiflix.extension.impl.java.network.interceptor
 
 import android.util.Log
 import com.xiaoyv.flexiflix.extension.BuildConfig
-import com.xiaoyv.flexiflix.extension.utils.toJson
+import com.xiaoyv.flexiflix.extension.config.settings.AppSettings
 import okhttp3.Interceptor
 import okhttp3.Response
-import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
 import kotlin.math.ceil
-import kotlin.math.min
 
 /**
  * [AdBlockInterceptor] M3U8 去除广告
@@ -21,11 +19,14 @@ class AdBlockInterceptor : Interceptor {
         get() = "(\\d+).ts".toRegex().find(this)?.groupValues.orEmpty()
             .getOrNull(1).orEmpty().toLongOrNull() ?: 0
 
-
     override fun intercept(chain: Interceptor.Chain): Response {
-        val request = chain.request()
+        // 关闭直接跳过
+        if (!AppSettings.Beta.blockM3u8Ad) {
+            return chain.proceed(chain.request())
+        }
 
         // 只处理 m3u8
+        val request = chain.request()
         val string = request.url.toString()
         if (!string.endsWith(".m3u8", true) && !string.endsWith(".m3u", true)) {
             return chain.proceed(request)

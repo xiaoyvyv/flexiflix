@@ -47,7 +47,7 @@ import com.xiaoyv.comic.flexiflix.ui.component.SettingNormalItem
 import com.xiaoyv.comic.flexiflix.ui.component.SettingOptionsItem
 import com.xiaoyv.comic.flexiflix.ui.component.SettingSwitchItem
 import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
-import com.xiaoyv.flexiflix.common.config.settings.AppSettings
+import com.xiaoyv.flexiflix.extension.config.settings.AppSettings
 import com.xiaoyv.flexiflix.extension.ExtensionProvider
 
 /**

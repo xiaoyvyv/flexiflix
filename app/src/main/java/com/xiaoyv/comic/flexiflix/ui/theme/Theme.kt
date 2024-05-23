@@ -17,7 +17,7 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xiaoyv.comic.flexiflix.ui.component.AppThemeState
 import com.xiaoyv.flexiflix.common.utils.debugLog
-import com.xiaoyv.flexiflix.extension.editMode
+import com.xiaoyv.flexiflix.extension.config.settings.AppSettings
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
@@ -153,7 +153,7 @@ fun AppTheme(
     val view = LocalView.current
     val context = LocalContext.current
 
-    editMode = view.isInEditMode
+    AppSettings.editMode = view.isInEditMode
 
     val darkMode by themeState.darkMode.collectAsStateWithLifecycle()
     val darkModeForceBlack by themeState.darkForceBlack.collectAsStateWithLifecycle()
