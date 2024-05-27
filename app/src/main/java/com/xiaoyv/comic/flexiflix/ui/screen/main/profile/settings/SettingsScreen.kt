@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.xiaoyv.comic.flexiflix.ui.component.AppBar
-import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
+import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldScreen
 import com.xiaoyv.comic.flexiflix.ui.component.SettingNormalItem
 import com.xiaoyv.flexiflix.extension.utils.versionCode
 import com.xiaoyv.flexiflix.extension.utils.versionName
@@ -59,7 +59,7 @@ fun SettingsScreen(
 ) {
     val context = LocalContext.current
 
-    ScaffoldWrap(
+    ScaffoldScreen(
         topBar = {
             AppBar(title = "设置", onNavigationIconClick = onNavUp)
         }

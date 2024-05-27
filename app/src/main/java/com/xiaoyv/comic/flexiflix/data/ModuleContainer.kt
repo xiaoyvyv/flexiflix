@@ -8,14 +8,17 @@ import com.xiaoyv.comic.flexiflix.data.extension.ExtensionRepository
 import com.xiaoyv.comic.flexiflix.data.extension.ExtensionRepositoryImpl
 import com.xiaoyv.comic.flexiflix.data.media.MediaRepository
 import com.xiaoyv.comic.flexiflix.data.media.MediaRepositoryImpl
+import com.xiaoyv.comic.flexiflix.data.remote.RemoteApi
 import com.xiaoyv.flexiflix.common.database.LocalDatabase
 import com.xiaoyv.flexiflix.common.database.collect.CollectionDao
+import com.xiaoyv.flexiflix.extension.MediaSourceFactory
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import retrofit2.Retrofit
 import javax.inject.Singleton
 
 /**
@@ -63,5 +66,18 @@ object ModuleProvidesContainer {
     @Provides
     fun provideLogDao(database: LocalDatabase): CollectionDao {
         return database.collectionDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRetrofit(): Retrofit {
+        return MediaSourceFactory.retrofitBuilder
+            .baseUrl("http://localhost")
+            .build()
+    }
+
+    @Provides
+    fun provideRemoteApi(retrofit: Retrofit): RemoteApi {
+        return retrofit.create(RemoteApi::class.java)
     }
 }

@@ -9,10 +9,12 @@ import androidx.compose.ui.Modifier
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.xiaoyv.comic.flexiflix.R
+import com.xiaoyv.flexiflix.common.model.StateContent
+import com.xiaoyv.flexiflix.common.model.hasData
 import com.xiaoyv.flexiflix.i18n.I18n
 
 /**
- * [PageStateScreen]
+ * [StateScreen]
  *
  * [PullToRefreshState] 和 [LazyPagingItems] 绑定状态视图
  *
@@ -21,7 +23,7 @@ import com.xiaoyv.flexiflix.i18n.I18n
  */
 
 @Composable
-fun <T : Any> PageStateScreen(
+fun <T : Any> StateScreen(
     pagingItems: LazyPagingItems<T>,
     refreshState: PullToRefreshState? = null,
     @StringRes emptyTitleRes: Int = I18n.empty_title,
@@ -64,7 +66,7 @@ fun <T : Any> PageStateScreen(
 
 
 @Composable
-fun PageStateScreen(
+fun StateScreen(
     loadState: LoadState,
     itemCount: () -> Int,
     @StringRes emptyTitleRes: Int = I18n.empty_title,
@@ -74,7 +76,7 @@ fun PageStateScreen(
     @StringRes errorSubtitleRes: Int = I18n.error_something_goes_wrong,
     @DrawableRes errorImageRes: Int = R.drawable.ill_error,
     onRetryClick: (() -> Unit)? = { },
-    content: @Composable () -> Unit,
+    content: (@Composable () -> Unit)? = null,
 ) {
     when (loadState) {
         is LoadState.Loading -> {
@@ -89,7 +91,7 @@ fun PageStateScreen(
                     imageRes = emptyImageRes
                 )
             } else {
-                content()
+                content?.invoke()
             }
         }
 
@@ -103,3 +105,45 @@ fun PageStateScreen(
         }
     }
 }
+
+@Composable
+fun <T> StateScreen(
+    state: LoadState,
+    stateContent: StateContent<T>,
+    @StringRes emptyTitleRes: Int = I18n.empty_title,
+    @StringRes emptySubtitleRes: Int = I18n.empty_subtitle,
+    @DrawableRes emptyImageRes: Int = R.drawable.ill_bookmarks,
+    @StringRes errorTitleRes: Int = I18n.error_title,
+    @StringRes errorSubtitleRes: Int = I18n.error_something_goes_wrong,
+    @DrawableRes errorImageRes: Int = R.drawable.ill_error,
+    onRetryClick: (() -> Unit)? = { },
+    content: (@Composable () -> Unit)? = null,
+) {
+    when (state) {
+        is LoadState.Loading -> {
+            if (!stateContent.hasData) Loading(modifier = Modifier.fillMaxSize())
+        }
+
+        is LoadState.NotLoading -> {
+            if (!stateContent.hasData) {
+                Empty(
+                    titleRes = emptyTitleRes,
+                    subtitleRes = emptySubtitleRes,
+                    imageRes = emptyImageRes
+                )
+            } else {
+                content?.invoke()
+            }
+        }
+
+        is LoadState.Error -> {
+            if (!stateContent.hasData) Error(
+                titleRes = errorTitleRes,
+                subtitleRes = errorSubtitleRes,
+                imageRes = errorImageRes,
+                onRetryClick = onRetryClick
+            )
+        }
+    }
+}
+

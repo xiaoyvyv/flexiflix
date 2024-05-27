@@ -25,7 +25,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.xiaoyv.comic.flexiflix.ui.component.AppBar
 import com.xiaoyv.comic.flexiflix.ui.component.ElevatedImage
-import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
+import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldScreen
 import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
 import com.xiaoyv.flexiflix.common.database.collect.CollectionEntity
 import com.xiaoyv.flexiflix.common.utils.debugLog
@@ -55,7 +55,7 @@ fun MainHistoryScreen(
     pagingItems: LazyPagingItems<CollectionEntity>,
     onMediaClick: (String, String) -> Unit = { _, _ -> },
 ) {
-    ScaffoldWrap(
+    ScaffoldScreen(
         topBar = { AppBar(title = "浏览历史", hideNavigationIcon = true) }
     ) {
         debugLog { pagingItems.itemCount.toString() }

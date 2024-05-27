@@ -1,9 +1,7 @@
 package com.xiaoyv.comic.flexiflix.ui.screen.main.profile.about
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -29,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.xiaoyv.comic.flexiflix.R
 import com.xiaoyv.comic.flexiflix.ui.component.AppBar
-import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
+import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldScreen
 import com.xiaoyv.comic.flexiflix.ui.component.SettingNormalItem
 import com.xiaoyv.flexiflix.common.utils.openUrl
 import com.xiaoyv.flexiflix.extension.utils.versionCode
@@ -57,7 +55,7 @@ fun AboutScreen(
 ) {
     val context = LocalContext.current
 
-    ScaffoldWrap(
+    ScaffoldScreen(
         topBar = {
             AppBar(title = "关于", onNavigationIconClick = onNavUp)
         }

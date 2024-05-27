@@ -15,7 +15,6 @@ import com.xiaoyv.comic.flexiflix.ui.animation.MotionConstants
 import com.xiaoyv.comic.flexiflix.ui.animation.materialFadeThroughIn
 import com.xiaoyv.comic.flexiflix.ui.animation.materialFadeThroughOut
 import com.xiaoyv.comic.flexiflix.ui.component.BottomNavBar
-import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
 import com.xiaoyv.comic.flexiflix.ui.screen.feature.detail.navigateMediaDetail
 import com.xiaoyv.comic.flexiflix.ui.screen.feature.home.navigateMediaHome
 import com.xiaoyv.comic.flexiflix.ui.screen.main.collect.MainCollectRoute
@@ -55,77 +54,75 @@ fun MainTabScreen(
     val navBackStackEntry by tabNavController.currentBackStackEntryAsState()
     val selectedDestination = navBackStackEntry?.destination?.route ?: ROUTE_MAIN_TAB_COLLECT
 
-    ScaffoldWrap {
-        Column(modifier = Modifier.fillMaxSize()) {
-            NavHost(
-                modifier = Modifier.weight(1f),
-                navController = tabNavController,
-                startDestination = ROUTE_MAIN_TAB_COLLECT,
-                enterTransition = {
-                    materialFadeThroughIn(
-                        initialScale = 1f,
-                        durationMillis = MotionConstants.DefaultFadeInDuration
-                    )
-                },
-                exitTransition = {
-                    materialFadeThroughOut(durationMillis = MotionConstants.DefaultFadeOutDuration)
-                }
-            ) {
-                // 在追
-                composable(ROUTE_MAIN_TAB_COLLECT) {
-                    MainCollectRoute(
-                    )
-                }
-
-                // 历史
-                composable(ROUTE_MAIN_TAB_HISTORY) {
-                    MainHistoryRoute(
-                        onMediaClick = { sourceId, mediaId ->
-                            navController.navigateMediaDetail(sourceId, mediaId)
-                        }
-                    )
-                }
-
-                // 数据源
-                composable(ROUTE_MAIN_TAB_SOURCE) {
-                    MainSourceRoute(
-                        onSourceClick = {
-                            navController.navigateMediaHome(
-                                it.sources.first().info.id,
-                                it.sources.first().info.name
-                            )
-                        }
-                    )
-                }
-
-                // 个人中心
-                composable(ROUTE_MAIN_TAB_PROFILE) {
-                    MainProfileRoute(
-                        onNavAboutScreen = {
-                            navController.navigateAbout()
-                        },
-                        onNavSettingsScreen = {
-                            navController.navigateSettings()
-                        },
-                        onNavExtensionCompat = {
-                            navController.navigateExtensionCompat()
-                        }
-                    )
-                }
+    Column(modifier = Modifier.fillMaxSize()) {
+        NavHost(
+            modifier = Modifier.weight(1f),
+            navController = tabNavController,
+            startDestination = ROUTE_MAIN_TAB_COLLECT,
+            enterTransition = {
+                materialFadeThroughIn(
+                    initialScale = 1f,
+                    durationMillis = MotionConstants.DefaultFadeInDuration
+                )
+            },
+            exitTransition = {
+                materialFadeThroughOut(durationMillis = MotionConstants.DefaultFadeOutDuration)
+            }
+        ) {
+            // 在追
+            composable(ROUTE_MAIN_TAB_COLLECT) {
+                MainCollectRoute(
+                )
             }
 
-            BottomNavBar(
-                selectedDestination = selectedDestination,
-                navigateToTopLevelDestination = {
-                    tabNavController.navigate(it.route) {
-                        popUpTo(tabNavController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
+            // 历史
+            composable(ROUTE_MAIN_TAB_HISTORY) {
+                MainHistoryRoute(
+                    onMediaClick = { sourceId, mediaId ->
+                        navController.navigateMediaDetail(sourceId, mediaId)
                     }
-                }
-            )
+                )
+            }
+
+            // 数据源
+            composable(ROUTE_MAIN_TAB_SOURCE) {
+                MainSourceRoute(
+                    onSourceClick = {
+                        navController.navigateMediaHome(
+                            it.sources.first().info.id,
+                            it.sources.first().info.name
+                        )
+                    }
+                )
+            }
+
+            // 个人中心
+            composable(ROUTE_MAIN_TAB_PROFILE) {
+                MainProfileRoute(
+                    onNavAboutScreen = {
+                        navController.navigateAbout()
+                    },
+                    onNavSettingsScreen = {
+                        navController.navigateSettings()
+                    },
+                    onNavExtensionCompat = {
+                        navController.navigateExtensionCompat()
+                    }
+                )
+            }
         }
+
+        BottomNavBar(
+            selectedDestination = selectedDestination,
+            navigateToTopLevelDestination = {
+                tabNavController.navigate(it.route) {
+                    popUpTo(tabNavController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            }
+        )
     }
 }

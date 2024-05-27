@@ -15,7 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.xiaoyv.comic.flexiflix.R
 import com.xiaoyv.comic.flexiflix.ui.component.AppBar
-import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
+import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldScreen
 import com.xiaoyv.comic.flexiflix.ui.component.SettingNormalItem
 
 /**
@@ -39,7 +39,7 @@ fun ExtensionCompatScreen(
 ) {
     val context = LocalContext.current
 
-    ScaffoldWrap(
+    ScaffoldScreen(
         topBar = {
             AppBar(title = "插件兼容性", onNavigationIconClick = onNavUp)
         }

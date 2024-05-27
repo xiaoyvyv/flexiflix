@@ -1,8 +1,8 @@
 package com.xiaoyv.comic.flexiflix.ui.screen.feature.detail.tab
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,33 +19,26 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.bumptech.glide.integration.compose.CrossFade
-import com.bumptech.glide.integration.compose.GlideImage
-import com.xiaoyv.comic.flexiflix.ui.component.ContainerCard
+import com.xiaoyv.comic.flexiflix.ui.component.PlayingAnimationBar
 import com.xiaoyv.comic.flexiflix.ui.screen.feature.home.MediaHomeSectionItemRow
 import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
-import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
-import com.xiaoyv.flexiflix.extension.model.FlexMediaTag
-import com.xiaoyv.flexiflix.extension.model.FlexMediaUser
 import com.xiaoyv.flexiflix.extension.model.FlexMediaDetail
 import com.xiaoyv.flexiflix.extension.model.FlexMediaDetailSeries
 import com.xiaoyv.flexiflix.extension.model.FlexMediaDetailTab
 import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylist
 import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
+import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
+import com.xiaoyv.flexiflix.extension.model.FlexMediaTag
+import com.xiaoyv.flexiflix.extension.model.FlexMediaUser
 import com.xiaoyv.flexiflix.extension.utils.UNKNOWN_LONG
 import com.xiaoyv.flexiflix.extension.utils.UNKNOWN_STRING
 
@@ -61,10 +54,11 @@ fun MediaDetailSummaryTab(
     currentPlayItem: FlexMediaPlaylistUrl?,
     onSelectPlayList: (FlexMediaPlaylist) -> Unit = {},
     onChangePlayItem: (FlexMediaPlaylist, Int) -> Unit = { _, _ -> },
-    onSectionMediaClick: (FlexMediaSectionItem) -> Unit = {}
+    onSectionMediaClick: (FlexMediaSectionItem) -> Unit = {},
 ) {
     Column(
         modifier = Modifier
+            .background(MaterialTheme.colorScheme.surface)
             .fillMaxSize()
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .verticalScroll(state = rememberScrollState())
@@ -180,7 +174,7 @@ fun MediaDetailSummaryTab(
 @Composable
 fun MediaDetailSummarySeries(
     mediaDetail: FlexMediaDetail,
-    onSectionMediaClick: (FlexMediaSectionItem) -> Unit
+    onSectionMediaClick: (FlexMediaSectionItem) -> Unit,
 ) {
     mediaDetail.series?.forEach { series ->
         Spacer(modifier = Modifier.height(16.dp))
@@ -198,8 +192,14 @@ fun MediaDetailSummarySeries(
         MediaHomeSectionItemRow(
             modifier = Modifier.fillMaxSize(),
             itemModifier = Modifier.padding(end = 16.dp),
+            currentMediaId = mediaDetail.id,
             items = series.items,
-            onSectionMediaClick = onSectionMediaClick
+            onSectionMediaClick = {
+                // 同一个媒体点击不再打开
+                if (mediaDetail.id != it.id) {
+                    onSectionMediaClick(it)
+                }
+            }
         )
     }
 }
@@ -238,14 +238,28 @@ fun MediaDetailMediaItem(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center
         ) {
-            Text(
+            Row(
                 modifier = Modifier.padding(horizontal = 12.dp),
-                text = text.first,
-                style = MaterialTheme.typography.bodySmall,
-                color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // 播放中动画
+                if (selected) {
+                    PlayingAnimationBar(
+                        sizeDp = 16f,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                    Spacer(Modifier.width(2.dp))
+                }
+
+                Text(
+                    modifier = Modifier.weight(1f),
+                    text = text.first,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
 
             if (text.second.isNotBlank()) {
                 Spacer(modifier = Modifier.height(2.dp))

@@ -25,7 +25,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.xiaoyv.comic.flexiflix.ui.component.AppBar
 import com.xiaoyv.comic.flexiflix.ui.component.ElevatedImage
-import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
+import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldScreen
 import com.xiaoyv.flexiflix.common.utils.mutableStateFlowOf
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
 
@@ -58,7 +58,7 @@ fun MediaSearchResultScreen(
     onNavUp: () -> Unit = {},
     onSectionMediaClick: (FlexMediaSectionItem) -> Unit = {},
 ) {
-    ScaffoldWrap(
+    ScaffoldScreen(
         topBar = {
             AppBar(title = "搜索结果", onNavigationIconClick = onNavUp)
         }

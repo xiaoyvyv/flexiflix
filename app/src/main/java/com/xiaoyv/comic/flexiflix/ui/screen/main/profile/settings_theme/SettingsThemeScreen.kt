@@ -35,20 +35,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.xiaoyv.comic.flexiflix.application
 import com.xiaoyv.comic.flexiflix.ui.component.AppBar
 import com.xiaoyv.comic.flexiflix.ui.component.AppThemeState
 import com.xiaoyv.comic.flexiflix.ui.component.LocalThemeConfigState
-import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
+import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldScreen
 import com.xiaoyv.comic.flexiflix.ui.component.SettingNormalItem
 import com.xiaoyv.comic.flexiflix.ui.component.SettingOptionsItem
 import com.xiaoyv.comic.flexiflix.ui.component.SettingSwitchItem
 import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
 import com.xiaoyv.flexiflix.extension.config.settings.AppSettings
-import com.xiaoyv.flexiflix.extension.ExtensionProvider
 
 /**
  * [SettingThemeScreen]
@@ -75,7 +72,7 @@ fun SettingThemeScreen(
     val context = LocalContext.current
     val themeState = LocalThemeConfigState.current
 
-    ScaffoldWrap(
+    ScaffoldScreen(
         topBar = {
             AppBar(title = "主题外观", onNavigationIconClick = onNavUp)
         }

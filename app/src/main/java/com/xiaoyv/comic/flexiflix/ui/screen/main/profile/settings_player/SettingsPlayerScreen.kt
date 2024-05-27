@@ -13,11 +13,14 @@ import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xiaoyv.comic.flexiflix.ui.component.AppBar
-import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
+import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldScreen
 import com.xiaoyv.comic.flexiflix.ui.component.SettingNormalItem
 import com.xiaoyv.comic.flexiflix.ui.component.SettingOptionsItem
 import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
@@ -32,21 +35,26 @@ import com.xiaoyv.flexiflix.extension.config.settings.AppSettings
 @Composable
 fun SettingPlayerRoute(
     onNavUp: () -> Unit = {},
-    onNavAboutScreen: () -> Unit = {},
 ) {
+    val videModel = hiltViewModel<SettingsPlayerVideModel>()
+    val cacheSize by videModel.videoCacheSize.collectAsStateWithLifecycle()
+
     SettingPlayerScreen(
+        cacheSize = cacheSize,
         onNavUp = onNavUp,
-        onNavAboutScreen = onNavAboutScreen
+        onDeleteCache = {
+            videModel.clearCache()
+        },
     )
 }
 
 @Composable
 fun SettingPlayerScreen(
+    cacheSize: String,
     onNavUp: () -> Unit = {},
-    onNavAboutScreen: () -> Unit = {},
+    onDeleteCache: () -> Unit = {},
 ) {
-
-    ScaffoldWrap(
+    ScaffoldScreen(
         topBar = {
             AppBar(title = "播放器设置", onNavigationIconClick = onNavUp)
         }
@@ -128,15 +136,16 @@ fun SettingPlayerScreen(
             )
 
             SettingNormalItem(
-                title = "清理缓存",
-                subtitle = "128MB",
+                title = "清理视频缓存",
+                subtitle = cacheSize,
                 icon = {
                     Icon(
                         imageVector = Icons.Default.Cached,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary
                     )
-                }
+                },
+                onItemClick = onDeleteCache
             )
         }
     }
@@ -147,6 +156,8 @@ fun SettingPlayerScreen(
 @Composable
 fun PreviewSettingPlayerScreen() {
     AppTheme {
-        SettingPlayerScreen()
+        SettingPlayerScreen(
+            cacheSize = "100MB"
+        )
     }
 }

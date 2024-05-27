@@ -15,7 +15,7 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.xiaoyv.comic.flexiflix.ui.component.AppBar
-import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
+import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldScreen
 import com.xiaoyv.comic.flexiflix.ui.component.template.MediaListTemplate
 import com.xiaoyv.flexiflix.common.model.hasData
 import com.xiaoyv.flexiflix.common.model.payload
@@ -54,7 +54,7 @@ fun MediaSectionScreen(
     onNavUp: () -> Unit = {},
     onMediaClick: (String) -> Unit = {},
 ) {
-    ScaffoldWrap(
+    ScaffoldScreen(
         topBar = {
             AppBar(title = uiState.title, onNavigationIconClick = onNavUp)
         }

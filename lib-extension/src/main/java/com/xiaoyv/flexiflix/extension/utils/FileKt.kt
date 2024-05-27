@@ -25,6 +25,17 @@ fun File.md5(): String {
     return md5Bytes.joinToString("") { "%02x".format(it) }.lowercase()
 }
 
+
+/**
+ * 创建目录
+ */
+fun cacheDir(relative: String): File {
+    return File(application.cacheDir.absolutePath, relative).let {
+        if (it.exists().not()) it.mkdirs()
+        it
+    }
+}
+
 /**
  * 创建目录
  */

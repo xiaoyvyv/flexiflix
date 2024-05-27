@@ -71,15 +71,8 @@ import com.xiaoyv.flexiflix.extension.config.settings.AppSettings
 import com.xiaoyv.flexiflix.common.utils.debugLog
 import com.xiaoyv.flexiflix.extension.MediaSourceFactory
 import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
-
-internal val sampleCache by lazy {
-    SimpleCache(
-        application.cacheDir,
-        LeastRecentlyUsedCacheEvictor(500 * 1024 * 1024L),
-        StandaloneDatabaseProvider(application)
-    )
-}
-
+import com.xiaoyv.flexiflix.extension.utils.cacheDir
+import com.xiaoyv.flexiflix.extension.utils.workDir
 
 /**
  * [MediaVideoPlayer]
@@ -142,7 +135,7 @@ fun MediaVideoPlayer(
         val factory = CacheDataSource.Factory()
             .setUpstreamDataSourceFactory(defaultDataSourceFactory)
             .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
-            .setCache(sampleCache)
+            .setCache(MediaVideoCache.sampleCache)
 
         val mediaSourceFactory: MediaSource.Factory =
             DefaultMediaSourceFactory(context)

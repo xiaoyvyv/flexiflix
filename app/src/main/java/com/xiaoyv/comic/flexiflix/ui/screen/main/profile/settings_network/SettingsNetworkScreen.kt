@@ -6,12 +6,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Anchor
-import androidx.compose.material.icons.filled.ColorLens
-import androidx.compose.material.icons.filled.LiveTv
 import androidx.compose.material.icons.filled.Mediation
 import androidx.compose.material.icons.filled.NetworkCheck
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -21,17 +17,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.xiaoyv.comic.flexiflix.ui.component.AppBar
-import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
+import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldScreen
 import com.xiaoyv.comic.flexiflix.ui.component.SettingInputItem
 import com.xiaoyv.comic.flexiflix.ui.component.SettingNormalItem
 import com.xiaoyv.comic.flexiflix.ui.component.SettingSwitchItem
 import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
 import com.xiaoyv.flexiflix.extension.config.settings.AppSettings
-import com.xiaoyv.flexiflix.extension.utils.versionCode
-import com.xiaoyv.flexiflix.extension.utils.versionName
 
 /**
  * [SettingNetworkScreen]
@@ -57,7 +50,7 @@ fun SettingNetworkScreen(
 ) {
     var rememberCustomHostState by remember { mutableStateOf(false) }
 
-    ScaffoldWrap(
+    ScaffoldScreen(
         topBar = {
             AppBar(title = "网络设置", onNavigationIconClick = onNavUp)
         }

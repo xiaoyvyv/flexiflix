@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.xiaoyv.comic.flexiflix.model.InstalledMediaSource
 import com.xiaoyv.comic.flexiflix.ui.component.AppBar
-import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
+import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldScreen
 import com.xiaoyv.comic.flexiflix.ui.component.StringLabelPage
 import com.xiaoyv.comic.flexiflix.ui.component.TabPager
 import com.xiaoyv.comic.flexiflix.ui.screen.main.source.installed.SourceInstalledTabRoute
@@ -87,7 +87,7 @@ fun MainSourceScreen(
         )
     }
 
-    ScaffoldWrap(
+    ScaffoldScreen(
         topBar = {
             AppBar(
                 title = "数据源插件",

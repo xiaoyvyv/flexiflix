@@ -15,6 +15,15 @@ data class InstalledMediaSource(
     val extensionName: String,
     val extensionPath: String,
     val extensionIcon: Any? = null,
+
+    /**
+     * 插件类型
+     */
     @MediaSourceType
-    val type: Int = MediaSourceType.TYPE_UNKNOWN
-)
+    val type: Int = MediaSourceType.TYPE_UNKNOWN,
+) {
+    /**
+     * 是否有 NSFW 内容
+     */
+    val hasNsfw by lazy { sources.find { it.info.nsfw } != null }
+}

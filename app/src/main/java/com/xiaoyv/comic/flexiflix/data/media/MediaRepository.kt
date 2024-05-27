@@ -45,5 +45,4 @@ interface MediaRepository {
         sourceId: String,
         section: FlexMediaSection,
     ): Result<List<FlexSearchOptionItem>>
-
 }

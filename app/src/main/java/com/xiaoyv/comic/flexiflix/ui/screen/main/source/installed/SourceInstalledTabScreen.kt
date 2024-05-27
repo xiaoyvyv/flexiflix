@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -19,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.constraintlayout.compose.Visibility
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bumptech.glide.integration.compose.CrossFade
@@ -26,7 +26,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.xiaoyv.comic.flexiflix.model.InstalledMediaSource
 import com.xiaoyv.comic.flexiflix.ui.component.ElevatedCardWrap
 import com.xiaoyv.comic.flexiflix.ui.component.LazyList
-import com.xiaoyv.comic.flexiflix.ui.component.PageStateScreen
+import com.xiaoyv.comic.flexiflix.ui.component.StateScreen
 import com.xiaoyv.flexiflix.common.model.payload
 import com.xiaoyv.flexiflix.common.model.asSinglePage
 import com.xiaoyv.flexiflix.extension.MediaSourceType
@@ -60,11 +60,11 @@ fun SourceInstalledTabRoute(
 @Composable
 fun SourceInstalledTabScreen(
     uiState: SourceInstalledTabState,
-    onSourceClick: (InstalledMediaSource) -> Unit
+    onSourceClick: (InstalledMediaSource) -> Unit,
 ) {
-    PageStateScreen(
+    StateScreen(
         loadState = uiState.loadState,
-        itemCount = { uiState.data.asSinglePage()}
+        itemCount = { uiState.data.asSinglePage() }
     ) {
         LazyList(
             modifier = Modifier
@@ -84,7 +84,7 @@ fun SourceInstalledTabScreen(
 @Composable
 fun SourceInstalledTabScreenItem(
     source: InstalledMediaSource,
-    onSourceClick: (InstalledMediaSource) -> Unit = {}
+    onSourceClick: (InstalledMediaSource) -> Unit = {},
 ) {
     ElevatedCardWrap(
         modifier = Modifier
@@ -116,7 +116,7 @@ fun SourceInstalledTabScreenItem(
             Text(
                 modifier = Modifier.constrainAs(name) {
                     top.linkTo(icon.top)
-                    end.linkTo(type.start, 6.dp)
+                    end.linkTo(type.start, 6.dp, goneMargin = 12.dp)
                     start.linkTo(icon.end, 12.dp)
                     width = Dimension.fillToConstraints
                 },
@@ -131,19 +131,21 @@ fun SourceInstalledTabScreenItem(
             Text(
                 modifier = Modifier
                     .background(
-                        color = MaterialTheme.colorScheme.primary,
+                        color = MaterialTheme.colorScheme.error,
                         shape = MaterialTheme.shapes.small
                     )
                     .padding(horizontal = 6.dp, vertical = 2.dp)
                     .constrainAs(type) {
                         top.linkTo(parent.top, 8.dp)
                         end.linkTo(parent.end, 12.dp)
+
+                        visibility = if (source.hasNsfw) Visibility.Visible else Visibility.Gone
                     },
-                text = MediaSourceType.toText(source.type),
+                text = "NSFW",
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.onError,
             )
 
             Text(
@@ -151,7 +153,7 @@ fun SourceInstalledTabScreenItem(
                     bottom.linkTo(icon.bottom)
                     start.linkTo(icon.end, 12.dp)
                 },
-                text = String.format("内含 %d 个源", source.sources.size),
+                text = "内含 %d 个源".format(source.sources.size),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.bodySmall,

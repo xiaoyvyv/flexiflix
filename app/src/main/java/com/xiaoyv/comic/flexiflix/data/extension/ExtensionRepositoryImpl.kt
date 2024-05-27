@@ -2,7 +2,9 @@ package com.xiaoyv.comic.flexiflix.data.extension
 
 import android.content.Context
 import android.net.Uri
+import com.xiaoyv.comic.flexiflix.data.remote.RemoteApi
 import com.xiaoyv.comic.flexiflix.model.InstalledMediaSource
+import com.xiaoyv.comic.flexiflix.model.OnlineExtension
 import com.xiaoyv.flexiflix.common.utils.displayName
 import com.xiaoyv.flexiflix.common.utils.fileType
 import com.xiaoyv.flexiflix.common.utils.formatTime
@@ -28,7 +30,8 @@ import javax.inject.Singleton
  */
 @Singleton
 class ExtensionRepositoryImpl @Inject constructor(
-    @ApplicationContext val context: Context
+    @ApplicationContext val context: Context,
+    private val remoteApi: RemoteApi,
 ) : ExtensionRepository {
     private val sourceMapCache = ConcurrentHashMap<String, Source>()
 
@@ -58,7 +61,6 @@ class ExtensionRepositoryImpl @Inject constructor(
             if (!exists()) mkdirs()
         }
     }
-
 
     override suspend fun getInstalledExtensions(): Result<List<InstalledMediaSource>> {
         return withContext(Dispatchers.IO) {
@@ -153,6 +155,14 @@ class ExtensionRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getOnlineExtensions(): Result<List<OnlineExtension>> {
+        return withContext(Dispatchers.IO) {
+            runCatchingPrint {
+                remoteApi.getOnlineExtensions()
+            }
+        }
+    }
+
     override suspend fun getExtensionById(sourceId: String): Result<Source> {
         return withContext(Dispatchers.IO) {
             runCatchingPrint {
@@ -172,7 +182,7 @@ class ExtensionRepositoryImpl @Inject constructor(
      */
     private suspend fun File.toInstalledMediaSource(
         context: Context,
-        @MediaSourceType type: Int
+        @MediaSourceType type: Int,
     ): InstalledMediaSource? {
         when (type) {
             // JVM 插件

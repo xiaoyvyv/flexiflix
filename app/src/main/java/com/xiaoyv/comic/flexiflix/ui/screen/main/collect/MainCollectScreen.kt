@@ -3,7 +3,7 @@ package com.xiaoyv.comic.flexiflix.ui.screen.main.collect
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.xiaoyv.comic.flexiflix.ui.component.AppBar
-import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
+import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldScreen
 import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
 
 /**
@@ -19,7 +19,7 @@ fun MainCollectRoute() {
 
 @Composable
 fun MainCollectScreen() {
-    ScaffoldWrap(
+    ScaffoldScreen(
         topBar = { AppBar(title = "我正在追", hideNavigationIcon = true) }
     ) {
 

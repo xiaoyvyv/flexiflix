@@ -8,14 +8,12 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,10 +22,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -39,24 +35,24 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xiaoyv.comic.flexiflix.ui.component.AppBar
-import com.xiaoyv.comic.flexiflix.ui.component.player.MediaVideoPlayer
-import com.xiaoyv.comic.flexiflix.ui.component.PageStateScreen
-import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
+import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldRefresh
+import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldScreen
+import com.xiaoyv.comic.flexiflix.ui.component.StateScreen
 import com.xiaoyv.comic.flexiflix.ui.component.StringLabelPage
 import com.xiaoyv.comic.flexiflix.ui.component.TabPager
+import com.xiaoyv.comic.flexiflix.ui.component.player.MediaVideoPlayer
 import com.xiaoyv.comic.flexiflix.ui.screen.feature.detail.tab.MediaDetailSummaryTab
-import com.xiaoyv.flexiflix.extension.config.settings.AppSettings
 import com.xiaoyv.flexiflix.common.model.payload
-import com.xiaoyv.flexiflix.common.model.asSinglePage
 import com.xiaoyv.flexiflix.common.utils.findActivity
 import com.xiaoyv.flexiflix.common.utils.isLandscape
 import com.xiaoyv.flexiflix.common.utils.isStoped
 import com.xiaoyv.flexiflix.common.utils.screenInfo
 import com.xiaoyv.flexiflix.common.utils.setScreenOrientation
-import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
+import com.xiaoyv.flexiflix.extension.config.settings.AppSettings
 import com.xiaoyv.flexiflix.extension.model.FlexMediaDetail
 import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylist
 import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
+import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
 
 /**
  * [MediaDetailScreen]
@@ -162,24 +158,8 @@ fun MediaDetailScreen(
     // 播放器面板显示和隐藏
     var controllerVisibleState by remember { mutableStateOf(false) }
 
-    val refreshState = rememberPullToRefreshState()
-    if (refreshState.isRefreshing) {
-        LaunchedEffect(Unit) {
-            onRefresh()
-        }
-    }
-
-    LaunchedEffect(uiState.loadState) {
-        if (uiState.loadState.isStoped) {
-            refreshState.endRefresh()
-        }
-    }
-
-
-    ScaffoldWrap(
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(refreshState.nestedScrollConnection),
+    ScaffoldScreen(
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             AnimatedVisibility(
                 visible = controllerVisibleState,
@@ -210,14 +190,23 @@ fun MediaDetailScreen(
             }
         }
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = if (playerFullScreenState) 0.dp else it.calculateBottomPadding())
+
+        val refreshState = rememberPullToRefreshState()
+        LaunchedEffect(uiState.loadState) {
+            if (uiState.loadState.isStoped) {
+                refreshState.endRefresh()
+            }
+        }
+
+        ScaffoldRefresh(
+            modifier = Modifier.padding(bottom = if (playerFullScreenState) 0.dp else it.calculateBottomPadding()),
+            pullToRefreshState = refreshState,
+            onRefresh = onRefresh
         ) {
-            PageStateScreen(
-                loadState = uiState.loadState,
-                itemCount = { uiState.data.asSinglePage() },
+
+            StateScreen(
+                state = uiState.loadState,
+                stateContent = uiState.data,
                 onRetryClick = onRetryClick
             ) {
                 val mediaDetail = uiState.data.payload()
@@ -267,12 +256,6 @@ fun MediaDetailScreen(
                     )
                 }
             }
-
-            // 下拉刷新
-            PullToRefreshContainer(
-                modifier = Modifier.align(Alignment.TopCenter),
-                state = refreshState,
-            )
         }
     }
 }

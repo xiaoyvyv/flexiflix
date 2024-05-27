@@ -30,7 +30,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -57,9 +56,11 @@ import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.GlideImage
 import com.xiaoyv.comic.flexiflix.ui.component.AppBar
 import com.xiaoyv.comic.flexiflix.ui.component.ElevatedImage
-import com.xiaoyv.comic.flexiflix.ui.component.PageStateScreen
-import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
+import com.xiaoyv.comic.flexiflix.ui.component.StateScreen
+import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldRefresh
+import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldScreen
 import com.xiaoyv.comic.flexiflix.ui.component.StringLabelPage
+import com.xiaoyv.comic.flexiflix.ui.component.PlayingAnimationBar
 import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
 import com.xiaoyv.flexiflix.common.utils.isNotLoading
 import com.xiaoyv.flexiflix.common.utils.isStoped
@@ -109,11 +110,6 @@ fun MediaHomeScreen(
     onSearchClick: () -> Unit = {},
 ) {
     val refreshState = rememberPullToRefreshState()
-    if (refreshState.isRefreshing) {
-        LaunchedEffect(Unit) {
-            onRefresh()
-        }
-    }
 
     LaunchedEffect(uiState.loadState) {
         if (uiState.loadState.isStoped) {
@@ -126,7 +122,7 @@ fun MediaHomeScreen(
         derivedStateOf { scrollState.value > 250 }
     }
 
-    ScaffoldWrap(
+    ScaffoldScreen(
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(refreshState.nestedScrollConnection),
@@ -162,12 +158,13 @@ fun MediaHomeScreen(
             )
         }
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = it.calculateBottomPadding())
+
+        ScaffoldRefresh(
+            modifier = Modifier.padding(bottom = it.calculateBottomPadding()),
+            pullToRefreshState = refreshState,
+            onRefresh = onRefresh
         ) {
-            PageStateScreen(
+            StateScreen(
                 loadState = uiState.loadState,
                 itemCount = { uiState.items.size }
             ) {
@@ -190,12 +187,6 @@ fun MediaHomeScreen(
                     }
                 }
             }
-
-            // 下拉刷新
-            PullToRefreshContainer(
-                modifier = Modifier.align(Alignment.TopCenter),
-                state = refreshState,
-            )
         }
     }
 }
@@ -369,12 +360,15 @@ fun MediaHomeSectionItem(
 fun MediaHomeSectionItemRow(
     modifier: Modifier = Modifier,
     itemModifier: Modifier = Modifier,
+    currentMediaId: String? = null,
     items: List<FlexMediaSectionItem>,
     onSectionMediaClick: (FlexMediaSectionItem) -> Unit,
 ) {
     LazyRow(modifier = modifier) {
         items(items) { media ->
             Column(modifier = itemModifier.width(media.requireLayout.widthDp.dp)) {
+                val isCurrentMedia = currentMediaId != null && media.id == currentMediaId
+
                 Box(Modifier.fillMaxWidth()) {
                     ElevatedImage(
                         modifier = Modifier
@@ -448,16 +442,26 @@ fun MediaHomeSectionItemRow(
                     )
                 }
 
-                Text(
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 8.dp),
-                    text = media.title,
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // 正在播放中
+                    if (isCurrentMedia) {
+                        PlayingAnimationBar(sizeDp = 16f)
+                    }
+
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = media.title,
+                        style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = if (isCurrentMedia) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                    )
+                }
             }
         }
     }

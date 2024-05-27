@@ -21,7 +21,6 @@ fun NavGraphBuilder.addSettingPlayerScreen(navController: NavController) {
     composable(route = ROUTE_SETTINGS_PLAYER) {
         SettingPlayerRoute(
             onNavUp = { navController.popBackStack() },
-            onNavAboutScreen = { navController.navigateAbout() }
         )
     }
 }

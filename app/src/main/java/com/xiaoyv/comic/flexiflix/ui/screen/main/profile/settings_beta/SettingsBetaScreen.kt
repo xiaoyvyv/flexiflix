@@ -6,18 +6,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Anchor
 import androidx.compose.material.icons.filled.Block
-import androidx.compose.material.icons.filled.ClosedCaptionDisabled
-import androidx.compose.material.icons.filled.ColorLens
-import androidx.compose.material.icons.filled.Crop
-import androidx.compose.material.icons.filled.FilterAltOff
 import androidx.compose.material.icons.filled.FitScreen
-import androidx.compose.material.icons.filled.LiveTv
-import androidx.compose.material.icons.filled.Mediation
-import androidx.compose.material.icons.filled.NetworkCheck
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.UpdateDisabled
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -26,14 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.xiaoyv.comic.flexiflix.ui.component.AppBar
-import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldWrap
-import com.xiaoyv.comic.flexiflix.ui.component.SettingNormalItem
+import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldScreen
 import com.xiaoyv.comic.flexiflix.ui.component.SettingOptionsItem
 import com.xiaoyv.comic.flexiflix.ui.component.SettingSwitchItem
 import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
 import com.xiaoyv.flexiflix.extension.config.settings.AppSettings
-import com.xiaoyv.flexiflix.extension.utils.versionCode
-import com.xiaoyv.flexiflix.extension.utils.versionName
 
 /**
  * [SettingBetaScreen]
@@ -59,7 +46,7 @@ fun SettingBetaScreen(
 ) {
     val context = LocalContext.current
 
-    ScaffoldWrap(
+    ScaffoldScreen(
         topBar = {
             AppBar(title = "实验室", onNavigationIconClick = onNavUp)
         }
