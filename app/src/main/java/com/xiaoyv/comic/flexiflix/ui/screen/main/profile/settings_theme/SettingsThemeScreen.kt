@@ -31,6 +31,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +40,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xiaoyv.comic.flexiflix.ui.component.AppBar
 import com.xiaoyv.comic.flexiflix.ui.component.AppThemeState
 import com.xiaoyv.comic.flexiflix.ui.component.LocalThemeConfigState
@@ -59,36 +62,23 @@ import com.xiaoyv.flexiflix.extension.config.settings.AppSettings
 @Composable
 fun SettingThemeRoute(
     onNavUp: () -> Unit = {},
-    onNavAboutScreen: () -> Unit = {},
 ) {
+    val viewModel = hiltViewModel<SettingThemeViewModel>()
+    val themeColors by viewModel.themeColors.collectAsStateWithLifecycle()
+
     SettingThemeScreen(
+        themeColors = themeColors,
         onNavUp = onNavUp
     )
 }
 
 @Composable
 fun SettingThemeScreen(
+    themeColors: List<String>,
     onNavUp: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val themeState = LocalThemeConfigState.current
-
-    // 红、绿、蓝每个分量可以是 00、55、AA、FF 的全部组合主题色
-    val themeColors = remember {
-        listOf(
-            "#FF0000", "#FF5500", "#FFAA00", "#FFFF00",
-            "#AA0000", "#AA5500", "#AAAA00", "#AAFF00",
-            "#550000", "#555500", "#55AA00", "#55FF00",
-            "#000000", "#005500", "#00AA00", "#00FF00",
-            "#000055", "#005555", "#00AA55", "#00FF55",
-            "#0000AA", "#0055AA", "#00AAAA", "#00FFAA",
-            "#0000FF", "#0055FF", "#00AAFF", "#00FFFF",
-            "#5500FF", "#5555FF", "#55AAFF", "#55FFFF",
-            "#AA00FF", "#AA55FF", "#AAAAFF", "#AAFFFF",
-            "#FF00FF", "#FF55FF", "#FFAAFF", "#FFFFFF"
-        )
-    }
-
 
     ScaffoldScreen(
         topBar = {
@@ -333,7 +323,20 @@ fun LazyItemScope.SettingThemePreview(
 fun PreviewSettingThemeScreen() {
     CompositionLocalProvider(LocalThemeConfigState provides AppThemeState()) {
         AppTheme {
-            SettingThemeScreen()
+            SettingThemeScreen(
+                themeColors = listOf(
+                    "#FF0000", "#FF5500", "#FFAA00", "#FFFF00",
+                    "#AA0000", "#AA5500", "#AAAA00", "#AAFF00",
+                    "#550000", "#555500", "#55AA00", "#55FF00",
+                    "#000000", "#005500", "#00AA00", "#00FF00",
+                    "#000055", "#005555", "#00AA55", "#00FF55",
+                    "#0000AA", "#0055AA", "#00AAAA", "#00FFAA",
+                    "#0000FF", "#0055FF", "#00AAFF", "#00FFFF",
+                    "#5500FF", "#5555FF", "#55AAFF", "#55FFFF",
+                    "#AA00FF", "#AA55FF", "#AAAAFF", "#AAFFFF",
+                    "#FF00FF", "#FF55FF", "#FFAAFF", "#FFFFFF"
+                )
+            )
         }
     }
 }

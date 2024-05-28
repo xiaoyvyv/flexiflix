@@ -47,8 +47,8 @@ object AppSettings {
          * 颜色外观
          */
         const val THEME_COLOR_KEY = "theme_color"
-        const val THEME_COLOR_VALUE_DEFAULT = "#FF80AB"
-        var themeColor by sharePreference(THEME_COLOR_KEY, THEME_COLOR_VALUE_DEFAULT)
+        const val THEME_COLOR_VALUE_SYSTEM = "#system"
+        var themeColor by sharePreference(THEME_COLOR_KEY, THEME_COLOR_VALUE_SYSTEM)
     }
 
     /**

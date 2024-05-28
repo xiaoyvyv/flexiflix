@@ -3,7 +3,6 @@ package com.xiaoyv.comic.flexiflix.ui.screen.main.profile.settings_theme
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.xiaoyv.comic.flexiflix.ui.screen.main.profile.about.navigateAbout
 
 /**
  * [addSettingThemeScreen]
@@ -20,8 +19,7 @@ fun NavController.navigateSettingTheme() {
 fun NavGraphBuilder.addSettingThemeScreen(navController: NavController) {
     composable(route = ROUTE_SETTINGS_THEME) {
         SettingThemeRoute(
-            onNavUp = { navController.popBackStack() },
-            onNavAboutScreen = { navController.navigateAbout() }
+            onNavUp = { navController.popBackStack() }
         )
     }
 }

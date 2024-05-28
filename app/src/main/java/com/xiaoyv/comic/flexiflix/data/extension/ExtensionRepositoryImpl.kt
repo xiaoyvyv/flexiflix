@@ -1,7 +1,12 @@
 package com.xiaoyv.comic.flexiflix.data.extension
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Rect
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
+import androidx.core.graphics.drawable.toBitmap
 import com.xiaoyv.comic.flexiflix.data.remote.RemoteApi
 import com.xiaoyv.comic.flexiflix.model.InstalledMediaSource
 import com.xiaoyv.comic.flexiflix.model.OnlineExtension
@@ -9,6 +14,7 @@ import com.xiaoyv.flexiflix.common.utils.displayName
 import com.xiaoyv.flexiflix.common.utils.fileType
 import com.xiaoyv.flexiflix.common.utils.formatTime
 import com.xiaoyv.flexiflix.common.utils.inputStream
+import com.xiaoyv.flexiflix.common.utils.zoomCenter
 import com.xiaoyv.flexiflix.extension.MediaSourceFactory
 import com.xiaoyv.flexiflix.extension.MediaSourceType
 import com.xiaoyv.flexiflix.extension.source.Source
@@ -177,6 +183,7 @@ class ExtensionRepositoryImpl @Inject constructor(
         }
     }
 
+
     /**
      * 读取文件，加载文件的全部插件
      */
@@ -205,7 +212,7 @@ class ExtensionRepositoryImpl @Inject constructor(
                 }
 
                 val extensionName = result?.first ?: nameWithoutExtension
-                val drawable = result?.second
+                val drawable = result?.second?.zoomCenter(1.2f)
 
                 return InstalledMediaSource(
                     type = MediaSourceType.TYPE_JVM,
