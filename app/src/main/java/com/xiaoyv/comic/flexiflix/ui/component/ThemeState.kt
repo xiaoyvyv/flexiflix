@@ -25,8 +25,8 @@ class AppThemeState {
     /**
      * 主题颜色
      */
-    private val _theme by lazy { mutableStateFlowOf(AppSettings.Theme.theme) }
-    val theme get() = _theme.asStateFlow()
+    private val _themeColor by lazy { mutableStateFlowOf(AppSettings.Theme.themeColor) }
+    val themeColor get() = _themeColor.asStateFlow()
 
     /**
      * 暗色模式强制黑色主题
@@ -48,8 +48,8 @@ class AppThemeState {
     /**
      * 主题颜色切换
      */
-    fun changeTheme(@AppSettings.Theme.ThemeColor value: Int) {
-        _theme.update { value }
+    fun changeTheme(color: String) {
+        _themeColor.update { color }
     }
 
     /**

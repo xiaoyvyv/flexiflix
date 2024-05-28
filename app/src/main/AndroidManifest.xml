@@ -18,11 +18,11 @@
         android:theme="@style/Theme.FlexiFlix"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize|screenLayout|navigation|keyboard"
-            android:exported="true"
-            android:theme="@style/Theme.FlexiFlix">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

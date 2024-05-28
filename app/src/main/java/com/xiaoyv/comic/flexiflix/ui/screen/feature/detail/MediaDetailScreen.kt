@@ -211,16 +211,6 @@ fun MediaDetailScreen(
             ) {
                 val mediaDetail = uiState.data.payload()
 
-                // 默认播放选中第一个播放列表的第一个数据
-                LaunchedEffect(Unit) {
-                    if (mediaDetail.playlist.orEmpty().isNotEmpty()) {
-                        val playlist = mediaDetail.playlist.orEmpty().first()
-                        if (playlist.items.isNotEmpty()) {
-                            onChangePlayItem(playlist, 0)
-                        }
-                    }
-                }
-
                 Column(modifier = Modifier.fillMaxSize()) {
                     MediaVideoPlayer(
                         modifier = Modifier

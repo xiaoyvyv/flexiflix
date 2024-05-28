@@ -5,8 +5,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.LoadState
-import androidx.room.ColumnInfo
-import androidx.room.PrimaryKey
 import com.xiaoyv.comic.flexiflix.data.database.DatabaseRepository
 import com.xiaoyv.comic.flexiflix.data.media.MediaRepository
 import com.xiaoyv.flexiflix.common.database.collect.CollectionEntity
@@ -75,12 +73,31 @@ class MediaDetailViewModel @Inject constructor(
                     MediaDetailState(loadState = LoadState.Error(it))
                 }
 
-            // 保存浏览历史
             if (state.data.hasData) {
-                saveHistory(state.data.payload())
+                val mediaDetail = state.data.payload()
+
+                // 保存浏览历史
+                saveHistory(mediaDetail)
+
+                // 恢复播放记录
+                restorePlayHistory(mediaDetail)
             }
 
             _uiState.update { state }
+        }
+    }
+
+    /**
+     * 恢复播放记录
+     *
+     * 默认播放选中第一个播放列表的第一个数据
+     */
+    private fun restorePlayHistory(mediaDetail: FlexMediaDetail) {
+        if (mediaDetail.playlist.orEmpty().isNotEmpty()) {
+            val playlist = mediaDetail.playlist.orEmpty().first()
+            if (playlist.items.isNotEmpty()) {
+                changePlayItem(playlist, 0)
+            }
         }
     }
 

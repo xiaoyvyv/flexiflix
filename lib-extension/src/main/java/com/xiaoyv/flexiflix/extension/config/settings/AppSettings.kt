@@ -47,12 +47,8 @@ object AppSettings {
          * 颜色外观
          */
         const val THEME_COLOR_KEY = "theme_color"
-        const val THEME_COLOR_VALUE_DEFAULT = 0
-        var theme by sharePreference(THEME_COLOR_KEY, THEME_COLOR_VALUE_DEFAULT)
-
-        @IntDef(THEME_COLOR_VALUE_DEFAULT)
-        @Retention(AnnotationRetention.SOURCE)
-        annotation class ThemeColor
+        const val THEME_COLOR_VALUE_DEFAULT = "#FF80AB"
+        var themeColor by sharePreference(THEME_COLOR_KEY, THEME_COLOR_VALUE_DEFAULT)
     }
 
     /**

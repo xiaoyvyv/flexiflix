@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.ModeNight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
@@ -37,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.xiaoyv.comic.flexiflix.ui.component.AppBar
 import com.xiaoyv.comic.flexiflix.ui.component.AppThemeState
 import com.xiaoyv.comic.flexiflix.ui.component.LocalThemeConfigState
@@ -45,6 +47,7 @@ import com.xiaoyv.comic.flexiflix.ui.component.SettingNormalItem
 import com.xiaoyv.comic.flexiflix.ui.component.SettingOptionsItem
 import com.xiaoyv.comic.flexiflix.ui.component.SettingSwitchItem
 import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
+import com.xiaoyv.comic.flexiflix.ui.theme.MaterialColorTheme
 import com.xiaoyv.flexiflix.extension.config.settings.AppSettings
 
 /**
@@ -59,18 +62,33 @@ fun SettingThemeRoute(
     onNavAboutScreen: () -> Unit = {},
 ) {
     SettingThemeScreen(
-        onNavUp = onNavUp,
-        onNavAboutScreen = onNavAboutScreen
+        onNavUp = onNavUp
     )
 }
 
 @Composable
 fun SettingThemeScreen(
     onNavUp: () -> Unit = {},
-    onNavAboutScreen: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val themeState = LocalThemeConfigState.current
+
+    // 红、绿、蓝每个分量可以是 00、55、AA、FF 的全部组合主题色
+    val themeColors = remember {
+        listOf(
+            "#FF0000", "#FF5500", "#FFAA00", "#FFFF00",
+            "#AA0000", "#AA5500", "#AAAA00", "#AAFF00",
+            "#550000", "#555500", "#55AA00", "#55FF00",
+            "#000000", "#005500", "#00AA00", "#00FF00",
+            "#000055", "#005555", "#00AA55", "#00FF55",
+            "#0000AA", "#0055AA", "#00AAAA", "#00FFAA",
+            "#0000FF", "#0055FF", "#00AAFF", "#00FFFF",
+            "#5500FF", "#5555FF", "#55AAFF", "#55FFFF",
+            "#AA00FF", "#AA55FF", "#AAAAFF", "#AAFFFF",
+            "#FF00FF", "#FF55FF", "#FFAAFF", "#FFFFFF"
+        )
+    }
+
 
     ScaffoldScreen(
         topBar = {
@@ -144,11 +162,23 @@ fun SettingThemeScreen(
                     .padding(vertical = 6.dp)
             ) {
                 item { Spacer(Modifier.width(24.dp)) }
-                items(10) {
-                    SettingThemePreview(
-                        modifier = Modifier,
-                        selected = false,
-                    )
+                items(themeColors.size) { index ->
+                    val themeColor = themeColors[index]
+
+                    MaterialColorTheme(themeColor) {
+                        SettingThemePreview(
+                            modifier = Modifier,
+                            themeName = themeColor,
+                            selected = AppSettings.Theme.themeColor == themeColor,
+                            onClick = {
+                                // 保存主题色
+                                AppSettings.Theme.themeColor = themeColor
+
+                                // 改变主题色
+                                themeState.changeTheme(themeColor)
+                            }
+                        )
+                    }
                     Spacer(Modifier.width(12.dp))
                 }
                 item { Spacer(Modifier.width(24.dp)) }
@@ -160,6 +190,7 @@ fun SettingThemeScreen(
 @Composable
 fun LazyItemScope.SettingThemePreview(
     modifier: Modifier = Modifier,
+    themeName: String,
     selected: Boolean,
     onClick: () -> Unit = {},
 ) {
@@ -282,7 +313,15 @@ fun LazyItemScope.SettingThemePreview(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 shape = MaterialTheme.shapes.small,
                             ),
-                    )
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = themeName,
+                            fontSize = 8.sp,
+                            lineHeight = 17.sp,
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                        )
+                    }
                 }
             }
         }
