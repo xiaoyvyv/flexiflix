@@ -90,8 +90,6 @@ dependencies {
     api(libs.retrofit.converter.gson)
     api(libs.retrofit)
 
-    api(libs.logging.interceptor)
-
     // 为了快速开发，暂时不采用 quickjs，因为需要实现兼容层，考虑到其包体积极小，后续可能考虑迁移至该方案
     // api(libs.quickjs.wrapper.android)
 

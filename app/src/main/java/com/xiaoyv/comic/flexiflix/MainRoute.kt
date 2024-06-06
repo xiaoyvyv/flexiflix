@@ -27,6 +27,7 @@ import com.xiaoyv.comic.flexiflix.ui.screen.feature.home.addMediaHomeScreen
 import com.xiaoyv.comic.flexiflix.ui.screen.feature.search.addMediaSearchScreen
 import com.xiaoyv.comic.flexiflix.ui.screen.feature.search.result.addMediaSearchResultScreen
 import com.xiaoyv.comic.flexiflix.ui.screen.feature.section.addMediaSectionScreen
+import com.xiaoyv.comic.flexiflix.ui.screen.feature.web.addWebScreen
 import com.xiaoyv.comic.flexiflix.ui.screen.main.profile.about.addAboutScreen
 import com.xiaoyv.comic.flexiflix.ui.screen.main.profile.extension.addExtensionCompatScreen
 import com.xiaoyv.comic.flexiflix.ui.screen.main.profile.settings.addSettingsScreen
@@ -121,6 +122,9 @@ fun MainScreen() {
         addSettingNetworkScreen(navController)
         addSettingPlayerScreen(navController)
         addSettingThemeScreen(navController)
+
+        // 内置浏览器
+        addWebScreen(navController)
     }
 }
 

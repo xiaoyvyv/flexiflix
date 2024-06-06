@@ -26,7 +26,7 @@ class SourceInstalledTabViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState = mutableStateFlowOf(SourceInstalledTabState())
-    val uiState get() = _uiState.asStateFlow()
+    val uiState = _uiState.asStateFlow()
 
     init {
         refresh()

@@ -23,6 +23,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -35,7 +36,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -55,12 +58,13 @@ import androidx.paging.LoadState
 import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.GlideImage
 import com.xiaoyv.comic.flexiflix.ui.component.AppBar
+import com.xiaoyv.comic.flexiflix.ui.component.Button
 import com.xiaoyv.comic.flexiflix.ui.component.ElevatedImage
-import com.xiaoyv.comic.flexiflix.ui.component.StateScreen
+import com.xiaoyv.comic.flexiflix.ui.component.PlayingAnimationBar
 import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldRefresh
 import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldScreen
+import com.xiaoyv.comic.flexiflix.ui.component.StateScreen
 import com.xiaoyv.comic.flexiflix.ui.component.StringLabelPage
-import com.xiaoyv.comic.flexiflix.ui.component.PlayingAnimationBar
 import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
 import com.xiaoyv.flexiflix.common.utils.isNotLoading
 import com.xiaoyv.flexiflix.common.utils.isStoped
@@ -80,14 +84,37 @@ fun MediaHomeRoute(
     onSectionClick: (String, FlexMediaSection) -> Unit,
     onSectionMediaClick: (String, FlexMediaSectionItem) -> Unit,
     onSearchClick: (String, String) -> Unit = { _, _ -> },
+    onVerifyUrl: (String, String) -> Unit = { _, _ -> },
 ) {
     val viewModel = hiltViewModel<MediaHomeViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    // 需要验证 Url
+    uiState.needVerifyUrl?.let {
+        AlertDialog(
+            title = { Text(text = "Error: 403") },
+            text = { Text(text = "检测到 403 未验证错误，是否进行验证？验证完成后请点击右上角确定按钮") },
+            onDismissRequest = { viewModel.needVerifyUrlShown() },
+            confirmButton = {
+                Button(text = "确定", onClick = {
+                    viewModel.needVerifyUrlShown()
+
+                    onVerifyUrl("人机验证", it)
+                })
+            },
+            dismissButton = {
+                Button(text = "取消", onClick = {
+                    viewModel.needVerifyUrlShown()
+                })
+            }
+        )
+    }
 
     MediaHomeScreen(
         title = viewModel.args.sourceName,
         uiState = uiState,
         onRefresh = { viewModel.refresh() },
+        onRetry = { viewModel.retry() },
         onSectionMediaClick = {
             onSectionMediaClick(viewModel.args.sourceId, it)
         },
@@ -105,6 +132,7 @@ fun MediaHomeScreen(
     title: String,
     uiState: MediaHomeState,
     onRefresh: () -> Unit = {},
+    onRetry: () -> Unit = {},
     onSectionClick: (FlexMediaSection) -> Unit = {},
     onSectionMediaClick: (FlexMediaSectionItem) -> Unit = {},
     onSearchClick: () -> Unit = {},
@@ -118,9 +146,7 @@ fun MediaHomeScreen(
     }
 
     val scrollState = rememberScrollState()
-    val showTopBar by remember {
-        derivedStateOf { scrollState.value > 250 }
-    }
+    val showTopBar by remember { derivedStateOf { scrollState.value > 250 } }
 
     ScaffoldScreen(
         modifier = Modifier
@@ -165,8 +191,9 @@ fun MediaHomeScreen(
             onRefresh = onRefresh
         ) {
             StateScreen(
-                loadState = uiState.loadState,
-                itemCount = { uiState.items.size }
+                state = uiState.loadState,
+                listCount = { uiState.items.size },
+                onRetryClick = onRetry
             ) {
                 if (uiState.items.isNotEmpty()) {
                     Column(modifier = Modifier.verticalScroll(state = scrollState)) {

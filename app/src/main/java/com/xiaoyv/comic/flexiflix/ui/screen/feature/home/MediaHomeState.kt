@@ -11,5 +11,6 @@ import com.xiaoyv.flexiflix.extension.model.FlexMediaSection
  */
 data class MediaHomeState(
     val loadState: LoadState = LoadState.Loading,
-    val items: List<FlexMediaSection> = emptyList()
+    val items: List<FlexMediaSection> = emptyList(),
+    val needVerifyUrl: String? = null,
 )

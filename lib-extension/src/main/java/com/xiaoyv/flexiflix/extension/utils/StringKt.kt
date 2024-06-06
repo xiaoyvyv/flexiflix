@@ -1,6 +1,7 @@
 package com.xiaoyv.flexiflix.extension.utils
 
 import java.net.URLDecoder
+import java.net.URLEncoder
 
 fun String?.parseNumber(): Int {
     val orNull = this?.toIntOrNull()
@@ -24,5 +25,13 @@ fun String?.decodeUnicode(): String {
 }
 
 fun String?.decodeUrl(): String {
-    return URLDecoder.decode(orEmpty(), "UTF-8")
+    return runCatchingPrint { URLDecoder.decode(orEmpty(), "UTF-8") }
+        .getOrElse { this }
+        .orEmpty()
+}
+
+fun String?.encodeUrl(): String {
+    return runCatchingPrint { URLEncoder.encode(orEmpty(), "UTF-8") }
+        .getOrElse { this }
+        .orEmpty()
 }

@@ -34,7 +34,7 @@ class SettingThemeViewModel @Inject constructor() : ViewModel() {
         )
     )
 
-    val themeColors get() = _themeColors.asStateFlow()
+    val themeColors = _themeColors.asStateFlow()
 
     init {
         checkCanSyncSystemDynamicColor()

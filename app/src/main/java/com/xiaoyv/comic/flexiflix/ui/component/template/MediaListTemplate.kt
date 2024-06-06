@@ -47,7 +47,7 @@ fun MediaListTemplate(
     itemModifier: Modifier = Modifier,
     pagingItems: LazyPagingItems<FlexMediaSectionItem>,
     columns: Int = 3,
-    onMediaClick: (String) -> Unit = {},
+    onMediaClick: (FlexMediaSectionItem) -> Unit = {},
 ) {
     if (columns == 1) {
         LazyList(modifier = modifier) {
@@ -83,13 +83,13 @@ fun MediaListTemplate(
 fun MediaListTempListItem(
     modifier: Modifier = Modifier,
     item: FlexMediaSectionItem,
-    onMediaClick: (String) -> Unit = {},
+    onMediaClick: (FlexMediaSectionItem) -> Unit = {},
 ) {
     val hasCover = item.cover.isNotBlank()
 
     ConstraintLayout(
         modifier = Modifier
-            .clickable { onMediaClick(item.id) }
+            .clickable { onMediaClick(item) }
             .then(modifier)
     ) {
         val (cover, title, desc, other) = createRefs()
@@ -163,7 +163,7 @@ fun MediaListTempListItem(
 fun MediaListTempGridItem(
     modifier: Modifier = Modifier,
     item: FlexMediaSectionItem,
-    onMediaClick: (String) -> Unit = {},
+    onMediaClick: (FlexMediaSectionItem) -> Unit = {},
 ) {
     val hasCover = item.cover.isNotBlank()
 
@@ -259,7 +259,7 @@ fun MediaOverlayImage(
     modifier: Modifier = Modifier,
     imageModifier: Modifier = Modifier,
     item: FlexMediaSectionItem,
-    onMediaClick: (String) -> Unit = {},
+    onMediaClick: (FlexMediaSectionItem) -> Unit = {},
 ) {
     ConstraintLayout(modifier = modifier) {
         val (cover, coverTopStart, coverTopEnd, coverBottomStart, coverBottomEnd) = createRefs()
@@ -279,7 +279,7 @@ fun MediaOverlayImage(
                 }
             ),
             model = item.cover,
-            onClick = { onMediaClick(item.id) },
+            onClick = { onMediaClick(item) },
         )
 
         if (!item.requireOverlay.topStart.isNullOrBlank()) Text(

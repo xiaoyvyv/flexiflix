@@ -31,7 +31,7 @@ class MediaSectionViewModel @Inject constructor(
     internal val args = MediaSectionArgument(savedStateHandle)
 
     private val _uiState = mutableStateFlowOf(MediaSectionState(title = args.section.title))
-    val uiState get() = _uiState.asStateFlow()
+    val uiState = _uiState.asStateFlow()
 
     val sectionSource = defaultPaging {
         mediaRepository.sectionSource(args.sourceId, args.section)

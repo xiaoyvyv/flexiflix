@@ -44,11 +44,9 @@ import androidx.media3.common.Tracks
 import androidx.media3.common.VideoSize
 import androidx.media3.common.text.CueGroup
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.cache.CacheDataSource
-import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
-import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
@@ -66,13 +64,10 @@ import com.kuaishou.akdanmaku.render.SimpleRenderer
 import com.kuaishou.akdanmaku.ui.DanmakuPlayer
 import com.kuaishou.akdanmaku.ui.DanmakuView
 import com.xiaoyv.comic.flexiflix.R
-import com.xiaoyv.comic.flexiflix.application
-import com.xiaoyv.flexiflix.extension.config.settings.AppSettings
 import com.xiaoyv.flexiflix.common.utils.debugLog
 import com.xiaoyv.flexiflix.extension.MediaSourceFactory
+import com.xiaoyv.flexiflix.extension.config.settings.AppSettings
 import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
-import com.xiaoyv.flexiflix.extension.utils.cacheDir
-import com.xiaoyv.flexiflix.extension.utils.workDir
 
 /**
  * [MediaVideoPlayer]
@@ -137,9 +132,8 @@ fun MediaVideoPlayer(
             .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
             .setCache(MediaVideoCache.sampleCache)
 
-        val mediaSourceFactory: MediaSource.Factory =
-            DefaultMediaSourceFactory(context)
-                .setDataSourceFactory(factory)
+        val mediaSourceFactory = DefaultMediaSourceFactory(context)
+            .setDataSourceFactory(factory)
 
         val trackSelector = DefaultTrackSelector(context)
             .apply {
@@ -355,7 +349,7 @@ fun MediaVideoPlayer(
  * 插件播放器
  */
 @SuppressLint("InflateParams")
-fun createPlayerView(
+private fun createPlayerView(
     context: Context,
     lifecycleOwner: LifecycleOwner,
     exoPlayer: ExoPlayer,

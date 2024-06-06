@@ -43,16 +43,16 @@ class MediaSearchViewModel @Inject constructor(
     val args = MediaSearchArgument(savedStateHandle)
 
     private val _searchOptionsState = mutableStateFlowOf(MediaSearchState())
-    val searchOptionsState get() = _searchOptionsState.asStateFlow()
+    val searchOptionsState = _searchOptionsState.asStateFlow()
 
     /**
      * 搜索关键字和选中的过滤项目
      */
     private val _keyword = mutableStateFlowOf<String>("")
-    val keyword get() = _keyword.asStateFlow()
+    val keyword = _keyword.asStateFlow()
 
     private val _selectedOptions = mutableStateFlowOf(listOf<FlexSearchOptionItem>())
-    val selectedOptions get() = _selectedOptions.asStateFlow()
+    val selectedOptions = _selectedOptions.asStateFlow()
 
     /**
      * 搜索请求参数

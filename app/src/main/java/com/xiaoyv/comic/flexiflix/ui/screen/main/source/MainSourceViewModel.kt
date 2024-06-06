@@ -28,7 +28,7 @@ class MainSourceViewModel @Inject constructor(
     private val extensionRepository: ExtensionRepository,
 ) : ViewModel() {
     private val _installState = mutableStateFlowOf<Result<InstalledMediaSource>?>(null)
-    val installState get() = _installState.asStateFlow()
+    val installState = _installState.asStateFlow()
 
     /**
      * 安装插件

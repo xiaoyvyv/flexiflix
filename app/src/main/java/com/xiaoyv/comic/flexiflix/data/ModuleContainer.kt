@@ -11,6 +11,7 @@ import com.xiaoyv.comic.flexiflix.data.media.MediaRepositoryImpl
 import com.xiaoyv.comic.flexiflix.data.remote.RemoteApi
 import com.xiaoyv.flexiflix.common.database.LocalDatabase
 import com.xiaoyv.flexiflix.common.database.collect.CollectionDao
+import com.xiaoyv.flexiflix.common.database.history.HistoryDao
 import com.xiaoyv.flexiflix.extension.MediaSourceFactory
 import dagger.Binds
 import dagger.Module
@@ -64,8 +65,13 @@ object ModuleProvidesContainer {
     }
 
     @Provides
-    fun provideLogDao(database: LocalDatabase): CollectionDao {
+    fun provideCollectionDao(database: LocalDatabase): CollectionDao {
         return database.collectionDao()
+    }
+
+    @Provides
+    fun provideHistoryDao(database: LocalDatabase): HistoryDao {
+        return database.historyDao()
     }
 
     @Provides

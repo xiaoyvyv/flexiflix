@@ -20,19 +20,19 @@ class AppThemeState {
      * 深色模式
      */
     private val _darkMode by lazy { mutableStateFlowOf(AppSettings.Theme.darkMode) }
-    val darkMode get() = _darkMode.asStateFlow()
+    val darkMode = _darkMode.asStateFlow()
 
     /**
      * 主题颜色
      */
     private val _themeColor by lazy { mutableStateFlowOf(AppSettings.Theme.themeColor) }
-    val themeColor get() = _themeColor.asStateFlow()
+    val themeColor = _themeColor.asStateFlow()
 
     /**
      * 暗色模式强制黑色主题
      */
     private val _darkForceBlack by lazy { mutableStateFlowOf(AppSettings.Theme.darkForceBlack) }
-    val darkForceBlack get() = _darkForceBlack.asStateFlow()
+    val darkForceBlack = _darkForceBlack.asStateFlow()
 
     /**
      * 深色模式切换

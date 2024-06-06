@@ -1,4 +1,4 @@
-package com.xiaoyv.flexiflix.common.database.collect
+package com.xiaoyv.flexiflix.common.database.history
 
 import android.os.Parcelable
 import androidx.annotation.Keep
@@ -10,12 +10,12 @@ import com.xiaoyv.flexiflix.extension.MediaSourceType
 import kotlinx.parcelize.Parcelize
 
 /**
- * 收藏的本地储存库
+ * 历史浏览库
  */
 @Keep
 @Parcelize
-@Entity(tableName = LocalDatabase.TABLE_NAME_COLLECT)
-data class CollectionEntity(
+@Entity(tableName = LocalDatabase.TABLE_NAME_HISTORY)
+data class HistoryEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo("id") var id: Long = 0,
     @ColumnInfo("type") @MediaSourceType val type: Int = MediaSourceType.TYPE_UNKNOWN,
@@ -26,11 +26,7 @@ data class CollectionEntity(
     @ColumnInfo("description") var description: String,
     @ColumnInfo("cover") var cover: String,
     @ColumnInfo("url") var url: String,
-    @ColumnInfo("playCount") var playCount: String? = null,
-    @ColumnInfo("createAt") var createAt: String? = null,
-    @ColumnInfo("publisher") var publisher: String? = null,
-    @ColumnInfo("playlist") var playlistCount: Int = 0,
-    @ColumnInfo("series") var seriesCount: Int = 0,
-    @ColumnInfo("tags") var tags: String? = null,
+    @ColumnInfo("playlist") var playlist: String,
+    @ColumnInfo("playlistItemId") var playlistItemId: String,
     @ColumnInfo("saveAt") val saveAt: Long = System.currentTimeMillis(),
 ) : Parcelable

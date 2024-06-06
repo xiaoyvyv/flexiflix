@@ -1,5 +1,7 @@
 package com.xiaoyv.flexiflix.extension.impl.java.network.cookie;
 
+import androidx.annotation.NonNull;
+
 import com.xiaoyv.flexiflix.extension.impl.java.network.cookie.cache.CookieCache;
 import com.xiaoyv.flexiflix.extension.impl.java.network.cookie.persistence.CookiePersistor;
 
@@ -23,7 +25,7 @@ public class PersistentCookieJar implements ClearableCookieJar {
     }
 
     @Override
-    synchronized public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+    synchronized public void saveFromResponse(@NonNull HttpUrl url, @NonNull List<Cookie> cookies) {
         cache.addAll(cookies);
         persistor.saveAll(filterPersistentCookies(cookies));
     }

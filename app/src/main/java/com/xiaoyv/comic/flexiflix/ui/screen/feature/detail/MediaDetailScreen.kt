@@ -20,6 +20,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -53,6 +54,7 @@ import com.xiaoyv.flexiflix.extension.model.FlexMediaDetail
 import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylist
 import com.xiaoyv.flexiflix.extension.model.FlexMediaPlaylistUrl
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
+import kotlinx.coroutines.launch
 
 /**
  * [MediaDetailScreen]
@@ -71,8 +73,10 @@ fun MediaDetailRoute(
 
     val viewModel = hiltViewModel<MediaDetailViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val currentPlayList by viewModel.currentPlaylist.collectAsStateWithLifecycle()
     val currentPlayUrl by viewModel.currentPlayUrl.collectAsStateWithLifecycle()
-    val currentPlaylist by viewModel.currentPlaylist.collectAsStateWithLifecycle()
+
+    val scope = rememberCoroutineScope()
 
     // 返回键拦截
     var backHandlerEnable by remember { mutableStateOf(false) }
@@ -85,11 +89,13 @@ fun MediaDetailRoute(
     MediaDetailScreen(
         uiState = uiState,
         currentPlayUrl = currentPlayUrl,
-        currentPlaylist = currentPlaylist,
+        currentPlaylist = currentPlayList,
         onOrientationChange = { landscape ->
             backHandlerEnable = landscape
         },
-        onChangePlayItem = { list, index -> viewModel.changePlayItem(list, index) },
+        onChangePlayItem = { list, index ->
+            scope.launch { viewModel.selectPlayListItem(list, index) }
+        },
         onSelectPlayList = { viewModel.selectPlayList(it) },
         onRefresh = { viewModel.refresh() },
         onRetryClick = { viewModel.retry() },
@@ -168,10 +174,11 @@ fun MediaDetailScreen(
             ) {
 
                 // 切换播放条目时，更改标题
-                var title by remember { mutableStateOf("媒体详情") }
+                var rememberTitle by remember { mutableStateOf("媒体详情") }
+
                 LaunchedEffect(key1 = currentPlayUrl) {
                     if (currentPlayUrl != null) {
-                        title = buildString {
+                        rememberTitle = buildString {
                             append(currentPlayUrl.title.ifBlank { "媒体详情" })
                             append(String.format("（%s）", currentPlaylist?.title))
                         }
@@ -179,7 +186,7 @@ fun MediaDetailScreen(
                 }
 
                 AppBar(
-                    title = title,
+                    title = rememberTitle,
                     colors = TopAppBarDefaults.topAppBarColors().copy(
                         containerColor = Color.Transparent,
                         titleContentColor = Color.White,

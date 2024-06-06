@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
@@ -21,7 +22,9 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -31,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.xiaoyv.comic.flexiflix.ui.component.PlayingAnimationBar
 import com.xiaoyv.comic.flexiflix.ui.screen.feature.home.MediaHomeSectionItemRow
 import com.xiaoyv.comic.flexiflix.ui.theme.AppTheme
+import com.xiaoyv.flexiflix.common.utils.debugLog
 import com.xiaoyv.flexiflix.extension.model.FlexMediaDetail
 import com.xiaoyv.flexiflix.extension.model.FlexMediaDetailSeries
 import com.xiaoyv.flexiflix.extension.model.FlexMediaDetailTab
@@ -41,6 +45,7 @@ import com.xiaoyv.flexiflix.extension.model.FlexMediaTag
 import com.xiaoyv.flexiflix.extension.model.FlexMediaUser
 import com.xiaoyv.flexiflix.extension.utils.UNKNOWN_LONG
 import com.xiaoyv.flexiflix.extension.utils.UNKNOWN_STRING
+import kotlinx.coroutines.delay
 
 /**
  * [MediaDetailSummaryTab]
@@ -124,7 +129,7 @@ fun MediaDetailSummaryTab(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 播放列表
+        // 播放列表 TAB 标头
         LazyRow(modifier = Modifier.fillMaxWidth()) {
             items(mediaDetail.playlist.orEmpty()) {
                 Text(
@@ -140,10 +145,23 @@ fun MediaDetailSummaryTab(
             }
         }
 
-        // 当前播放列表具体的章节话数等
+        // 当前播放列表 具体的章节话数等
         if (currentPlayList != null && currentPlayList.items.isNotEmpty()) {
+            val lazyListState = rememberLazyListState()
+
+            // 第一次滑动到历史位置
+            LaunchedEffect(currentPlayItem != null) {
+                if (currentPlayItem != null) {
+                    val index = currentPlayList.items
+                        .indexOfFirst { it.id == currentPlayItem.id }
+                        .coerceAtLeast(0)
+
+                    lazyListState.scrollToItem(index, 0)
+                }
+            }
+
             Spacer(modifier = Modifier.height(12.dp))
-            LazyRow(modifier = Modifier.fillMaxWidth()) {
+            LazyRow(modifier = Modifier.fillMaxWidth(), state = lazyListState) {
                 items(currentPlayList.items.size) { index ->
                     MediaDetailMediaItem(
                         url = currentPlayList.items[index],

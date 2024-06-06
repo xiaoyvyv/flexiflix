@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -15,14 +18,11 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.xiaoyv.comic.flexiflix.ui.component.AppBar
+import com.xiaoyv.comic.flexiflix.ui.component.ColumnsToggleButton
 import com.xiaoyv.comic.flexiflix.ui.component.ScaffoldScreen
 import com.xiaoyv.comic.flexiflix.ui.component.template.MediaListTemplate
-import com.xiaoyv.flexiflix.common.model.hasData
-import com.xiaoyv.flexiflix.common.model.payload
-import com.xiaoyv.flexiflix.common.utils.debugLog
 import com.xiaoyv.flexiflix.common.utils.mutableStateFlowOf
 import com.xiaoyv.flexiflix.extension.model.FlexMediaSectionItem
-import com.xiaoyv.flexiflix.extension.utils.toJson
 
 /**
  * [MediaSectionScreen]
@@ -43,7 +43,7 @@ fun MediaSectionRoute(
         uiState = uiState,
         pagingItems = pagingItems,
         onNavUp = onNavUp,
-        onMediaClick = { onMediaClick(viewModel.args.sourceId, it) }
+        onMediaClick = { onMediaClick(viewModel.args.sourceId, it.id) }
     )
 }
 
@@ -52,12 +52,20 @@ fun MediaSectionScreen(
     uiState: MediaSectionState,
     pagingItems: LazyPagingItems<FlexMediaSectionItem>,
     onNavUp: () -> Unit = {},
-    onMediaClick: (String) -> Unit = {},
+    onMediaClick: (FlexMediaSectionItem) -> Unit = {},
 ) {
+    var columns by remember { mutableIntStateOf(1) }
+
     ScaffoldScreen(
         topBar = {
-            AppBar(title = uiState.title, onNavigationIconClick = onNavUp)
-        }
+            AppBar(
+                title = uiState.title,
+                onNavigationIconClick = onNavUp,
+                actions = {
+                    ColumnsToggleButton(columns = columns, onChange = { columns = it })
+                }
+            )
+        },
     ) {
         MediaListTemplate(
             modifier = Modifier
@@ -68,25 +76,9 @@ fun MediaSectionScreen(
                 .fillMaxWidth()
                 .padding(8.dp),
             pagingItems = pagingItems,
-            columns = 1,
+            columns = columns,
             onMediaClick = onMediaClick
         )
-
-
-        if (uiState.data.hasData) {
-            val optionItems = uiState.data.payload()
-
-//            MediaListTemp(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                    .padding(8.dp),
-//                itemModifier = Modifier.padding(8.dp),
-//                items = optionItems,
-//                columns = 1
-//            )
-
-            debugLog { optionItems.toJson(true) }
-        }
     }
 }
 

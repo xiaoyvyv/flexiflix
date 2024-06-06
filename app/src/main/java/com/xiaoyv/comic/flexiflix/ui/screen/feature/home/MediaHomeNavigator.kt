@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import com.xiaoyv.comic.flexiflix.ui.screen.feature.detail.navigateMediaDetail
 import com.xiaoyv.comic.flexiflix.ui.screen.feature.search.navigateMediaSearch
 import com.xiaoyv.comic.flexiflix.ui.screen.feature.section.navigateMediaSection
+import com.xiaoyv.comic.flexiflix.ui.screen.feature.web.navigateWeb
 import com.xiaoyv.flexiflix.common.utils.navigateByPath
 
 /**
@@ -59,6 +60,9 @@ fun NavGraphBuilder.addMediaHomeScreen(navController: NavController) {
             },
             onSearchClick = { sourceId, sourceName ->
                 navController.navigateMediaSearch(sourceId, sourceName)
+            },
+            onVerifyUrl = { title, url ->
+                navController.navigateWeb(title, url)
             }
         )
     }

@@ -20,6 +20,6 @@ class MainHistoryViewModel @Inject constructor(
 ) : ViewModel() {
 
     val pageSource = defaultPaging {
-        localRepositoryImpl.queryCollectsByPaging()
+        localRepositoryImpl.queryCollectionByPaging()
     }
 }

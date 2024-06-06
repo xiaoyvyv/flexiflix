@@ -2,8 +2,6 @@ package com.xiaoyv.comic.flexiflix.ui.component
 
 
 import android.util.Log
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,8 +23,6 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
-import com.xiaoyv.comic.flexiflix.R
-import com.xiaoyv.flexiflix.i18n.I18n
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -125,90 +121,3 @@ internal val LocalScrollState = staticCompositionLocalOf { ScrollState() }
 
 @Composable
 internal fun rememberListScrollState() = remember { ScrollState() }
-
-/*
-fun LazyListScope.appendItems(
-    state: LoadState,
-    onRetryClick: () -> Unit,
-) = when (state) {
-    is LoadState.Loading -> item {
-        Box(
-            modifier = Modifier
-                .height(AppTheme.sizes.default)
-                .fillMaxWidth(),
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .padding(AppTheme.spaces.large)
-                    .size(AppTheme.sizes.medium)
-                    .align(Alignment.Center),
-            )
-        }
-    }
-
-    is LoadState.Error -> item {
-        Surface {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        horizontal = AppTheme.spaces.large,
-                        vertical = AppTheme.spaces.mediumLarge,
-                    ),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    text = stringResource(state.error.getStringRes()),
-                )
-                TextButton(
-                    text = stringResource(dsR.string.designsystem_action_retry),
-                    onClick = onRetryClick,
-                )
-            }
-        }
-    }
-
-    is LoadState.NotLoading -> Unit
-}*/
-
-
-fun LazyListScope.loadingItem(
-    fillParentMaxSize: Boolean = true,
-) = item {
-    Loading(
-        modifier = if (fillParentMaxSize) Modifier.fillParentMaxSize() else Modifier,
-    )
-}
-
-
-fun LazyListScope.errorItem(
-    @StringRes titleRes: Int = I18n.error_title,
-    @StringRes subtitleRes: Int = I18n.error_something_goes_wrong,
-    @DrawableRes imageRes: Int = R.drawable.ill_error,
-    fillParentMaxSize: Boolean = true,
-    onRetryClick: (() -> Unit)? = null,
-) = item {
-    Error(
-        modifier = if (fillParentMaxSize) Modifier.fillParentMaxSize() else Modifier,
-        titleRes = titleRes,
-        subtitleRes = subtitleRes,
-        imageRes = imageRes,
-        onRetryClick = onRetryClick,
-    )
-}
-
-fun LazyListScope.emptyItem(
-    @StringRes titleRes: Int,
-    @StringRes subtitleRes: Int,
-    @DrawableRes imageRes: Int,
-    fillParentMaxSize: Boolean = true,
-) = item {
-    Empty(
-        modifier = if (fillParentMaxSize) Modifier.fillParentMaxSize() else Modifier,
-        titleRes = titleRes,
-        subtitleRes = subtitleRes,
-        imageRes = imageRes,
-    )
-}

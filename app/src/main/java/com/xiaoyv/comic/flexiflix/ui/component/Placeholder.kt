@@ -32,39 +32,7 @@ import com.xiaoyv.flexiflix.i18n.I18n
 
 @Composable
 @NonRestartableComposable
-fun Placeholder(
-    @StringRes titleRes: Int,
-    @StringRes subtitleRes: Int,
-    modifier: Modifier = Modifier,
-    @DrawableRes imageRes: Int? = null,
-    action: @Composable (() -> Unit)? = null,
-) = Placeholder(
-    modifier = modifier.fillMaxSize(),
-    title = {
-        Text(
-            text = stringResource(titleRes),
-            textAlign = TextAlign.Center,
-        )
-    },
-    subtitle = {
-        Text(
-            text = stringResource(subtitleRes),
-            textAlign = TextAlign.Center,
-        )
-    },
-    image = if (imageRes != null) {
-        { Illustration(imageRes) }
-    } else {
-        null
-    },
-    action = action,
-)
-
-@Composable
-@NonRestartableComposable
-fun Loading(
-    modifier: Modifier = Modifier,
-) = Box(
+fun Loading(modifier: Modifier = Modifier) = Box(
     modifier = modifier.fillMaxSize(),
     contentAlignment = Alignment.Center,
     content = { CircularProgressIndicator() },
@@ -74,21 +42,21 @@ fun Loading(
 @NonRestartableComposable
 fun Error(
     modifier: Modifier = Modifier,
-    @StringRes titleRes: Int,
-    @StringRes subtitleRes: Int,
+    title: String,
+    subtitle: String,
     @DrawableRes imageRes: Int,
     onRetryClick: (() -> Unit)? = null,
 ) = Placeholder(
     modifier = modifier.fillMaxSize(),
     title = {
         Text(
-            text = stringResource(titleRes),
+            text = title,
             textAlign = TextAlign.Center,
         )
     },
     subtitle = {
         Text(
-            text = stringResource(subtitleRes),
+            text = subtitle,
             textAlign = TextAlign.Center,
         )
     },
@@ -109,20 +77,20 @@ fun Error(
 @NonRestartableComposable
 fun Empty(
     modifier: Modifier = Modifier,
-    @StringRes titleRes: Int,
-    @StringRes subtitleRes: Int,
+    title: String,
+    subtitle: String,
     @DrawableRes imageRes: Int,
 ) = Placeholder(
     modifier = modifier.fillMaxSize(),
     title = {
         Text(
-            text = stringResource(titleRes),
+            text = title,
             textAlign = TextAlign.Center,
         )
     },
     subtitle = {
         Text(
-            text = stringResource(subtitleRes),
+            text = subtitle,
             textAlign = TextAlign.Center,
         )
     },

@@ -36,7 +36,7 @@ class MediaSearchResultViewModel @Inject constructor(
 
 
 //    private val _searchOptionsState = mutableStateFlowOf(MediaSearchState())
-//    val searchOptionsState get() = _searchOptionsState.asStateFlow()
+//    val searchOptionsState = _searchOptionsState.asStateFlow()
     /*
         */
     /**
@@ -45,7 +45,7 @@ class MediaSearchResultViewModel @Inject constructor(
     private val _keyword = mutableStateFlowOf<String>("")
 
     private val _selectedOptions = mutableStateFlowOf(listOf<FlexSearchOptionItem>())
-    val selectedOptions get() = _selectedOptions.asStateFlow()
+    val selectedOptions = _selectedOptions.asStateFlow()
 
     */
     /**

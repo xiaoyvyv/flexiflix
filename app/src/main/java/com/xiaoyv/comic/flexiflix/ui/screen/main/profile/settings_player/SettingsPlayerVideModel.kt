@@ -23,7 +23,7 @@ import javax.inject.Inject
 class SettingsPlayerVideModel @Inject constructor() : ViewModel() {
 
     private val _videoCacheSize = mutableStateFlowOf("")
-    val videoCacheSize get() = _videoCacheSize.asStateFlow()
+    val videoCacheSize = _videoCacheSize.asStateFlow()
 
     init {
         computeCacheSize()

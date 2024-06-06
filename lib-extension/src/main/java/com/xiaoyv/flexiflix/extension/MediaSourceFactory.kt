@@ -14,6 +14,7 @@ import com.xiaoyv.flexiflix.extension.impl.java.network.dns.NetworkManager
 import com.xiaoyv.flexiflix.extension.impl.java.network.interceptor.AdBlockInterceptor
 import com.xiaoyv.flexiflix.extension.impl.java.network.interceptor.Base64ImageInterceptor
 import com.xiaoyv.flexiflix.extension.impl.java.network.interceptor.CommonInterceptor
+import com.xiaoyv.flexiflix.extension.impl.java.network.interceptor.LoggerInterceptor
 import com.xiaoyv.flexiflix.extension.impl.javascript.JSExtensionSource
 import com.xiaoyv.flexiflix.extension.model.MediaSourceInfo
 import com.xiaoyv.flexiflix.extension.source.HttpSource
@@ -26,7 +27,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.CookieJar
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.ByteArrayOutputStream
@@ -76,7 +76,7 @@ object MediaSourceFactory {
             .connectTimeout(30, TimeUnit.SECONDS)
             .apply {
                 if (BuildConfig.DEBUG) {
-                    addNetworkInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                    addNetworkInterceptor(LoggerInterceptor().setLevel(LoggerInterceptor.Level.BODY))
                 }
             }
             .dns(NetworkDns())
